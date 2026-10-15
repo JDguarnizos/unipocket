@@ -1,1 +1,96 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  /* =========================================
+     1. PALETA PRINCIPAL (Navegación y Acciones)
+     ========================================= */
+  --primary-50: #EFF6FF; /* Fondo sidebar activo y hover */
+  --primary-100: #DBEAFE; /* Anillos de enfoque */
+  --primary-500: #2563EB; /* Botones principales, sidebar activo */
+  --primary-600: #1D4ED8; /* Hover de botones principales */
+  --primary-700: #1E40AF; /* Estado pressed */
+  --navy-900: #172554; /* Logotipo y valores destacados */
+
+  /* =========================================
+     2. AHORRO E INGRESOS (Metas y Resultados)
+     ========================================= */
+  --success-50: #ECFDF5; /* Fondo de contenedores de ahorro */
+  --success-100: #D1FAE5; /* Fondo botón 'Registrar Ingreso' */
+  --success-200: #A7F3D0; /* Borde botón 'Registrar Ingreso' */
+  --success-500: #10B981; /* Barras de progreso de metas */
+  --success-600: #059669; /* Iconos de ingresos */
+  --success-700: #047857; /* Texto de ingresos y metas */
+
+  /* =========================================
+     3. GASTOS Y ESTADOS SEMÁNTICOS
+     ========================================= */
+  /* Gastos normales (No destructivo) */
+  --expense-50: #FFF1F2; /* Fondo botón 'Registrar Gasto' */
+  --expense-100: #FFE4E6; /* Borde botón 'Registrar Gasto' */
+  --expense-500: #E11D48; /* Valores de salida en movimientos */
+  --expense-700: #BE123C; /* Texto de gastos */
+
+  /* Advertencias (Presupuesto al límite) */
+  --warning-50: #FFFBEB; /* Fondo de alerta */
+  --warning-500: #F59E0B; /* Icono de alerta */
+  --warning-800: #92400E; /* Texto de alerta */
+
+  /* Información (Consejo del día) */
+  --info-100: #E0F2FE; /* Fondo de tarjeta de consejo */
+  --info-600: #0284C7; /* Texto e icono de consejo */
+
+  /* Errores críticos */
+  --error-50: #FEF2F2;
+  --error-600: #DC2626;
+  --error-700: #B91C1C;
+
+  /* =========================================
+     4. NEUTROS (Fondos, Textos y Bordes)
+     ========================================= */
+  --bg-main: #F8FAFC; /* Fondo principal de toda la app */
+  --bg-surface: #FFFFFF; /* Tarjetas, sidebar, header */
+  --neutral-100: #F1F5F9; /* Hover de botones secundarios */
+  --neutral-200: #E2E8F0; /* Bordes de tarjetas y header */
+  --neutral-300: #CBD5E1; /* Bordes de inputs */
+  --neutral-500: #64748B; /* Placeholders */
+  --neutral-600: #475569; /* Fechas e historial inactivo */
+  --neutral-700: #334155; /* Subtítulos */
+  --neutral-900: #0F172A; /* Textos principales */
+
+  /* =========================================
+     5. CATEGORÍAS (Gráfica de distribución)
+     ========================================= */
+  --cat-alimentacion: #F59E0B;
+  --cat-transporte: #3B82F6;
+  --cat-materiales: #8B5CF6;
+  --cat-entretenimiento: #EC4899;
+  --cat-suscripciones: #6366F1;
+  --cat-otros: #64748B;
+
+  /* =========================================
+     6. SISTEMA DE DISEÑO (Estructura)
+     ========================================= */
+  /* Radios */
+  --radius-sm: 8px;
+  --radius-md: 12px; /* Botones e inputs */
+  --radius-lg: 16px; /* Tarjetas de resumen */
+  --radius-full: 9999px; /* Pastillas / Badges */
+
+  /* Sombras */
+  --shadow-card: 0 4px 6px -1px rgba(15, 23, 42, 0.05), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
+  --shadow-header: 0 1px 3px 0 rgba(15, 23, 42, 0.05);
+
+  /* Espaciados */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px; /* Padding interno de tarjetas */
+  --space-8: 32px;
+}
+
+/* Reset básico para asegurar que el fondo general aplique en toda la SPA */
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-main);
+  color: var(--neutral-900);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif; /* Recomendación de fuente limpia */
+}
