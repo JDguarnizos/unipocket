@@ -1,1 +1,57 @@
-<p>dashboard works!</p>
+<div class="dashboard-contenedor">
+  <div class="cabecera-dashboard">
+    <div>
+      <h2>Hola, Laura</h2>
+      <p class="fecha">Octubre 2026</p>
+    </div>
+    <div class="botones-accion">
+      <app-boton-generico texto="Registrar ingreso" tipo="ingreso"></app-boton-generico>
+      <app-boton-generico texto="Registrar gasto" tipo="gasto"></app-boton-generico>
+    </div>
+  </div>
+
+  <h3 class="titulo-seccion">Resumen rápido</h3>
+  <div class="grid-tarjetas">
+    <app-tarjeta-resumen 
+      titulo="Dinero disponible" 
+      valorPrincipal="$860.000" 
+      textoSecundario="De $1.200.000 del periodo">
+    </app-tarjeta-resumen>
+
+    <app-tarjeta-resumen 
+      titulo="Presupuesto utilizado" 
+      valorPrincipal="68%" 
+      textoSecundario="$340.000 de $500.000 - Dentro del límite">
+    </app-tarjeta-resumen>
+
+    <app-tarjeta-resumen 
+      titulo="Gasto diario recomendado" 
+      valorPrincipal="$13.300 / día" 
+      textoSecundario="Para cerrar el mes sin pasarte">
+    </app-tarjeta-resumen>
+  </div>
+
+  <h3 class="titulo-seccion">Movimientos recientes</h3>
+  <div class="lista-movimientos">
+    <app-item-movimiento 
+      titulo="Almuerzo en la cafetería" 
+      subtitulo="Alimentación - Hoy, 12:40" 
+      monto="$14.500" 
+      tipo="gasto">
+    </app-item-movimiento>
+    
+    <app-item-movimiento 
+      titulo="Impresiones parcial de cálculo" 
+      subtitulo="Materiales e impresiones - Hoy, 10:24" 
+      monto="$15.000" 
+      tipo="gasto">
+    </app-item-movimiento>
+
+    <app-item-movimiento 
+      titulo="Monitoría académica" 
+      subtitulo="Ingreso - Ayer, 16:00" 
+      monto="$150.000" 
+      tipo="ingreso">
+    </app-item-movimiento>
+  </div>
+</div>
