@@ -1,0 +1,144 @@
+.top-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+  padding: 0 var(--space-6);
+  background-color: var(--bg-surface);
+  border-bottom: 1px solid var(--neutral-200);
+  box-shadow: var(--shadow-header);
+  width: 100%;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex: 1;
+}
+
+.menu-toggle-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--neutral-600);
+  padding: var(--space-2);
+  border-radius: var(--radius-sm);
+}
+
+.menu-toggle-btn:hover {
+  background-color: var(--neutral-100);
+}
+
+/* Espacio o diseño del logo en el header */
+.header-logo {
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  color: var(--navy-900);
+  font-size: 18px;
+}
+
+.logo-placeholder {
+  background-color: var(--primary-500);
+  color: white;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+}
+
+.header-search {
+  max-width: 400px;
+  width: 100%;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px var(--space-4);
+  border: 1px solid var(--neutral-300);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-main);
+  font-size: 14px;
+  color: var(--neutral-900);
+  outline: none;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.search-input::placeholder {
+  color: var(--neutral-500);
+}
+
+.search-input:focus {
+  border-color: var(--primary-500);
+  background-color: var(--bg-surface);
+  box-shadow: 0 0 0 3px var(--primary-100);
+}
+
+.header-user-section {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.notification-btn {
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  padding: var(--space-2);
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.notification-btn:hover {
+  background-color: var(--neutral-100);
+}
+
+.badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background-color: var(--error-600);
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: var(--radius-full);
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.user-avatar {
+  width: 38px;
+  height: 38px;
+  background-color: var(--primary-500);
+  color: white;
+  font-weight: 600;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--neutral-900);
+}
+
+.user-role {
+  font-size: 12px;
+  color: var(--neutral-600);
+}

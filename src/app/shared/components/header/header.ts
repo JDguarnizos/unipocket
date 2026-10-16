@@ -8,6 +8,6 @@ import { Component } from '@angular/core';
 })
 export class Header {
   
-  nombreUsuario: string = 'Laura Gómez'; 
-  rolUsuario: string = 'Estudiante - UNAL';
+  nombreUsuario: string = 'Estudiante'; 
+  rolUsuario: string = 'Ucompensar';
 }
