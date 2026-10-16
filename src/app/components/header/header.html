@@ -1,0 +1,27 @@
+<header class="top-header">
+  <!-- Izquierda: Botón de hamburguesa y Buscador -->
+  <div class="header-left">
+    <button class="menu-toggle-btn" aria-label="Abrir menú">
+      ☰
+    </button>
+    <div class="header-search">
+      <input type="text" placeholder="Buscar movimientos, categorías o metas..." class="search-input" />
+    </div>
+  </div>
+
+  <!-- Derecha: Notificaciones y Perfil de Usuario -->
+  <div class="header-user-section">
+    <button class="notification-btn" aria-label="Notificaciones">
+      <span class="bell-icon">🔔</span>
+      <span class="badge">3</span>
+    </button>
+
+    <div class="user-profile">
+      <div class="user-avatar">U</div>
+      <div class="user-details">
+        <span class="user-name">{{ nombreUsuario }}</span>
+        <span class="user-role">{{ rolUsuario }}</span>
+      </div>
+    </div>
+  </div>
+</header>
