@@ -3,40 +3,30 @@
     <span class="menu-label">MENÚ</span>
     <ul class="menu-list">
       <li>
-        <a href="#" class="menu-item active">
+        <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="menu-item">
           <span class="menu-text">Dashboard</span>
         </a>
       </li>
       <li>
-        <a href="#" class="menu-item">
+        <a routerLink="/presupuesto" routerLinkActive="active" class="menu-item">
           <span class="menu-text">Presupuesto</span>
         </a>
       </li>
       <li>
-        <a href="#" class="menu-item">
+        <a routerLink="/movimientos" routerLinkActive="active" class="menu-item">
           <span class="menu-text">Movimientos</span>
         </a>
       </li>
       <li>
-        <a href="#" class="menu-item">
-          <span class="menu-text">Historial</span>
-        </a>
-      </li>
-      <li>
-        <a href="#" class="menu-item">
+        <a routerLink="/metas-ahorro" routerLinkActive="active" class="menu-item">
           <span class="menu-text">Metas de ahorro</span>
-        </a>
-      </li>
-      <li>
-        <a href="#" class="menu-item">
-          <span class="menu-text">Reportes</span>
         </a>
       </li>
     </ul>
   </div>
 
   <div class="menu-footer">
-    <a href="#" class="menu-item">
+    <a class="menu-item" aria-disabled="true">
       <span class="menu-text">Configuración</span>
     </a>
   </div>
