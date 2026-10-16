@@ -1,0 +1,14 @@
+<div class="tarjeta-contenedor">
+  <div class="tarjeta-header">
+    <span class="titulo">{{ titulo }}</span>
+  </div>
+  
+  <div class="tarjeta-body">
+    <h3 class="valor-principal">{{ valorPrincipal }}</h3>
+    
+    <!-- Este texto solo aparece si le enviamos información -->
+    <p class="texto-secundario" *ngIf="textoSecundario">
+      {{ textoSecundario }}
+    </p>
+  </div>
+</div>

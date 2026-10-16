@@ -1,0 +1,50 @@
+.item-contenedor {
+  display: flex;
+  align-items: center;
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--neutral-200); /* Línea divisoria suave */
+}
+
+/* Para que el último elemento no tenga línea abajo */
+.item-contenedor:last-child {
+  border-bottom: none;
+}
+
+.icono-placeholder {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background-color: var(--neutral-100);
+  margin-right: var(--space-3);
+}
+
+.info-central {
+  flex: 1; /* Ocupa todo el espacio disponible empujando el monto a la derecha */
+}
+
+.titulo {
+  margin: 0;
+  color: var(--neutral-900);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.subtitulo {
+  margin: 4px 0 0 0;
+  color: var(--neutral-500);
+  font-size: 12px;
+}
+
+.monto {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* Colores dinámicos según el tipo de movimiento */
+.ingreso {
+  color: var(--success-600);
+}
+
+.gasto {
+  color: var(--expense-700);
+}

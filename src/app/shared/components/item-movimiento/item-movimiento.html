@@ -1,0 +1,16 @@
+<div class="item-contenedor">
+  <!-- Círculo simulando el icono -->
+  <div class="icono-placeholder"></div>
+  
+  <div class="info-central">
+    <h4 class="titulo">{{ titulo }}</h4>
+    <p class="subtitulo">{{ subtitulo }}</p>
+  </div>
+  
+  <div class="monto" [ngClass]="tipo">
+    <!-- Si es ingreso le ponemos un +, si es gasto le ponemos un - -->
+    <span *ngIf="tipo === 'ingreso'">+</span>
+    <span *ngIf="tipo === 'gasto'">-</span>
+    {{ monto }}
+  </div>
+</div>
