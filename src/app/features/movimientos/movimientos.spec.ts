@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Movimientos } from '../../pages/movimientos/movimientos';
+import { Movimientos } from './movimientos';
 
 describe('Movimientos', () => {
   let component: Movimientos;

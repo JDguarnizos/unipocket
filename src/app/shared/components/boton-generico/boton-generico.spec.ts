@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { BotonGenerico } from './boton-generico';
+import { BotonGenericoComponent } from './boton-generico';
 
-describe('BotonGenerico', () => {
-  let component: BotonGenerico;
-  let fixture: ComponentFixture<BotonGenerico>;
+describe('BotonGenericoComponent', () => {
+  let component: BotonGenericoComponent;
+  let fixture: ComponentFixture<BotonGenericoComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BotonGenerico],
+      imports: [BotonGenericoComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(BotonGenerico);
+    fixture = TestBed.createComponent(BotonGenericoComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
