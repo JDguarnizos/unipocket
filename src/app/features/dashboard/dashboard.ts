@@ -13,6 +13,6 @@ import { ItemMovimientoComponent } from '../../shared/components/item-movimiento
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.css']
 })
-export class DashboardComponent {
+export class Dashboard {
   // Por ahora sin variables, todo directo en el HTML para el prototipo
 }
