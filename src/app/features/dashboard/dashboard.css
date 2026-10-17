@@ -1,0 +1,50 @@
+.dashboard-contenedor {
+  padding: var(--space-6);
+  max-width: 1000px;
+}
+
+.cabecera-dashboard {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-6);
+}
+
+.cabecera-dashboard h2 {
+  margin: 0;
+  color: var(--navy-900);
+}
+
+.fecha {
+  margin: 4px 0 0 0;
+  color: var(--neutral-600);
+}
+
+.botones-accion {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.titulo-seccion {
+  margin-bottom: var(--space-4);
+  color: var(--navy-900);
+  font-size: 16px;
+}
+
+.grid-tarjetas {
+  display: flex;
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+}
+
+/* Hacemos que cada tarjeta ocupe el mismo ancho */
+.grid-tarjetas > * {
+  flex: 1;
+}
+
+.lista-movimientos {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-lg);
+  padding: 0 var(--space-6);
+}
