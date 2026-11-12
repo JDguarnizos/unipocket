@@ -1,0 +1,15 @@
+[
+	{
+		"nombre": "Laura Méndez",
+		"id": 100,
+		"id_reg_financiero": 100,
+		"rol": "administrador",
+		"correo": "laura.mendez@unipocket.com",
+		"ultimoAcceso": "2026-11-10T14:30:00.000Z",
+		"fechaUltimoAcceso": "2026-11-10T14:30:00.000Z",
+		"fechasEstadisticas": [
+			"2026-11-01T00:00:00.000Z",
+			"2026-11-08T00:00:00.000Z"
+		]
+	}
+]

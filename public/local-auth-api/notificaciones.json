@@ -1,0 +1,12 @@
+[
+  {
+    "idsNotificar": [1, 2, 3, 100],
+    "mensaje": "Revisa tus metas y actualiza tus aportes de este mes.",
+    "importancia": 2
+  },
+  {
+    "idsNotificar": [2],
+    "mensaje": "Tu meta de viaje está cerca de alcanzar el 50%.",
+    "importancia": 1
+  }
+]

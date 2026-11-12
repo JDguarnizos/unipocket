@@ -1,0 +1,23 @@
+[
+	{
+		"idUsuario": 1,
+		"nombre": "Fondo de emergencia",
+		"listaAportes": [150000, 200000, 175000],
+		"valorObjetivo": 2000000,
+		"fechaLimite": 1798761600000
+	},
+	{
+		"idUsuario": 2,
+		"nombre": "Viaje a Medellín",
+		"listaAportes": [120000, 180000, 100000],
+		"valorObjetivo": 1200000,
+		"fechaLimite": 1796083200000
+	},
+	{
+		"idUsuario": 3,
+		"nombre": "Nuevo computador",
+		"listaAportes": [300000, 250000],
+		"valorObjetivo": 3500000,
+		"fechaLimite": 1801353600000
+	}
+]
