@@ -4,9 +4,16 @@
   border-right: 1px solid var(--neutral-200);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start; /* <--- Soluciona el espacio vacío vertical */
+  gap: var(--space-4); /* Espacio ordenado entre elementos */
   padding: var(--space-6) var(--space-4);
   height: calc(100vh - 70px);
+  box-sizing: border-box;
+}
+
+/* Ocultamos la cabecera móvil por defecto en escritorio */
+.menu-header-mobile {
+  display: none;
 }
 
 .menu-section {
@@ -60,4 +67,66 @@
 .menu-footer {
   border-top: 1px solid var(--neutral-200);
   padding-top: var(--space-4);
+  margin-top: auto; /* Empuja el footer hacia abajo si sobra espacio */
+}
+
+/* --- Estilos Responsivos y Menú Hamburguesa --- */
+
+@media (max-width: 1024px) {
+  /* Ocultamos la etiqueta fija de escritorio en móvil */
+  .desktop-only {
+    display: none;
+  }
+
+  /* Mostramos la cabecera móvil ordenada arriba */
+  .menu-header-mobile {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--neutral-200);
+    margin-bottom: var(--space-2);
+  }
+
+  .menu-label-top {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--neutral-500);
+    letter-spacing: 0.05em;
+    padding-left: var(--space-3);
+  }
+
+  .close-menu-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: var(--neutral-700);
+    padding: var(--space-2);
+    border-radius: var(--radius-sm);
+  }
+
+  .close-menu-btn:hover {
+    background-color: var(--neutral-100);
+  }
+
+  /* Comportamiento flotante en pantallas pequeñas */
+  .menu-lateral {
+    position: fixed;
+    top: 70px;
+    left: -260px;
+    width: 260px;
+    height: calc(100vh - 70px);
+    z-index: 1000;
+    transition: left 0.3s ease-in-out;
+    background-color: var(--bg-surface, #ffffff);
+    box-shadow: none;
+  }
+
+  /* Al abrirse, se desliza y muestra sombra clara */
+  :host(.open) .menu-lateral,
+  .menu-lateral.open {
+    left: 0;
+    box-shadow: 12px 0 32px rgba(15, 23, 42, 0.2);
+  }
 }

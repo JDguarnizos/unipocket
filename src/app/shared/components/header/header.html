@@ -1,7 +1,7 @@
 <header class="top-header">
   <!-- Izquierda: Botón de hamburguesa y Buscador -->
   <div class="header-left">
-    <button class="menu-toggle-btn" aria-label="Abrir menú">
+    <button class="menu-toggle-btn" aria-label="Abrir menú" (click)="onToggleMenu()">
       ☰
     </button>
     <div class="header-search">
@@ -11,10 +11,59 @@
 
   <!-- Derecha: Notificaciones y Perfil de Usuario -->
   <div class="header-user-section">
-    <button class="notification-btn" aria-label="Notificaciones">
-      <span class="bell-icon">🔔</span>
-      <span class="badge">3</span>
-    </button>
+
+    <!-- Botón de notificaciones -->
+    <div class="notificaciones-wrapper">
+      <button
+        class="notification-btn"
+        aria-label="Notificaciones"
+        (click)="toggleNotificaciones()"
+      >
+        <span class="bell-icon">🔔</span>
+        @if (cantidadSinLeer > 0) {
+          <span class="badge">{{ cantidadSinLeer }}</span>
+        }
+      </button>
+
+      <!-- Panel desplegable de notificaciones -->
+      @if (mostrarNotificaciones()) {
+        <div class="notificaciones-panel" role="dialog" aria-label="Notificaciones">
+
+          <div class="notif-cabecera">
+            <h4 class="notif-titulo">Notificaciones</h4>
+            @if (cantidadSinLeer > 0) {
+              <button class="notif-btn-leer-todo" (click)="marcarTodasComoLeidas()">
+                Marcar todas como leídas
+              </button>
+            }
+          </div>
+
+          <ul class="notif-lista">
+            @for (notif of notificaciones; track notif.id) {
+              <li
+                class="notif-item"
+                [class.notif-item--sin-leer]="!notif.leida"
+                (click)="marcarComoLeida(notif.id)"
+              >
+                @if (!notif.leida) {
+                  <span class="notif-punto"></span>
+                }
+                <div class="notif-contenido">
+                  <p class="notif-mensaje">{{ notif.mensaje }}</p>
+                  <span class="notif-tiempo">{{ notif.tiempo }}</span>
+                </div>
+              </li>
+            }
+          </ul>
+
+          @if (cantidadSinLeer === 0) {
+            <p class="notif-vacio">Todo al día ✓</p>
+          }
+
+        </div>
+      }
+    </div>
+    
 
     <div class="user-profile">
       <div class="user-avatar">U</div>

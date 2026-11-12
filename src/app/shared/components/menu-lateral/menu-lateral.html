@@ -1,33 +1,22 @@
 <aside class="menu-lateral">
+  <!-- 1. Cabecera superior móvil: Título "MENÚ" y botón de cierre (✕) -->
+  <div class="menu-header-mobile">
+    <span class="menu-label-top">MENÚ</span>
+    <button class="close-menu-btn" aria-label="Cerrar menú" (click)="cerrarMenu()">✕</button>
+  </div>
+
+  <!-- 2. Opciones de navegación del menú -->
   <div class="menu-section">
-    <span class="menu-label">MENÚ</span>
-    <ul class="menu-list">
-      <li>
-        <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="menu-item">
-          <span class="menu-text">Dashboard</span>
-        </a>
-      </li>
-      <li>
-        <a routerLink="/presupuesto" routerLinkActive="active" class="menu-item">
-          <span class="menu-text">Presupuesto</span>
-        </a>
-      </li>
-      <li>
-        <a routerLink="/movimientos" routerLinkActive="active" class="menu-item">
-          <span class="menu-text">Movimientos</span>
-        </a>
-      </li>
-      <li>
-        <a routerLink="/metas-ahorro" routerLinkActive="active" class="menu-item">
-          <span class="menu-text">Metas de ahorro</span>
-        </a>
-      </li>
-    </ul>
+    <span class="menu-label desktop-only">MENÚ</span>
+    <nav class="menu-list">
+      <a routerLink="/dashboard" routerLinkActive="active" class="menu-item" (click)="cerrarMenu()">Panel</a>
+      <a routerLink="/presupuesto" routerLinkActive="active" class="menu-item" (click)="cerrarMenu()">Presupuesto</a>
+      <a routerLink="/movimientos" routerLinkActive="active" class="menu-item" (click)="cerrarMenu()">Movimientos</a>
+      <a routerLink="/metas" routerLinkActive="active" class="menu-item" (click)="cerrarMenu()">Metas de ahorro</a>
+    </nav>
   </div>
 
   <div class="menu-footer">
-    <a class="menu-item" aria-disabled="true">
-      <span class="menu-text">Configuración</span>
-    </a>
+    <!-- Pie de página opcional -->
   </div>
 </aside>

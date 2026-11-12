@@ -1,3 +1,7 @@
+/* ============================================================
+   HEADER PRINCIPAL
+   Barra fija en la parte superior de toda la aplicación
+   ============================================================ */
 .top-header {
   display: flex;
   align-items: center;
@@ -9,8 +13,12 @@
   box-shadow: var(--shadow-header);
   box-sizing: border-box;
   width: 100%;
+  /* Garantiza que quede por encima del panel desplegable */
+  position: relative;
+  z-index: 100;
 }
 
+/* ── Lado izquierdo: hamburguesa + buscador ───────────────────────────────── */
 .header-left {
   display: flex;
   align-items: center;
@@ -18,7 +26,10 @@
   flex: 1;
 }
 
+/* Botón de hamburguesa (☰).
+   En escritorio se oculta; en móvil se muestra */
 .menu-toggle-btn {
+  display: none; /* ocultamos en desktop */
   background: none;
   border: none;
   font-size: 20px;
@@ -26,29 +37,14 @@
   color: var(--neutral-600);
   padding: var(--space-2);
   border-radius: var(--radius-sm);
+  flex-shrink: 0;
 }
 
 .menu-toggle-btn:hover {
   background-color: var(--neutral-100);
 }
 
-/* Espacio o diseño del logo en el header */
-.header-logo {
-  display: flex;
-  align-items: center;
-  font-weight: 700;
-  color: var(--navy-900);
-  font-size: 18px;
-}
-
-.logo-placeholder {
-  background-color: var(--primary-500);
-  color: white;
-  padding: 4px 8px;
-  border-radius: var(--radius-sm);
-  font-size: 12px;
-}
-
+/* Caja del buscador */
 .header-search {
   max-width: 400px;
   width: 100%;
@@ -64,6 +60,7 @@
   color: var(--neutral-900);
   outline: none;
   transition: border-color 0.2s, background-color 0.2s;
+  box-sizing: border-box;
 }
 
 .search-input::placeholder {
@@ -76,12 +73,20 @@
   box-shadow: 0 0 0 3px var(--primary-100);
 }
 
+/* ── Lado derecho: notificaciones + perfil ───────────────────────────────── */
 .header-user-section {
   display: flex;
   align-items: center;
   gap: var(--space-6);
+  flex-shrink: 0;
 }
 
+/* ── Contenedor posicional del botón + panel ─────────────────────────────── */
+.notificaciones-wrapper {
+  position: relative; /* el panel se posiciona respecto a este div */
+}
+
+/* Botón de la campana */
 .notification-btn {
   position: relative;
   background: none;
@@ -97,6 +102,7 @@
   background-color: var(--neutral-100);
 }
 
+/* Badge rojo con la cantidad de no leídas */
 .badge {
   position: absolute;
   top: 2px;
@@ -105,10 +111,130 @@
   color: white;
   font-size: 10px;
   font-weight: bold;
-  padding: 2px 6px;
+  padding: 2px 5px;
   border-radius: var(--radius-full);
+  line-height: 1;
 }
 
+/* ── Panel desplegable de notificaciones ─────────────────────────────────── */
+.notificaciones-panel {
+  position: absolute;
+  top: calc(100% + 10px); /* 10px debajo del botón */
+  right: 0;               /* alineado al borde derecho del wrapper */
+  width: 320px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+  z-index: 200;           /* por encima de todo el contenido */
+  overflow: hidden;
+}
+
+/* Cabecera del panel: título + botón "marcar todas" */
+.notif-cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-4) var(--space-4) var(--space-3);
+  border-bottom: 1px solid var(--neutral-200);
+}
+
+.notif-titulo {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--neutral-900);
+}
+
+.notif-btn-leer-todo {
+  background: none;
+  border: none;
+  font-size: 12px;
+  color: var(--primary-500);
+  cursor: pointer;
+  padding: 0;
+  font-weight: 500;
+}
+
+.notif-btn-leer-todo:hover {
+  text-decoration: underline;
+}
+
+/* Lista de notificaciones */
+.notif-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 280px;
+  overflow-y: auto; /* scroll si hay muchas notificaciones */
+}
+
+/* Cada fila de notificación */
+.notif-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  cursor: pointer;
+  transition: background-color 0.15s;
+  border-bottom: 1px solid var(--neutral-100);
+}
+
+.notif-item:last-child {
+  border-bottom: none;
+}
+
+.notif-item:hover {
+  background-color: var(--neutral-100);
+}
+
+/* Fondo azul suave para notificaciones sin leer */
+.notif-item--sin-leer {
+  background-color: var(--primary-50);
+}
+
+.notif-item--sin-leer:hover {
+  background-color: var(--primary-100);
+}
+
+/* Punto azul indicador */
+.notif-punto {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  margin-top: 5px;
+  background-color: var(--primary-500);
+  border-radius: 50%;
+}
+
+.notif-contenido {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.notif-mensaje {
+  margin: 0;
+  font-size: 13px;
+  color: var(--neutral-900);
+  line-height: 1.4;
+}
+
+.notif-tiempo {
+  font-size: 11px;
+  color: var(--neutral-500);
+}
+
+/* Mensaje cuando todo está leído */
+.notif-vacio {
+  text-align: center;
+  padding: var(--space-6);
+  font-size: 13px;
+  color: var(--neutral-500);
+  margin: 0;
+}
+
+/* ── Perfil de usuario ───────────────────────────────────────────────────── */
 .user-profile {
   display: flex;
   align-items: center;
@@ -126,6 +252,7 @@
   align-items: center;
   justify-content: center;
   font-size: 14px;
+  flex-shrink: 0;
 }
 
 .user-details {
@@ -142,4 +269,58 @@
 .user-role {
   font-size: 12px;
   color: var(--neutral-600);
+}
+
+/* ============================================================
+   RESPONSIVE: TABLET (≤ 768px)
+   El menú lateral se oculta y aparece el botón hamburguesa
+   ============================================================ */
+@media (max-width: 768px) {
+  /* Mostramos el botón hamburguesa en tablets y móviles */
+  .menu-toggle-btn {
+    display: block;
+  }
+
+  /* El buscador se reduce un poco */
+  .header-search {
+    max-width: 100%;
+  }
+
+  /* Ocultamos el nombre y rol del usuario para ahorrar espacio */
+  .user-details {
+    display: none;
+  }
+
+  /* El panel de notificaciones se pone a la derecha de la pantalla */
+  .notificaciones-panel {
+    right: -10px;
+    width: 290px;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE: MÓVIL (≤ 480px)
+   Versión muy compacta
+   ============================================================ */
+@media (max-width: 480px) {
+  .top-header {
+    padding: 0 var(--space-4);
+    gap: var(--space-2);
+  }
+
+  /* En pantallas muy pequeñas el buscador ocupa todo el espacio disponible */
+  .header-search {
+    flex: 1;
+  }
+
+  /* Reducimos gap entre elementos de la derecha */
+  .header-user-section {
+    gap: var(--space-3);
+  }
+
+  /* El panel ocupa casi todo el ancho de la pantalla */
+  .notificaciones-panel {
+    width: calc(100vw - 32px);
+    right: -50px;
+  }
 }

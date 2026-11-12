@@ -11,4 +11,10 @@ import { MenuLateral } from './shared/components/menu-lateral/menu-lateral';
 })
 export class App {
   protected readonly title = signal('unipocket');
+
+  isMenuOpen = false;
+
+  toggleMenuLateral(): void {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
 }

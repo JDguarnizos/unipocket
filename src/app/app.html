@@ -1,8 +1,14 @@
-<app-header />
+<!-- Escuchamos el evento (toggleMenu) que emite el header -->
+<app-header (toggleMenu)="toggleMenuLateral()"></app-header>
 
-<div class="app-layout">
-  <app-menu-lateral />
-  <main>
-    <router-outlet />
+<div class="main-layout-container">
+  <!-- Pasamos la clase .open y escuchamos cuando el menú emite su cierre -->
+  <app-menu-lateral 
+    [class.open]="isMenuOpen" 
+    (menuClosed)="isMenuOpen = false">
+  </app-menu-lateral>
+  
+  <main class="content-area">
+    <router-outlet></router-outlet>
   </main>
 </div>

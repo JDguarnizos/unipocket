@@ -1,15 +1,34 @@
-.app-layout {
+/* ============================================================
+   LAYOUT PRINCIPAL DE LA APLICACIÓN
+   ============================================================ */
+
+.main-layout-container {
   display: flex;
   min-height: calc(100vh - 70px);
+  background-color: var(--bg-main, #f8fafc);
+  width: 100%;
+  position: relative;
 }
 
-app-menu-lateral {
-  display: block;
-  flex: 0 0 292px;
-}
-
-main {
+/* Área principal de contenido */
+.content-area {
   flex: 1;
   min-width: 0;
   padding: 24px;
+  box-sizing: border-box;
+}
+
+/* ============================================================
+   RESPONSIVE: TABLETS Y MÓVILES
+   ============================================================ */
+@media (max-width: 1024px) {
+  .content-area {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .content-area {
+    padding: 12px;
+  }
 }
