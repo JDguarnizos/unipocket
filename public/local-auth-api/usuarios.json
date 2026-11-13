@@ -1,0 +1,17 @@
+[
+	{
+		"nombre": "Sofía Ramírez",
+		"id": 1,
+		"id_reg_financiero": 1
+	},
+	{
+		"nombre": "Mateo Torres",
+		"id": 2,
+		"id_reg_financiero": 2
+	},
+	{
+		"nombre": "Valentina Rojas",
+		"id": 3,
+		"id_reg_financiero": 3
+	}
+]
