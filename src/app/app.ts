@@ -1,5 +1,5 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, signal, inject } from '@angular/core';
+import { Router, RouterOutlet } from '@angular/router';
 import { Header } from './shared/components/header/header';
 import { MenuLateral } from './shared/components/menu-lateral/menu-lateral';
 
@@ -11,10 +11,18 @@ import { MenuLateral } from './shared/components/menu-lateral/menu-lateral';
 })
 export class App {
   protected readonly title = signal('unipocket');
+  private router = inject(Router);
 
+  // ── Menú lateral en móvil (Santiago) ──
   isMenuOpen = false;
 
   toggleMenuLateral(): void {
     this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  // ── Login sin layout (Nicolás) ──
+  // El layout (header + menú lateral) solo se muestra cuando NO estamos en el login
+  mostrarLayout(): boolean {
+    return !this.router.url.startsWith('/login');
   }
 }

@@ -1,0 +1,179 @@
+/* Fondo oscuro semitransparente que cubre toda la pantalla */
+.modal-fondo {
+  position: fixed;
+  inset: 0;               /* top, right, bottom y left en 0 */
+  z-index: 1000;          /* encima del header y del menú */
+  background-color: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+}
+
+/* Cuadro blanco del modal */
+.modal-caja {
+  width: 100%;
+  max-width: 560px;
+  max-height: 100%;
+  overflow-y: auto;
+  background-color: var(--bg-surface);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.2);
+}
+
+/* ===== Encabezado ===== */
+.modal-encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: var(--space-6);
+  border-bottom: 1px solid var(--neutral-200);
+}
+
+.modal-titulo {
+  margin: 0;
+  font-size: 20px;
+  color: var(--navy-900);
+}
+
+.modal-subtitulo {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: var(--neutral-600);
+}
+
+.btn-cerrar {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: var(--neutral-600);
+  border-radius: var(--radius-sm);
+}
+
+.btn-cerrar:hover {
+  background-color: var(--neutral-100);
+}
+
+/* ===== Cuerpo ===== */
+.modal-cuerpo {
+  padding: var(--space-6);
+}
+
+.sin-margen {
+  margin-bottom: 0;
+}
+
+/* Botones Gasto / Ingreso */
+.selector-tipo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+.opcion-tipo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--neutral-300);
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-weight: 500;
+  font-family: inherit;
+  color: var(--neutral-900);
+  cursor: pointer;
+}
+
+/* El ícono de flecha toma el color del tipo aunque no esté activo */
+.opcion-tipo:first-child svg { color: var(--expense-500); }
+.opcion-tipo:last-child svg  { color: var(--success-600); }
+
+/* Gasto seleccionado: rojo suave */
+.opcion-tipo.activo-gasto {
+  background-color: var(--expense-50);
+  border: 2px solid var(--expense-500);
+  color: var(--expense-700);
+}
+
+/* Ingreso seleccionado: verde suave */
+.opcion-tipo.activo-ingreso {
+  background-color: var(--success-50);
+  border: 2px solid var(--success-600);
+  color: var(--success-700);
+}
+
+/* Input de monto más grande que los demás */
+.input-monto {
+  min-height: 52px;
+}
+
+.input-monto input {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.simbolo {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--neutral-700);
+}
+
+.moneda {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--neutral-600);
+}
+
+/* Quita las flechitas del input number (Chrome y Firefox) */
+.input-monto input::-webkit-outer-spin-button,
+.input-monto input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.input-monto input {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* Select sin la flecha nativa; usamos nuestro ícono azul */
+.input-grupo select {
+  appearance: none;
+  cursor: pointer;
+}
+
+.input-grupo .flecha-select {
+  color: var(--primary-500);
+  pointer-events: none;
+}
+
+/* Categoría y fecha lado a lado */
+.fila {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+/* ===== Pie ===== */
+.modal-pie {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-6);
+  border-top: 1px solid var(--neutral-200);
+}
+
+/* ===== Responsive: en celular todo en una columna ===== */
+@media (max-width: 576px) {
+  .fila {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .modal-pie .btn {
+    flex: 1;
+  }
+}

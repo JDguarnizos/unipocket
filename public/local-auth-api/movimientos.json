@@ -1,0 +1,58 @@
+[
+	{
+		"idUsuario": 4,
+		"tipo": "gasto",
+		"monto": 14500,
+		"categoria": "Alimentación",
+		"fecha": "2026-11-12",
+		"descripcion": "Almuerzo en la cafetería"
+	},
+	{
+		"idUsuario": 4,
+		"tipo": "gasto",
+		"monto": 15000,
+		"categoria": "Materiales e impresiones",
+		"fecha": "2026-11-12",
+		"descripcion": "Impresiones parcial de cálculo"
+	},
+	{
+		"idUsuario": 4,
+		"tipo": "ingreso",
+		"monto": 150000,
+		"categoria": "Monitoría",
+		"fecha": "2026-11-11",
+		"descripcion": "Monitoría académica"
+	},
+	{
+		"idUsuario": 1,
+		"tipo": "gasto",
+		"monto": 8000,
+		"categoria": "Transporte",
+		"fecha": "2026-11-12",
+		"descripcion": "Recarga tarjeta de bus"
+	},
+	{
+		"idUsuario": 1,
+		"tipo": "ingreso",
+		"monto": 400000,
+		"categoria": "Mesada",
+		"fecha": "2026-11-01",
+		"descripcion": "Mesada de noviembre"
+	},
+	{
+		"idUsuario": 2,
+		"tipo": "gasto",
+		"monto": 25900,
+		"categoria": "Suscripciones",
+		"fecha": "2026-11-10",
+		"descripcion": "Plan de streaming"
+	},
+	{
+		"idUsuario": 3,
+		"tipo": "ingreso",
+		"monto": 600000,
+		"categoria": "Trabajo",
+		"fecha": "2026-11-05",
+		"descripcion": "Pago medio tiempo"
+	}
+]

@@ -1,0 +1,102 @@
+<!-- Fondo oscuro. Si se hace clic afuera del cuadro, se cierra el modal -->
+<div class="modal-fondo" (click)="cerrar()">
+
+  <!-- stopPropagation evita que un clic DENTRO del cuadro cierre el modal -->
+  <div class="modal-caja" role="dialog" aria-modal="true" aria-labelledby="titulo-modal" (click)="$event.stopPropagation()">
+
+    <!-- ===== Encabezado ===== -->
+    <div class="modal-encabezado">
+      <div>
+        <h2 id="titulo-modal" class="modal-titulo">Registrar movimiento</h2>
+        <p class="modal-subtitulo">Anota un gasto o ingreso en segundos</p>
+      </div>
+      <button type="button" class="btn-cerrar" (click)="cerrar()" aria-label="Cerrar">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+
+    <form [formGroup]="movimientoForm" (ngSubmit)="guardar()" novalidate>
+
+      <!-- ===== Cuerpo ===== -->
+      <div class="modal-cuerpo">
+
+        <!-- Tipo de movimiento: dos botones que cambian el valor de "tipo" -->
+        <div class="campo">
+          <span class="etiqueta">Tipo de movimiento</span>
+          <div class="selector-tipo">
+            <button type="button" class="opcion-tipo" [class.activo-gasto]="esGasto" (click)="seleccionarTipo('gasto')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
+              Gasto
+            </button>
+            <button type="button" class="opcion-tipo" [class.activo-ingreso]="!esGasto" (click)="seleccionarTipo('ingreso')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 7 7 17"/><path d="M17 17H7V7"/></svg>
+              Ingreso
+            </button>
+          </div>
+        </div>
+
+        <!-- Monto: input grande con "$" a la izquierda y "COP" a la derecha -->
+        <div class="campo">
+          <label for="monto">Monto</label>
+          <div class="input-grupo input-monto" [class.invalido]="campoInvalido('monto')">
+            <span class="simbolo">$</span>
+            <input id="monto" type="number" formControlName="monto" placeholder="0" min="1">
+            <span class="moneda">COP</span>
+          </div>
+          @if (campoInvalido('monto')) {
+            <p class="texto-error">Ingresa un monto mayor a 0.</p>
+          }
+        </div>
+
+        <!-- Categoría y fecha en la misma fila -->
+        <div class="fila">
+          <div class="campo">
+            <label for="categoria">Categoría</label>
+            <div class="input-grupo" [class.invalido]="campoInvalido('categoria')">
+              <select id="categoria" formControlName="categoria">
+                <option value="" disabled>Selecciona</option>
+                <!-- @for recorre la lista de categorías según el tipo -->
+                @for (cat of categorias; track cat) {
+                  <option [value]="cat">{{ cat }}</option>
+                }
+              </select>
+              <svg class="flecha-select" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+            </div>
+            @if (campoInvalido('categoria')) {
+              <p class="texto-error">Selecciona una categoría.</p>
+            }
+          </div>
+
+          <div class="campo">
+            <label for="fecha">Fecha</label>
+            <div class="input-grupo" [class.invalido]="campoInvalido('fecha')">
+              <input id="fecha" type="date" formControlName="fecha" [max]="hoy">
+            </div>
+            @if (campoInvalido('fecha')) {
+              <p class="texto-error">Selecciona una fecha.</p>
+            }
+          </div>
+        </div>
+
+        <!-- Descripción opcional -->
+        <div class="campo sin-margen">
+          <label for="descripcion">Descripción (opcional)</label>
+          <div class="input-grupo">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+            <input id="descripcion" type="text" formControlName="descripcion" placeholder="Ej: Almuerzo con el grupo de estudio">
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== Pie: botones ===== -->
+      <div class="modal-pie">
+        <!-- type="button" para que Cancelar NO envíe el formulario -->
+        <button type="button" class="btn btn-secundario" (click)="cerrar()">Cancelar</button>
+        <button type="submit" class="btn btn-principal">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          Guardar movimiento
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -5,8 +5,9 @@
       <p class="fecha">Octubre 2026</p>
     </div>
     <div class="botones-accion">
-      <app-boton-generico texto="Registrar ingreso" tipo="ingreso"></app-boton-generico>
-      <app-boton-generico texto="Registrar gasto" tipo="gasto"></app-boton-generico>
+            <!-- Cada botón abre el modal con su tipo ya seleccionado -->
+      <app-boton-generico texto="Registrar ingreso" tipo="ingreso" (click)="abrirModal('ingreso')"></app-boton-generico>
+      <app-boton-generico texto="Registrar gasto" tipo="gasto" (click)="abrirModal('gasto')"></app-boton-generico>
     </div>
   </div>
 
@@ -14,7 +15,7 @@
   <div class="grid-tarjetas">
     <app-tarjeta-resumen 
       titulo="Dinero disponible" 
-      valorPrincipal="$860.000" 
+            [valorPrincipal]="formatearPesos(saldoDisponible())"
       textoSecundario="De $1.200.000 del periodo">
     </app-tarjeta-resumen>
 
@@ -32,26 +33,26 @@
   </div>
 
   <h3 class="titulo-seccion">Movimientos recientes</h3>
-  <div class="lista-movimientos">
-    <app-item-movimiento 
-      titulo="Almuerzo en la cafetería" 
-      subtitulo="Alimentación - Hoy, 12:40" 
-      monto="$14.500" 
-      tipo="gasto">
-    </app-item-movimiento>
-    
-    <app-item-movimiento 
-      titulo="Impresiones parcial de cálculo" 
-      subtitulo="Materiales e impresiones - Hoy, 10:24" 
-      monto="$15.000" 
-      tipo="gasto">
-    </app-item-movimiento>
-
-    <app-item-movimiento 
-      titulo="Monitoría académica" 
-      subtitulo="Ingreso - Ayer, 16:00" 
-      monto="$150.000" 
-      tipo="ingreso">
-    </app-item-movimiento>
+  
+    <div class="lista-movimientos">
+    <!-- @for recorre la lista; los nuevos movimientos aparecen de primeros.
+         movimientosRecientes() lleva paréntesis porque es un signal (computed) -->
+    @for (mov of movimientosRecientes(); track $index) {
+      <app-item-movimiento
+        [titulo]="mov.titulo"
+        [subtitulo]="mov.subtitulo"
+        [monto]="formatearPesos(mov.monto)"
+        [tipo]="mov.tipo">
+      </app-item-movimiento>
+    }
   </div>
 </div>
+
+<!-- Modal "Registrar movimiento": solo existe en pantalla cuando modalAbierto es true -->
+@if (modalAbierto) {
+  <app-registro-movimiento
+    [tipoInicial]="tipoModal"
+    (cerrado)="cerrarModal()"
+    (guardado)="registrarMovimiento($event)">
+  </app-registro-movimiento>
+}

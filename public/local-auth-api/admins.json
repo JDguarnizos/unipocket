@@ -5,6 +5,7 @@
 		"id_reg_financiero": 100,
 		"rol": "administrador",
 		"correo": "laura.mendez@unipocket.com",
+		"contrasena": "admin12345",
 		"ultimoAcceso": "2026-11-10T14:30:00.000Z",
 		"fechaUltimoAcceso": "2026-11-10T14:30:00.000Z",
 		"fechasEstadisticas": [
