@@ -1,0 +1,120 @@
+<div class="login-pagina">
+
+  <!-- ===== COLUMNA IZQUIERDA: panel informativo (solo visual, se oculta en celular) ===== -->
+  <section class="panel-info">
+    <!-- Logo -->
+    <div class="logo">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M5 5v7a7 7 0 0 0 14 0V5" stroke="var(--primary-500)" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="19" cy="3" r="3" fill="var(--success-500)"/>
+      </svg>
+      <span class="logo-texto">Uni<span class="logo-azul">Pocket</span></span>
+    </div>
+
+    <h1 class="titulo-info">Tu dinero de estudiante, organizado y bajo control</h1>
+    <p class="texto-info">Define tu presupuesto, registra tus gastos en segundos y avanza hacia tus metas de ahorro.</p>
+
+    <!-- Lista de beneficios con ícono -->
+    <ul class="beneficios">
+      <li>
+        <span class="icono-beneficio azul">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></svg>
+        </span>
+        Mira cuánto has usado de tu presupuesto
+      </li>
+      <li>
+        <span class="icono-beneficio celeste">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
+        </span>
+        Recibe un gasto diario recomendado
+      </li>
+      <li>
+        <span class="icono-beneficio verde">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        </span>
+        Ahorra para lo que de verdad te importa
+      </li>
+    </ul>
+
+    <!-- Dos mini tarjetas de ejemplo -->
+    <div class="mini-tarjetas">
+      <div class="mini-tarjeta">
+        <div class="mini-cabecera">
+          <span class="icono-beneficio azul">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
+          </span>
+          Dinero disponible
+        </div>
+        <p class="mini-valor">$ 860.000</p>
+        <p class="mini-detalle">Te quedan 12 días</p>
+      </div>
+
+      <div class="mini-tarjeta meta">
+        <div class="mini-cabecera">
+          <span class="icono-beneficio blanco">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          </span>
+          Laptop para la U
+        </div>
+        <p class="mini-valor verde-texto">62 %</p>
+        <div class="barra"><div class="barra-relleno" style="width: 62%"></div></div>
+        <p class="mini-detalle">$ 1.240.000 de $ 2.000.000</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== COLUMNA DERECHA: formulario de inicio de sesión (RNF10) ===== -->
+  <section class="panel-form">
+    <div class="login-tarjeta">
+      <h2 class="titulo-form">Bienvenido a UniPocket</h2>
+      <p class="subtitulo-form">Inicia sesión para revisar tu presupuesto y tus metas.</p>
+
+      <!-- Error general cuando las credenciales no coinciden -->
+      @if (mensajeError) {
+        <div class="alerta-error">{{ mensajeError }}</div>
+      }
+
+      <!-- [formGroup] conecta este formulario con loginForm del .ts -->
+      <form [formGroup]="loginForm" (ngSubmit)="iniciarSesion()" novalidate>
+
+        <!-- Campo: correo -->
+        <div class="campo">
+          <label for="correo">Correo electrónico</label>
+          <div class="input-grupo" [class.invalido]="campoInvalido('correo')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            <input id="correo" type="email" formControlName="correo" placeholder="tucorreo@unal.edu.co">
+          </div>
+          @if (campoInvalido('correo')) {
+            <p class="texto-error">Ingresa un correo válido.</p>
+          }
+        </div>
+
+        <!-- Campo: contraseña -->
+        <div class="campo">
+          <label for="contrasena">Contraseña</label>
+          <div class="input-grupo" [class.invalido]="campoInvalido('contrasena')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <input id="contrasena" type="password" formControlName="contrasena" placeholder="••••••••••">
+          </div>
+          @if (campoInvalido('contrasena')) {
+            <p class="texto-error">La contraseña debe tener al menos 6 caracteres.</p>
+          }
+        </div>
+
+        <!-- Botón de ancho completo -->
+        <button type="submit" class="btn btn-principal btn-ancho">Iniciar sesión</button>
+
+        <!-- RNF10: link debajo del botón para crear una cuenta (la vista de registro no está en el alcance) -->
+        <p class="crear-cuenta">
+          ¿No tienes cuenta?
+          <a href="#" (click)="$event.preventDefault()">Crear una cuenta</a>
+        </p>
+      </form>
+    </div>
+
+    <p class="nota-seguridad">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Tus datos están protegidos y nunca se comparten.
+    </p>
+  </section>
+</div>

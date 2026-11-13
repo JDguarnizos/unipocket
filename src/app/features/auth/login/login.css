@@ -1,0 +1,215 @@
+/* Página completa dividida en dos columnas */
+.login-pagina {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 560px 1fr;
+  gap: var(--space-6);
+  padding: var(--space-6);
+  box-sizing: border-box;
+  background-color: var(--bg-main);
+}
+
+/* ===== Columna izquierda ===== */
+.panel-info {
+  background-color: var(--primary-50);
+  border-radius: 24px;
+  padding: 48px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.logo-texto {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--navy-900);
+}
+
+.logo-azul {
+  color: var(--primary-500);
+}
+
+.titulo-info {
+  margin: var(--space-8) 0 var(--space-3);
+  font-size: 28px;
+  line-height: 1.3;
+  color: var(--navy-900);
+}
+
+.texto-info {
+  margin: 0 0 var(--space-6);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--neutral-600);
+}
+
+.beneficios {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.beneficios li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: 15px;
+  color: var(--neutral-700);
+}
+
+/* Cuadrito de color detrás de cada ícono */
+.icono-beneficio {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.icono-beneficio.azul    { background-color: var(--primary-100); color: var(--primary-500); }
+.icono-beneficio.celeste { background-color: var(--info-100);    color: var(--info-600); }
+.icono-beneficio.verde   { background-color: var(--success-100); color: var(--success-600); }
+.icono-beneficio.blanco  { background-color: var(--bg-surface);  color: var(--success-600); }
+
+.mini-tarjetas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.mini-tarjeta {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-6);
+}
+
+/* La tarjeta de la meta es verde */
+.mini-tarjeta.meta {
+  background-color: var(--success-50);
+  border-color: var(--success-200);
+}
+
+.mini-cabecera {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: 14px;
+  color: var(--neutral-700);
+}
+
+.mini-valor {
+  margin: var(--space-4) 0 var(--space-2);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--navy-900);
+}
+
+.verde-texto {
+  color: var(--success-700);
+}
+
+.mini-detalle {
+  margin: 0;
+  font-size: 12px;
+  color: var(--neutral-600);
+}
+
+/* Barra de progreso de la meta */
+.barra {
+  height: 8px;
+  background-color: var(--neutral-200);
+  border-radius: var(--radius-full);
+  margin-bottom: var(--space-3);
+  overflow: hidden;
+}
+
+.barra-relleno {
+  height: 100%;
+  background-color: var(--success-500);
+  border-radius: var(--radius-full);
+}
+
+/* ===== Columna derecha ===== */
+.panel-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-tarjeta {
+  width: 100%;
+  max-width: 440px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-8);
+  box-sizing: border-box;
+}
+
+.titulo-form {
+  margin: 0;
+  font-size: 22px;
+  color: var(--navy-900);
+}
+
+.subtitulo-form {
+  margin: var(--space-2) 0 var(--space-6);
+  font-size: 14px;
+  color: var(--neutral-600);
+}
+
+/* Botón que ocupa todo el ancho de la tarjeta */
+.btn-ancho {
+  width: 100%;
+  margin-top: var(--space-2);
+}
+
+.crear-cuenta {
+  margin: var(--space-6) 0 0;
+  text-align: center;
+  font-size: 14px;
+  color: var(--neutral-600);
+}
+
+.crear-cuenta a {
+  font-weight: 600;
+  color: var(--primary-500);
+  text-decoration: none;
+}
+
+.nota-seguridad {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--space-4);
+  font-size: 12px;
+  color: var(--neutral-500);
+}
+
+/* ===== Responsive: en tablet/celular solo se ve el formulario ===== */
+@media (max-width: 992px) {
+  .login-pagina {
+    grid-template-columns: 1fr;
+    padding: var(--space-4);
+  }
+
+  .panel-info {
+    display: none;
+  }
+
+  .login-tarjeta {
+    padding: var(--space-6);
+  }
+}

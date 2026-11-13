@@ -18,6 +18,12 @@
 		"totalGastos": 3120000
 	},
 	{
+		"idUsuario": 4,
+		"totalIngresos": 1200000,
+		"presupuesto": 500000,
+		"totalGastos": 340000
+	},
+	{
 		"idUsuario": 100,
 		"totalIngresos": 0,
 		"presupuesto": 0,

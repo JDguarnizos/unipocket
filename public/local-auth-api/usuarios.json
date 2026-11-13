@@ -2,16 +2,33 @@
 	{
 		"nombre": "Sofía Ramírez",
 		"id": 1,
-		"id_reg_financiero": 1
+		"id_reg_financiero": 1,
+		"correo": "sofia.ramirez@unal.edu.co",
+		"contrasena": "sofia12345",
+		"rol": "usuario"
 	},
 	{
 		"nombre": "Mateo Torres",
 		"id": 2,
-		"id_reg_financiero": 2
+		"id_reg_financiero": 2,
+		"correo": "mateo.torres@unal.edu.co",
+		"contrasena": "mateo12345",
+		"rol": "usuario"
 	},
 	{
 		"nombre": "Valentina Rojas",
 		"id": 3,
-		"id_reg_financiero": 3
+		"id_reg_financiero": 3,
+		"correo": "valentina.rojas@unal.edu.co",
+		"contrasena": "valentina12345",
+		"rol": "usuario"
+	},
+	{
+		"nombre": "Laura Gómez",
+		"id": 4,
+		"id_reg_financiero": 4,
+		"correo": "laura.gomez@unal.edu.co",
+		"contrasena": "laura12345",
+		"rol": "usuario"
 	}
 ]

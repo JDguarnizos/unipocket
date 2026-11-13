@@ -1,14 +1,20 @@
-<!-- Escuchamos el evento (toggleMenu) que emite el header -->
-<app-header (toggleMenu)="toggleMenuLateral()"></app-header>
+<!-- El layout (header + menú) solo se muestra cuando NO estamos en el login -->
+@if (mostrarLayout()) {
+  <!-- Escuchamos el evento (toggleMenu) que emite el header -->
+  <app-header (toggleMenu)="toggleMenuLateral()"></app-header>
 
-<div class="main-layout-container">
-  <!-- Pasamos la clase .open y escuchamos cuando el menú emite su cierre -->
-  <app-menu-lateral 
-    [class.open]="isMenuOpen" 
-    (menuClosed)="isMenuOpen = false">
-  </app-menu-lateral>
-  
-  <main class="content-area">
-    <router-outlet></router-outlet>
-  </main>
-</div>
+  <div class="main-layout-container">
+    <!-- Pasamos la clase .open y escuchamos cuando el menú emite su cierre -->
+    <app-menu-lateral
+      [class.open]="isMenuOpen"
+      (menuClosed)="isMenuOpen = false">
+    </app-menu-lateral>
+
+    <main class="content-area">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+} @else {
+  <!-- Login: pantalla completa, sin header ni menú -->
+  <router-outlet></router-outlet>
+}
