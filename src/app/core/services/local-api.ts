@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, forkJoin, map } from 'rxjs';
 import { Admin } from '../models/admin.model';
 import { Estadisticas } from '../models/estadisticas.model';
-import { Meta } from '../models/meta.model';
+import { MetaAhorro } from '../models/meta_ahorro.model';
 import { Notificacion } from '../models/notificacion.model';
 import { RegistroFinanciero } from '../models/reg_financiero.model';
 import { Usuario } from '../models/usuario.model';
@@ -27,8 +27,9 @@ export class LocalApi {
         return this.http.get<Estadisticas[]>('local-auth-api/estadisticas.json');
     }
     // Corregido (Nicolás): antes usaba como tipo el componente MetasAhorro; el tipo correcto es el modelo Meta
-    obtenerMetasAhorro(): Observable<Meta[]>{
-        return this.http.get<Meta[]>('local-auth-api/metas.json');
+    // Cambiado (Guarniz): Reflejado el cambio de nombre a MetaAhorro.
+    obtenerMetasAhorro(): Observable<MetaAhorro[]>{
+        return this.http.get<MetaAhorro[]>('local-auth-api/metas.json');
     }
     obtenerNotificaciones(): Observable<Notificacion[]>{
         return this.http.get<Notificacion[]>('local-auth-api/notificaciones.json');
@@ -68,6 +69,24 @@ export class LocalApi {
     // Guarda en memoria quién inició sesión (incluye su rol: "usuario" o "administrador")
     iniciarSesion(usuario: Usuario): void {
         this.usuarioActual.set(usuario);
+    }
+
+    // Cargar la lista de usuarios.
+    listausuarios = signal<Usuario[]>([]);
+    private usuariosCargados = false;
+    cargarUsuarios (): void {
+        if (this.usuariosCargados) return;
+        this.usuariosCargados = true;
+
+        this.obtenerUsuarios().subscribe({
+            next: (Usuarios) => {
+                this.listausuarios.set(Usuarios);
+            },
+            error: () => {
+            this.usuariosCargados = false;
+            console.error('La carga de ListaUsuarios ha fallado.')
+            }
+        })
     }
 
 
@@ -121,5 +140,60 @@ export class LocalApi {
                     : { ...registro, totalGastos: registro.totalGastos + movimiento.monto };
             })
         );
+    }
+
+
+    // Actualización de datos dentro de metas de ahorro, hecho con las manos, joder
+    // La idea es usar la misma forma que se usa arriba para cargar datos, manipularlos en memoria
+    // Dado que angular por defecto no puede modificar JSONs
+
+    metasAhorro = signal<MetaAhorro[]>([]);
+    private metasAhorroCargadas = false;
+
+    // Mismo flujo, obtener datos suscribiendose al observable, si falla notificando en consola
+    cargarMetasAhorro(): void{
+        if (this.metasAhorroCargadas) return;
+
+        this.metasAhorroCargadas = true;
+
+        this.obtenerMetasAhorro().subscribe({
+            next: (metasAhorro) => {
+                this.metasAhorro.set(metasAhorro);
+            },
+            error: () => {
+                this.metasAhorroCargadas = false;
+                console.log('La carga de MetasAhorro ha fallado.')
+            }
+        })
+    }
+
+    // Carga usuarios, verifica que el usuario dentro de la meta de ahorro exista y inserta la meta en tal caso
+    registrarMetaAhorro(NuevaMetaAhorro: MetaAhorro): void {
+
+        this.cargarUsuarios();
+        var usuarioExiste = false;
+        // Es la manera que encontré para iterar en esta lista xd, en general no hace cambios en la lista de usuarios
+        this.listausuarios.update(usuarios => usuarios.map(usuario => {
+            if (NuevaMetaAhorro.idUsuario == usuario.id) {
+                usuarioExiste = true;
+            }
+            return usuario;
+        }))
+
+        if (usuarioExiste) this.metasAhorro.update(MetasActuales => [NuevaMetaAhorro, ...MetasActuales]);
+    }
+
+
+    // Verifica nombre y id del usuario con la lista actual de metas, añade los aportes
+    registrarAporteMetaAhorro(idUsuario: number, nombreMeta: string, aporte: number){
+
+        // Iterando dentro de cada meta dentro de metas de ahorro, verificamos el id usuario, si el nombre corresponde (Dado que las metas no tienen id único)
+        this.metasAhorro.update(metas => metas.map(meta => {
+            if (meta.idUsuario != idUsuario) return meta;
+            if (meta.nombre.toLowerCase() !== nombreMeta.toLowerCase()) return meta;
+            //Insertamos el nuevo aporte
+            meta.listaAportes.push(aporte);
+            return meta;
+        }))
     }
 }
