@@ -42,3 +42,6 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# Ignora nuevos archivos del API; los JSON ya versionados usan skip-worktree localmente
+/public/local-auth-api/
