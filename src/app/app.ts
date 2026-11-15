@@ -26,5 +26,3 @@ export class App {
     return !this.router.url.startsWith('/login');
   }
 }
-
-// Comentario de prueba para ver si se sube a GitHub correctamente.
