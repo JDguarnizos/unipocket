@@ -1,11 +1,12 @@
 <div class="dashboard-contenedor">
   <div class="cabecera-dashboard">
     <div>
-      <h2>Hola, Laura</h2>
+      <!-- El saludo ahora es 100% dinámico según la cuenta que inicie sesión -->
+      <h2>Hola, {{ nombreUsuario() }}</h2>
       <p class="fecha">Octubre 2026</p>
     </div>
     <div class="botones-accion">
-            <!-- Cada botón abre el modal con su tipo ya seleccionado -->
+      <!-- Cada botón abre el modal con su tipo ya seleccionado -->
       <app-boton-generico texto="Registrar ingreso" tipo="ingreso" (click)="abrirModal('ingreso')"></app-boton-generico>
       <app-boton-generico texto="Registrar gasto" tipo="gasto" (click)="abrirModal('gasto')"></app-boton-generico>
     </div>
@@ -15,14 +16,15 @@
   <div class="grid-tarjetas">
     <app-tarjeta-resumen 
       titulo="Dinero disponible" 
-            [valorPrincipal]="formatearPesos(saldoDisponible())"
+      [valorPrincipal]="formatearPesos(saldoDisponible())"
       textoSecundario="De $1.200.000 del periodo">
     </app-tarjeta-resumen>
 
+    <!-- Tarjeta conectada a la API (Porcentaje y montos reales del registro financiero) -->
     <app-tarjeta-resumen 
       titulo="Presupuesto utilizado" 
-      valorPrincipal="68%" 
-      textoSecundario="$340.000 de $500.000 - Dentro del límite">
+      [valorPrincipal]="porcentajePresupuesto() + '%'" 
+      [textoSecundario]="formatearPesos(datosPresupuesto()?.totalGastos || 0) + ' de ' + formatearPesos(datosPresupuesto()?.presupuesto || 0) + ' - Dentro del límite'">
     </app-tarjeta-resumen>
 
     <app-tarjeta-resumen 
@@ -34,9 +36,8 @@
 
   <h3 class="titulo-seccion">Movimientos recientes</h3>
   
-    <div class="lista-movimientos">
-    <!-- @for recorre la lista; los nuevos movimientos aparecen de primeros.
-         movimientosRecientes() lleva paréntesis porque es un signal (computed) -->
+  <div class="lista-movimientos">
+    <!-- @for recorre la lista; los nuevos movimientos aparecen de primeros de forma reactiva. -->
     @for (mov of movimientosRecientes(); track $index) {
       <app-item-movimiento
         [titulo]="mov.titulo"

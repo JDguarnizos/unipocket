@@ -2,7 +2,6 @@ import { Component, OnInit, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
-// Importamos los componentes que creó Nicolás
 import { BotonGenericoComponent } from '../../shared/components/boton-generico/boton-generico';
 import { TarjetaResumenComponent } from '../../shared/components/tarjeta-resumen/tarjeta-resumen';
 import { ItemMovimientoComponent } from '../../shared/components/item-movimiento/item-movimiento';
@@ -18,53 +17,70 @@ import { LocalApi } from '../../core/services/local-api';
   styleUrls: ['./dashboard.css']
 })
 export class Dashboard implements OnInit {
-  // Servicio de Juan: de aquí salen los datos del JSON
-  private api = inject(LocalApi);
+  public api = inject(LocalApi);
   private router = inject(Router);
 
-  // ===== Modal "Registrar movimiento" =====
   modalAbierto = false;
   tipoModal: 'gasto' | 'ingreso' = 'gasto';
 
-  // ===== Datos conectados a la API local =====
-  // Solo se conecta lo que usa el modal: "Dinero disponible" y "Movimientos recientes".
-  // Las demás tarjetas siguen fijas en el HTML (las conecta Santiago según el cronograma).
-
-  // computed() = valor CALCULADO a partir de otros signals.
-  // Cada vez que cambia el usuario o los registros del servicio, se recalcula solo.
-  saldoDisponible = computed(() => {
+  nombreUsuario = computed(() => {
     const usuario = this.api.usuarioActual();
-    const registro = this.api.registrosFinancieros().find(r => r.idUsuario === usuario?.id);
-    // Saldo = lo que ha entrado - lo que ha salido
-    return registro ? registro.totalIngresos - registro.totalGastos : 0;
+    return usuario?.nombre ?? 'Usuario';
   });
 
-  // Movimientos del usuario que inició sesión, ya con el formato que pide <app-item-movimiento>
+  saldoDisponible = computed(() => {
+    const usuario = this.api.usuarioActual();
+    if (!usuario) return 0;
+    
+    const userId = this.api.obtenerIdActual();
+    const registro = this.api.registrosFinancieros().find(r => Number(r.idUsuario) === userId);
+
+    return registro ? Number(registro.totalIngresos) - Number(registro.totalGastos) : 1200000;
+  });
+
   movimientosRecientes = computed(() => {
     const usuario = this.api.usuarioActual();
+    if (!usuario) return [];
+    
+    const userId = this.api.obtenerIdActual();
     return this.api.movimientos()
-      .filter(m => m.idUsuario === usuario?.id) // solo los de este usuario
-      .slice(0, 5)                              // los 5 más recientes (los nuevos van de primeros)
+      .filter(m => Number(m.idUsuario) === userId)
+      .slice(0, 5)
       .map(m => ({
-        titulo: m.descripcion || m.categoria,   // si no escribió descripción, mostramos la categoría
-        subtitulo: `${m.categoria} - ${m.fecha}`,
-        monto: m.monto,
+        titulo: m.descripcion || m.categoria,     
+        subtitulo: `${m.categoria} - ${m.fecha}`, 
+        monto: Number(m.monto),
         tipo: m.tipo
       }));
   });
 
+  porcentajePresupuesto = computed(() => {
+    const usuario = this.api.usuarioActual();
+    if (!usuario) return 0;
+
+    const userId = this.api.obtenerIdActual();
+    const registro = this.api.registrosFinancieros().find(r => Number(r.idUsuario) === userId);
+
+    if (!registro || Number(registro.presupuesto) === 0) return 0;
+    return Math.round((Number(registro.totalGastos) / Number(registro.presupuesto)) * 100);
+  });
+
+  datosPresupuesto = computed(() => {
+    const usuario = this.api.usuarioActual();
+    if (!usuario) return undefined;
+
+    const userId = this.api.obtenerIdActual();
+    return this.api.registrosFinancieros().find(r => Number(r.idUsuario) === userId);
+  });
+
   ngOnInit(): void {
-    // TEMPORAL: si nadie ha iniciado sesión (ej. se recargó la página), volvemos al login.
-    // Cuando Juan agregue los Guards, esta validación pasa a ellos.
     if (!this.api.usuarioActual()) {
       this.router.navigate(['/login']);
       return;
     }
-    // Pedimos al servicio que lea los JSON (solo la primera vez)
     this.api.cargarDatosFinancieros();
   }
 
-  // Abre el modal con el tipo del botón que se presionó
   abrirModal(tipo: 'gasto' | 'ingreso'): void {
     this.tipoModal = tipo;
     this.modalAbierto = true;
@@ -74,21 +90,15 @@ export class Dashboard implements OnInit {
     this.modalAbierto = false;
   }
 
-  // Se ejecuta cuando el modal emite (guardado)
   registrarMovimiento(movimiento: Movimiento): void {
     const usuario = this.api.usuarioActual();
     if (!usuario) return;
 
-    // El servicio guarda el movimiento y actualiza totalIngresos / totalGastos.
-    // No hace falta tocar saldoDisponible ni movimientosRecientes: como son computed,
-    // se recalculan solos (un ingreso sube el saldo y un gasto lo baja).
     this.api.registrarMovimiento(usuario.id, movimiento);
-
     this.cerrarModal();
   }
 
-  // Convierte un número a pesos colombianos: 860000 -> "$860.000"
   formatearPesos(valor: number): string {
-    return '$' + valor.toLocaleString('es-CO');
+    return '$' + Number(valor || 0).toLocaleString('es-CO');
   }
 }
