@@ -5,5 +5,6 @@ export interface MetaAhorro {
     nombre: string;
     listaAportes: number[];
     valorObjetivo: number;
-    fechaLimite: number;
+    fechaLimite: string;
+    completado: boolean;
 }

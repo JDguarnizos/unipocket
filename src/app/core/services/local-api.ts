@@ -1,6 +1,6 @@
 import { inject, Injectable, Service, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, forkJoin, map } from 'rxjs';
+import { Observable, catchError, forkJoin, map, of, shareReplay, tap, throwError } from 'rxjs';
 import { Admin } from '../models/admin.model';
 import { Estadisticas } from '../models/estadisticas.model';
 import { MetaAhorro } from '../models/meta_ahorro.model';
@@ -149,22 +149,28 @@ export class LocalApi {
 
     metasAhorro = signal<MetaAhorro[]>([]);
     private metasAhorroCargadas = false;
+    private metasAhorroCarga: Observable<MetaAhorro[]> | null = null;
 
     // Mismo flujo, obtener datos suscribiendose al observable, si falla notificando en consola
-    cargarMetasAhorro(): void{
-        if (this.metasAhorroCargadas) return;
+    cargarMetasAhorro(): Observable<MetaAhorro[]> {
+        if (this.metasAhorroCargadas) return of(this.metasAhorro());
 
-        this.metasAhorroCargadas = true;
+        if (!this.metasAhorroCarga) {
+            this.metasAhorroCarga = this.obtenerMetasAhorro().pipe(
+                tap(metasAhorro => {
+                    this.metasAhorro.set(metasAhorro);
+                    this.metasAhorroCargadas = true;
+                }),
+                catchError(error => {
+                    this.metasAhorroCarga = null;
+                    console.error('La carga de MetasAhorro ha fallado.');
+                    return throwError(() => error);
+                }),
+                shareReplay({ bufferSize: 1, refCount: false })
+            );
+        }
 
-        this.obtenerMetasAhorro().subscribe({
-            next: (metasAhorro) => {
-                this.metasAhorro.set(metasAhorro);
-            },
-            error: () => {
-                this.metasAhorroCargadas = false;
-                console.log('La carga de MetasAhorro ha fallado.')
-            }
-        })
+        return this.metasAhorroCarga;
     }
 
     // Carga usuarios, verifica que el usuario dentro de la meta de ahorro exista y inserta la meta en tal caso
@@ -185,15 +191,24 @@ export class LocalApi {
 
 
     // Verifica nombre y id del usuario con la lista actual de metas, añade los aportes
-    registrarAporteMetaAhorro(idUsuario: number, nombreMeta: string, aporte: number){
+    registrarAporteMetaAhorro(idUsuario: number, nombreMeta: string, aporte: number): void {
+        this.cargarMetasAhorro().subscribe({
+            next: () => this.metasAhorro.update(metas => metas.map(meta => {
+                if (meta.idUsuario !== idUsuario) return meta;
+                if (meta.nombre.toLowerCase() !== nombreMeta.toLowerCase()) return meta;
 
-        // Iterando dentro de cada meta dentro de metas de ahorro, verificamos el id usuario, si el nombre corresponde (Dado que las metas no tienen id único)
-        this.metasAhorro.update(metas => metas.map(meta => {
-            if (meta.idUsuario != idUsuario) return meta;
-            if (meta.nombre.toLowerCase() !== nombreMeta.toLowerCase()) return meta;
-            //Insertamos el nuevo aporte
-            meta.listaAportes.push(aporte);
-            return meta;
-        }))
+                const listaAportes = [...meta.listaAportes, aporte];
+                const totalAportes = listaAportes.reduce((total, valor) => total + valor, 0);
+
+                return {
+                    ...meta,
+                    listaAportes,
+                    completado: meta.completado || totalAportes >= meta.valorObjetivo
+                };
+            })),
+            error: () => console.error('No se pudo registrar el aporte a la meta.')
+        });
     }
+
+
 }
