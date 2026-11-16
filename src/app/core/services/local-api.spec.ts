@@ -26,19 +26,26 @@ describe('LocalApi', () => {
       {
         idUsuario: 1,
         nombre: 'Fondo de emergencia',
-        listaAportes: [150],
+        listaAportes: [{ monto: 150, fechaAporte: null }],
         valorObjetivo: 200,
         fechaLimite: '2027-01-01T00:00:00.000Z',
         completado: false,
       },
     ]);
 
-    expect(service.metasAhorro()[0].listaAportes).toEqual([150, 25]);
+    expect(service.metasAhorro()[0].listaAportes.map(({ monto }) => monto)).toEqual([150, 25]);
+    expect(typeof service.metasAhorro()[0].listaAportes[1].fechaAporte).toBe('string');
     expect(service.metasAhorro()[0].completado).toBe(false);
+    service.calcularProgresoMetaAhorro(1, 'Fondo de emergencia').subscribe((progreso) => {
+      expect(progreso).toBe(87.5);
+    });
 
     service.registrarAporteMetaAhorro(1, 'FONDO DE EMERGENCIA', 25);
 
-    expect(service.metasAhorro()[0].listaAportes).toEqual([150, 25, 25]);
+    expect(service.metasAhorro()[0].listaAportes.map(({ monto }) => monto)).toEqual([150, 25, 25]);
+    expect(
+      service.metasAhorro()[0].listaAportes.slice(1).every(({ fechaAporte }) => typeof fechaAporte === 'string'),
+    ).toBe(true);
     expect(service.metasAhorro()[0].completado).toBe(true);
     httpTestingController.verify();
   });
