@@ -143,7 +143,7 @@ export class LocalApi {
     }
 
 
-    // Actualización de datos dentro de metas de ahorro, hecho con las manos, joder
+    // Actualización de datos dentro de metas de ahorro, hecho con las manos.
     // La idea es usar la misma forma que se usa arriba para cargar datos, manipularlos en memoria
     // Dado que angular por defecto no puede modificar JSONs
 
