@@ -2,22 +2,36 @@
 	{
 		"idUsuario": 1,
 		"nombre": "Fondo de emergencia",
-		"listaAportes": [150000, 200000, 175000],
+		"listaAportes": [
+			{ "monto": 150000, "fechaAporte": "2026-09-01T00:00:00.000Z" },
+			{ "monto": 200000, "fechaAporte": "2026-10-01T00:00:00.000Z" },
+			{ "monto": 175000, "fechaAporte": "2026-11-01T00:00:00.000Z" }
+		],
 		"valorObjetivo": 2000000,
-		"fechaLimite": 1798761600000
+		"fechaLimite": "2027-01-01T00:00:00.000Z",
+		"completado": false
 	},
 	{
 		"idUsuario": 2,
 		"nombre": "Viaje a Medellín",
-		"listaAportes": [120000, 180000, 100000],
+		"listaAportes": [
+			{ "monto": 120000, "fechaAporte": "2026-09-01T00:00:00.000Z" },
+			{ "monto": 180000, "fechaAporte": "2026-10-01T00:00:00.000Z" },
+			{ "monto": 100000, "fechaAporte": "2026-11-01T00:00:00.000Z" }
+		],
 		"valorObjetivo": 1200000,
-		"fechaLimite": 1796083200000
+		"fechaLimite": "2026-12-01T00:00:00.000Z",
+		"completado": false
 	},
 	{
 		"idUsuario": 3,
 		"nombre": "Nuevo computador",
-		"listaAportes": [300000, 250000],
+		"listaAportes": [
+			{ "monto": 300000, "fechaAporte": "2026-08-31T00:00:00.000Z" },
+			{ "monto": 250000, "fechaAporte": "2026-09-30T00:00:00.000Z" }
+		],
 		"valorObjetivo": 3500000,
-		"fechaLimite": 1801353600000
+		"fechaLimite": "2026-10-31T13:20:00.000Z",
+		"completado": false
 	}
 ]
