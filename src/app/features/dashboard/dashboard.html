@@ -1,11 +1,10 @@
 <div class="dashboard-contenedor">
   <div class="cabecera-dashboard">
     <div>
-      <h2>Hola, Laura</h2>
-      <p class="fecha">Octubre 2026</p>
+      <h2>Hola, {{ usuario()?.nombre ?? 'Usuario' }}</h2>
+      <p class="fecha">{{ mesActual }}</p>
     </div>
     <div class="botones-accion">
-            <!-- Cada botón abre el modal con su tipo ya seleccionado -->
       <app-boton-generico texto="Registrar ingreso" tipo="ingreso" (click)="abrirModal('ingreso')"></app-boton-generico>
       <app-boton-generico texto="Registrar gasto" tipo="gasto" (click)="abrirModal('gasto')"></app-boton-generico>
     </div>
@@ -13,30 +12,33 @@
 
   <h3 class="titulo-seccion">Resumen rápido</h3>
   <div class="grid-tarjetas">
+    <!-- Tarjeta 1: Dinero disponible -->
     <app-tarjeta-resumen 
       titulo="Dinero disponible" 
-            [valorPrincipal]="formatearPesos(saldoDisponible())"
-      textoSecundario="De $1.200.000 del periodo">
+      [valorPrincipal]="formatearPesos(saldoDisponible())"
+      [textoSecundario]="'De ' + formatearPesos(registroActual()?.totalIngresos ?? 0) + ' del periodo'">
     </app-tarjeta-resumen>
 
+    <!-- Tarjeta 2: Presupuesto utilizado -->
     <app-tarjeta-resumen 
       titulo="Presupuesto utilizado" 
-      valorPrincipal="68%" 
-      textoSecundario="$340.000 de $500.000 - Dentro del límite">
+      [valorPrincipal]="porcentajePresupuesto() + '%'" 
+      [textoSecundario]="formatearPesos(registroActual()?.totalGastos ?? 0) + ' de ' + formatearPesos(registroActual()?.presupuesto ?? 0)">
     </app-tarjeta-resumen>
 
+    <!-- Tarjeta 3: Gasto diario recomendado -->
     <app-tarjeta-resumen 
       titulo="Gasto diario recomendado" 
-      valorPrincipal="$13.300 / día" 
-      textoSecundario="Para cerrar el mes sin pasarte">
+      [valorPrincipal]="formatearPesos(gastoDiarioRecomendado()) + ' / día'" 
+      [textoSecundario]="presupuestoRestante() >= 0
+        ? 'Te quedan ' + formatearPesos(presupuestoRestante()) + ' para ' + diasRestantes() + ' días'
+        : 'Te pasaste por ' + formatearPesos(-presupuestoRestante())">
     </app-tarjeta-resumen>
   </div>
 
   <h3 class="titulo-seccion">Movimientos recientes</h3>
   
-    <div class="lista-movimientos">
-    <!-- @for recorre la lista; los nuevos movimientos aparecen de primeros.
-         movimientosRecientes() lleva paréntesis porque es un signal (computed) -->
+  <div class="lista-movimientos">
     @for (mov of movimientosRecientes(); track $index) {
       <app-item-movimiento
         [titulo]="mov.titulo"
@@ -48,7 +50,6 @@
   </div>
 </div>
 
-<!-- Modal "Registrar movimiento": solo existe en pantalla cuando modalAbierto es true -->
 @if (modalAbierto) {
   <app-registro-movimiento
     [tipoInicial]="tipoModal"
