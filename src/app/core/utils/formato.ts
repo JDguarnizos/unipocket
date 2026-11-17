@@ -1,12 +1,12 @@
 // Funciones de ayuda reutilizables para mostrar datos en pantalla :).
 // Son funciones normales (no componentes ni servicios): se importan donde se necesiten.
 
-// Convierte un numero a pesos colombianos con NumberFormat (herramienta nativa de JS (waos)): 860000 -> "$860.000"
+// Convierte un numero a pesos colombianos con NumberFormat (herramienta nativa de JS (interesante)): 860000 -> "$860.000"
 export function formatearPesos(valor: number): string {
   return '$' + valor.toLocaleString('es-CO');
 }
 
-// Versión corta para espacios pequeños: 340000 -> "$340k (ahi pal responsive)"
+// Versión corta para espacios pequeños: 340000 -> "$340k"
 export function formatearPesosCorto(valor: number): string {
   return valor >= 1000 ? '$' + Math.round(valor / 1000) + 'k' : '$' + valor;
 }

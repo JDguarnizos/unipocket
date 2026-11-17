@@ -15,7 +15,7 @@ interface CategoriaDesglose {
   Es un componente COMPARTIDO: recibe una lista de movimientos y calcula todo solo.
   Se puede usar en el Historial, en el Dashboard o en Reportes :).
 
-  notaa: Uso:  <app-desglose-categorias [movimientos]="misMovimientos()" />
+  Nota: Uso:  <app-desglose-categorias [movimientos]="misMovimientos()" />
 */
 @Component({
   selector: 'app-desglose-categorias',
