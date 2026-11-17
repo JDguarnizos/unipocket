@@ -54,5 +54,18 @@
 		"categoria": "Trabajo",
 		"fecha": "2026-11-05",
 		"descripcion": "Pago medio tiempo"
-	}
+	},
+
+	{ "idUsuario": 4, "tipo": "ingreso", "monto": 1050000, "categoria": "Mesada", "fecha": "2026-11-01", "descripcion": "Mesada de noviembre" },
+{ "idUsuario": 4, "tipo": "gasto", "monto": 62000, "categoria": "Alimentación", "fecha": "2026-11-08", "descripcion": "Mercado de la semana" },
+{ "idUsuario": 4, "tipo": "gasto", "monto": 18000, "categoria": "Alimentación", "fecha": "2026-11-10", "descripcion": "Almuerzo con el grupo de estudio" },
+{ "idUsuario": 4, "tipo": "gasto", "monto": 24500, "categoria": "Alimentación", "fecha": "2026-11-06", "descripcion": "Onces en la biblioteca" },
+{ "idUsuario": 4, "tipo": "gasto", "monto": 20000, "categoria": "Transporte", "fecha": "2026-11-09", "descripcion": "Recarga TransMilenio" },
+{ "idUsuario": 4, "tipo": "gasto", "monto": 48000, "categoria": "Transporte", "fecha": "2026-11-02", "descripcion": "Recarga TransMilenio del mes" },
+{ "idUsuario": 4, "tipo": "gasto", "monto": 38000, "categoria": "Materiales e impresiones", "fecha": "2026-11-04", "descripcion": "Libro de cálculo usado" },
+{ "idUsuario": 4, "tipo": "gasto", "monto": 15000, "categoria": "Materiales e impresiones", "fecha": "2026-11-03", "descripcion": "Cuadernos y esferos" },
+{ "idUsuario": 4, "tipo": "gasto", "monto": 24000, "categoria": "Entretenimiento", "fecha": "2026-11-07", "descripcion": "Cine con amigos" },
+{ "idUsuario": 4, "tipo": "gasto", "monto": 16800, "categoria": "Entretenimiento", "fecha": "2026-11-05", "descripcion": "Partido de fútbol 5" },
+{ "idUsuario": 4, "tipo": "gasto", "monto": 27200, "categoria": "Suscripciones", "fecha": "2026-11-01", "descripcion": "Plan de celular" },
+{ "idUsuario": 4, "tipo": "gasto", "monto": 17000, "categoria": "Otros", "fecha": "2026-11-06", "descripcion": "Corte de pelo" }
 ]

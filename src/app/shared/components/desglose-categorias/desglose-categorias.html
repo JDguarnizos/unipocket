@@ -1,0 +1,33 @@
+<section class="desglose-tarjeta">
+  <h3 class="desglose-titulo">Gastos por categoría</h3>
+  <p class="desglose-subtitulo">En qué se ha ido tu dinero</p>
+
+  @if (totalGastos() > 0) {
+    <div class="desglose-contenido">
+      <!-- Dona: el color sale del conic-gradient calculado en el .ts -->
+      <div class="dona" [style.background]="gradienteDona()" role="img"
+           [attr.aria-label]="'Total gastado: ' + formatearPesos(totalGastos())"> <!-- la etiqueta y el atributos sirven para dar accesibilidad :) (el usuario puede escuchar lo que hay en la dona)-->
+        <!-- Círculo blanco del centro (es lo que hace que parezca una dona) -->
+        <div class="dona-centro">
+          <span class="dona-valor">{{ formatearPesosCorto(totalGastos()) }}</span>
+          <span class="dona-texto">gastado</span>
+        </div>
+      </div>
+
+      <!-- Lista: punto de color, categoría, monto y porcentaje -->
+      <ul class="lista-categorias">
+        @for (cat of categorias(); track cat.nombre) {
+          <li class="fila-categoria">
+            <span class="punto" [style.background-color]="cat.color"></span>
+            <span class="nombre">{{ cat.nombre }}</span>
+            <span class="monto">{{ formatearPesos(cat.monto) }}</span>
+            <span class="porcentaje">{{ cat.porcentaje }} %</span>
+          </li>
+        }
+      </ul>
+    </div>
+  } @else {
+    <!-- Estado vacío -->
+    <p class="vacio">Aún no tienes gastos registrados.</p>
+  }
+</section>
