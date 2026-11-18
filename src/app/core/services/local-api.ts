@@ -1,4 +1,4 @@
-import { inject, Injectable, Service, signal } from '@angular/core';
+import { inject, Service, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, forkJoin, map, of, shareReplay, tap, throwError } from 'rxjs';
 import { Admin } from '../models/admin.model';
@@ -205,7 +205,7 @@ export class LocalApi {
             ];
             const totalAportes = listaAportes.reduce((total, valor) => total + valor.monto, 0);
 
-            return {
+            return { 
               ...meta,
               listaAportes,
               completado: meta.completado || totalAportes >= meta.valorObjetivo,
