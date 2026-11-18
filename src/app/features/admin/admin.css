@@ -1,0 +1,370 @@
+/* ===== Contenedor principal ===== */
+.admin-contenedor {
+  padding: var(--space-6);
+  max-width: 1100px;
+}
+
+/* ===== Cabecera ===== */
+.cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.titulo {
+  margin: 0;
+  color: var(--navy-900);
+}
+
+.subtitulo {
+  margin: 4px 0 0;
+  color: var(--neutral-600);
+  font-size: 14px;
+}
+
+/* ===== Chips / Badges de resumen ===== */
+.resumen-chips {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Colores de chips reutilizados en tabla y resumen */
+.chip-neutral   { background-color: var(--neutral-100); color: var(--neutral-700); }
+.chip-alerta    { background-color: var(--expense-50);  color: var(--expense-700); border: 1px solid var(--expense-100); }
+.chip-admin     { background-color: var(--primary-50);  color: var(--primary-500); border: 1px solid var(--primary-100); }
+.chip-usuario   { background-color: var(--neutral-100); color: var(--neutral-700); }
+.chip-activo    { background-color: var(--success-100); color: var(--success-700); border: 1px solid var(--success-200); }
+.chip-bloqueado { background-color: var(--expense-50);  color: var(--expense-700); border: 1px solid var(--expense-100); }
+
+/* ===== Pestañas de navegación ===== */
+.pestanas {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid var(--neutral-200);
+  margin-bottom: var(--space-6);
+}
+
+.pestana-btn {
+  padding: var(--space-3) var(--space-4);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px; /* se superpone al borde del contenedor */
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--neutral-600);
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+}
+
+.pestana-btn:hover {
+  color: var(--neutral-900);
+  background-color: var(--neutral-100);
+}
+
+/* Pestaña activa: línea azul y texto más oscuro */
+.pestana-btn.activa {
+  color: var(--primary-500);
+  border-bottom-color: var(--primary-500);
+  font-weight: 600;
+}
+
+/* ===== Tarjeta de cada sección ===== */
+.seccion-tarjeta {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-6);
+}
+
+.seccion-titulo {
+  margin: 0 0 4px;
+  font-size: 16px;
+  color: var(--navy-900);
+}
+
+.seccion-subtitulo {
+  margin: 0 0 var(--space-6);
+  font-size: 13px;
+  color: var(--neutral-600);
+}
+
+/* ===== Tabla de usuarios ===== */
+.tabla-usuarios {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Cada fila: 5 columnas */
+.tabla-fila {
+  display: grid;
+  grid-template-columns: 2fr 2.5fr 1fr 1fr 1fr;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+}
+
+/* Encabezado con fondo gris muy sutil */
+.tabla-encabezado {
+  background-color: var(--neutral-100);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--neutral-500);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+/* Fila de usuario bloqueado: fondo rojizo muy suave */
+.fila-bloqueada {
+  background-color: var(--expense-50);
+}
+
+.tabla-fila:not(.tabla-encabezado):hover {
+  background-color: var(--neutral-100);
+}
+
+/* Celda de nombre: avatar + texto */
+.celda-nombre {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-weight: 500;
+  color: var(--neutral-900);
+}
+
+/* Avatar circular con la inicial del nombre */
+.avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background-color: var(--primary-100);
+  color: var(--primary-500);
+  font-weight: 700;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* El avatar del admin tiene color distinto */
+.avatar-admin {
+  background-color: var(--primary-500);
+  color: #fff;
+}
+
+.celda-correo {
+  color: var(--neutral-600);
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ===== Botones de bloqueo / desbloqueo ===== */
+.btn-accion {
+  padding: 6px var(--space-3);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: opacity 0.2s;
+  font-family: inherit;
+}
+
+.btn-bloquear {
+  background-color: var(--expense-50);
+  border-color: var(--expense-100);
+  color: var(--expense-700);
+}
+
+.btn-bloquear:hover {
+  background-color: var(--expense-100);
+}
+
+.btn-desbloquear {
+  background-color: var(--success-100);
+  border-color: var(--success-200);
+  color: var(--success-700);
+}
+
+.btn-desbloquear:hover {
+  background-color: var(--success-200);
+}
+
+/* Botón deshabilitado (el admin no se puede bloquear a sí mismo) */
+.btn-accion:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ===== Alerta de éxito al enviar notificación ===== */
+.alerta-exito {
+  padding: var(--space-3);
+  margin-bottom: var(--space-4);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  background-color: var(--success-50);
+  color: var(--success-700);
+  border: 1px solid var(--success-200);
+}
+
+/* ===== Formulario de notificación (reutiliza estilos globales de styles.css) ===== */
+/* El textarea hereda los estilos de .input-grupo de styles.css */
+.input-grupo textarea {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 15px;
+  font-family: inherit;
+  color: var(--neutral-900);
+  padding: 10px 0;
+  resize: vertical;
+  min-height: 80px;
+}
+
+.input-grupo textarea::placeholder {
+  color: var(--neutral-500);
+}
+
+/* Select de importancia sin flecha nativa */
+.input-grupo select {
+  appearance: none;
+  cursor: pointer;
+}
+
+.flecha-select {
+  color: var(--primary-500);
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+/* Layout de las dos sub-secciones de notificaciones: form | historial */
+.seccion-tarjeta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-8);
+  align-items: start;
+}
+
+/* Cuando estamos en la pestaña de usuarios, la tarjeta NO usa grid */
+.seccion-tarjeta:has(.tabla-usuarios) {
+  display: block;
+}
+
+/* Estado vacío genérico */
+.estado-vacio {
+  color: var(--neutral-500);
+  font-size: 14px;
+  text-align: center;
+  padding: var(--space-6) 0;
+  margin: 0;
+}
+
+/* ===== Historial de notificaciones ===== */
+.lista-notificaciones {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.notif-item {
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--neutral-200);
+  background-color: var(--bg-surface);
+}
+
+.notif-cabecera {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
+.notif-mensaje {
+  margin: 0;
+  font-size: 14px;
+  color: var(--neutral-900);
+  line-height: 1.5;
+}
+
+.notif-destinatarios {
+  font-size: 12px;
+  color: var(--neutral-500);
+}
+
+/* Chips de importancia con colores semánticos */
+.chip-importancia {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.imp-baja     { background-color: var(--neutral-100); color: var(--neutral-600); }
+.imp-media    { background-color: var(--info-100);    color: var(--info-600); }
+.imp-alta     { background-color: var(--warning-50);  color: var(--warning-800); }
+.imp-urgente  { background-color: var(--expense-50);  color: var(--expense-700); }
+
+/* ===== Responsive ===== */
+@media (max-width: 1024px) {
+  /* Las dos sub-secciones de notificaciones se apilan */
+  .seccion-tarjeta {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-contenedor {
+    padding: var(--space-4);
+  }
+
+  /* La tabla colapsa: cada fila se convierte en una "tarjeta" vertical */
+  .tabla-fila {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    border: 1px solid var(--neutral-200);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--space-2);
+  }
+
+  /* Ocultamos el encabezado de la tabla en móvil */
+  .tabla-encabezado {
+    display: none;
+  }
+
+  .celda-correo {
+    grid-column: 1 / -1;
+  }
+}

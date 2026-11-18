@@ -234,4 +234,91 @@ export class LocalApi {
       }),
     );
   }
+
+    // =====================================================================
+  // 4. GESTIÓN DE USUARIOS EN MEMORIA (panel de administrador)
+  // Mismo patrón que cargarDatosFinancieros: leemos los JSON una sola vez,
+  // los guardamos en un signal y trabajamos desde ahí.
+  // =====================================================================
+
+  // Signal con la lista combinada de usuarios + admins cargados en memoria
+  usuarios = signal<Usuario[]>([]);
+
+  // Bandera para no volver a leer los JSON si ya se cargaron
+  private usuariosCargados = false;
+
+  // Lee usuarios.json y admins.json con forkJoin (mismo patrón que cargarDatosFinancieros),
+  // une las dos listas y las guarda en el signal usuarios.
+  cargarUsuarios(): void {
+    if (this.usuariosCargados) return; // Si ya se cargó, no hace nada
+    this.usuariosCargados = true;
+
+    forkJoin([this.obtenerUsuarios(), this.obtenerAdmins()]).subscribe({
+      next: ([listaUsuarios, listaAdmins]) => {
+        // Unimos ambas listas; cada objeto ya trae su campo "rol"
+        this.usuarios.set([...listaUsuarios, ...listaAdmins]);
+      },
+      error: () => {
+        // Si falla, dejamos la bandera en false para permitir reintentar
+        this.usuariosCargados = false;
+        console.error('No se pudieron cargar los usuarios para el panel de admin');
+      },
+    });
+  }
+
+  // Alterna el estado de bloqueo de un usuario por su id.
+  // Si estaba activo lo bloquea; si estaba bloqueado lo desbloquea.
+  toggleBloqueoUsuario(idUsuario: number): void {
+    this.usuarios.update((lista) =>
+      lista.map((u) =>
+        u.id === idUsuario
+          ? { ...u, bloqueado: !u.bloqueado } // Invertimos el valor de bloqueado
+          : u                                  // Los demás quedan igual
+      )
+    );
+  }
+
+  // =====================================================================
+  // 5. NOTIFICACIONES GLOBALES EN MEMORIA (panel de administrador)
+  // Leemos notificaciones.json una vez y el admin puede agregar nuevas
+  // en memoria. Mismo patrón que los movimientos.
+  // =====================================================================
+
+  // Signal con la lista de notificaciones cargadas en memoria
+  notificacionesAdmin = signal<Notificacion[]>([]);
+
+  // Bandera para no releer el JSON
+  private notificacionesCargadas = false;
+
+  // Lee notificaciones.json y llena el signal notificacionesAdmin.
+  cargarNotificaciones(): void {
+    if (this.notificacionesCargadas) return;
+    this.notificacionesCargadas = true;
+
+    this.obtenerNotificaciones().subscribe({
+      next: (lista) => {
+        this.notificacionesAdmin.set(lista);
+      },
+      error: () => {
+        this.notificacionesCargadas = false;
+        console.error('No se pudieron cargar las notificaciones');
+      },
+    });
+  }
+
+  // Crea una nueva notificación global y la agrega al inicio de la lista.
+  // "Global" significa que idsNotificar contiene los ids de TODOS los usuarios en memoria.
+  enviarNotificacionGlobal(mensaje: string, importancia: Notificacion['importancia']): void {
+    // Tomamos los ids de todos los usuarios que están en el signal
+    const idsDestino = this.usuarios().map((u) => u.id);
+
+    const nueva: Notificacion = {
+      idsNotificar: idsDestino,
+      mensaje,
+      importancia,
+    };
+
+    // Insertamos al inicio para que aparezca primero en el historial
+    this.notificacionesAdmin.update((lista) => [nueva, ...lista]);
+  }
 }

@@ -1,0 +1,195 @@
+<div class="admin-contenedor">
+
+  <!-- ===== Cabecera ===== -->
+  <div class="cabecera">
+    <div>
+      <h2 class="titulo">Panel de administrador</h2>
+      <p class="subtitulo">Bienvenido, {{ adminActual()?.nombre ?? 'Admin' }}</p>
+    </div>
+
+    <!-- Resumen rápido: cuántos usuarios hay y cuántos están bloqueados -->
+    <div class="resumen-chips">
+      <span class="chip chip-neutral">{{ usuarios().length }} usuarios</span>
+      @if (usuariosBloqueados() > 0) {
+        <span class="chip chip-alerta">{{ usuariosBloqueados() }} bloqueado(s)</span>
+      }
+    </div>
+  </div>
+
+  <!-- ===== Pestañas de navegación ===== -->
+  <div class="pestanas" role="tablist">
+    <button
+      class="pestana-btn"
+      [class.activa]="pestanaActiva() === 'usuarios'"
+      (click)="cambiarPestana('usuarios')"
+      role="tab"
+      [attr.aria-selected]="pestanaActiva() === 'usuarios'">
+      Gestión de usuarios
+    </button>
+    <button
+      class="pestana-btn"
+      [class.activa]="pestanaActiva() === 'notificaciones'"
+      (click)="cambiarPestana('notificaciones')"
+      role="tab"
+      [attr.aria-selected]="pestanaActiva() === 'notificaciones'">
+      Notificaciones globales
+    </button>
+  </div>
+
+  <!-- ===== PESTAÑA 1: Gestión de usuarios ===== -->
+  @if (pestanaActiva() === 'usuarios') {
+    <section class="seccion-tarjeta" role="tabpanel">
+      <h3 class="seccion-titulo">Usuarios registrados</h3>
+      <p class="seccion-subtitulo">Puedes bloquear o desbloquear el acceso de cada cuenta.</p>
+
+      @if (usuarios().length === 0) {
+        <!-- Estado vacío mientras carga -->
+        <p class="estado-vacio">Cargando usuarios...</p>
+      } @else {
+        <div class="tabla-usuarios">
+
+          <!-- Encabezado de la tabla -->
+          <div class="tabla-fila tabla-encabezado">
+            <span>Nombre</span>
+            <span>Correo</span>
+            <span>Rol</span>
+            <span>Estado</span>
+            <span>Acción</span>
+          </div>
+
+          <!-- Una fila por cada usuario -->
+          @for (usuario of usuarios(); track usuario.id) {
+            <div class="tabla-fila" [class.fila-bloqueada]="usuario.bloqueado">
+
+              <!-- Nombre con avatar de inicial -->
+              <div class="celda-nombre">
+                <div class="avatar" [class.avatar-admin]="usuario.rol === 'administrador'">
+                  {{ usuario.nombre.charAt(0) }}
+                </div>
+                <span>{{ usuario.nombre }}</span>
+              </div>
+
+              <span class="celda-correo">{{ usuario.correo }}</span>
+
+              <!-- Chip de rol -->
+              <span class="chip"
+                [class.chip-admin]="usuario.rol === 'administrador'"
+                [class.chip-usuario]="usuario.rol === 'usuario'">
+                {{ usuario.rol }}
+              </span>
+
+              <!-- Chip de estado: activo o bloqueado -->
+              <span class="chip"
+                [class.chip-activo]="!usuario.bloqueado"
+                [class.chip-bloqueado]="usuario.bloqueado">
+                {{ usuario.bloqueado ? 'Bloqueado' : 'Activo' }}
+              </span>
+
+              <!-- Botón de bloqueo (deshabilitado para el admin actual) -->
+              <button
+                class="btn-accion"
+                [class.btn-bloquear]="!usuario.bloqueado"
+                [class.btn-desbloquear]="usuario.bloqueado"
+                [disabled]="usuario.id === adminActual()?.id"
+                [title]="usuario.id === adminActual()?.id ? 'No puedes bloquearte a ti mismo' : ''"
+                (click)="toggleBloqueo(usuario.id)">
+                {{ usuario.bloqueado ? 'Desbloquear' : 'Bloquear' }}
+              </button>
+            </div>
+          }
+        </div>
+      }
+    </section>
+  }
+
+  <!-- ===== PESTAÑA 2: Notificaciones globales ===== -->
+  @if (pestanaActiva() === 'notificaciones') {
+    <section class="seccion-tarjeta" role="tabpanel">
+
+      <!-- Formulario para enviar una notificación nueva -->
+      <div class="seccion-form">
+        <h3 class="seccion-titulo">Enviar notificación global</h3>
+        <p class="seccion-subtitulo">El mensaje llegará a todos los usuarios de la plataforma.</p>
+
+        <!-- Confirmación tras enviar -->
+        @if (mensajeConfirmacion()) {
+          <div class="alerta-exito">{{ mensajeConfirmacion() }}</div>
+        }
+
+        <form [formGroup]="notificacionForm" (ngSubmit)="enviarNotificacion()" novalidate>
+
+          <!-- Campo: mensaje -->
+          <div class="campo">
+            <label for="mensaje">Mensaje</label>
+            <div class="input-grupo" [class.invalido]="campoInvalido('mensaje')">
+              <textarea
+                id="mensaje"
+                formControlName="mensaje"
+                placeholder="Escribe el mensaje para todos los usuarios..."
+                rows="3">
+              </textarea>
+            </div>
+            @if (campoInvalido('mensaje')) {
+              <p class="texto-error">El mensaje debe tener entre 10 y 200 caracteres.</p>
+            }
+          </div>
+
+          <!-- Campo: importancia -->
+          <div class="campo">
+            <label for="importancia">Nivel de importancia</label>
+            <div class="input-grupo">
+              <select id="importancia" formControlName="importancia">
+                <option value="baja">Baja</option>
+                <option value="media">Media</option>
+                <option value="alta">Alta</option>
+                <option value="urgente">Urgente</option>
+              </select>
+              <!-- Flecha decorativa del select (mismo estilo que el resto de la app) -->
+              <svg class="flecha-select" width="18" height="18" viewBox="0 0 24 24"
+                   fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <path d="m6 9 6 6 6-6"/>
+              </svg>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-principal">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                 stroke-linejoin="round">
+              <path d="M22 2 11 13"/>
+              <path d="M22 2 15 22 11 13 2 9l20-7z"/>
+            </svg>
+            Enviar a todos
+          </button>
+        </form>
+      </div>
+
+      <!-- Historial de notificaciones enviadas -->
+      <div class="seccion-historial">
+        <h3 class="seccion-titulo">Historial de notificaciones</h3>
+
+        @if (notificaciones().length === 0) {
+          <p class="estado-vacio">No hay notificaciones registradas.</p>
+        } @else {
+          <ul class="lista-notificaciones">
+            @for (notif of notificaciones(); track $index) {
+              <li class="notif-item" [class]="'notif-importancia-' + notif.importancia">
+                <div class="notif-cabecera">
+                  <!-- Chip de importancia con color semántico -->
+                  <span class="chip-importancia" [class]="'imp-' + notif.importancia">
+                    {{ notif.importancia }}
+                  </span>
+                  <span class="notif-destinatarios">
+                    {{ notif.idsNotificar.length }} destinatario(s)
+                  </span>
+                </div>
+                <p class="notif-mensaje">{{ notif.mensaje }}</p>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+    </section>
+  }
+
+</div>

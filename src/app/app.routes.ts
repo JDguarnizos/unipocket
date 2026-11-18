@@ -4,6 +4,7 @@ import { Dashboard } from './features/dashboard/dashboard';
 import { Presupuesto } from './features/presupuesto/presupuesto';
 import { Movimientos } from './features/movimientos/movimientos';
 import { MetasAhorro } from './features/metas-ahorro/metas-ahorro';
+import { Admin } from './features/admin/admin';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' }, // la app arranca en el login
@@ -12,5 +13,6 @@ export const routes: Routes = [
   { path: 'presupuesto', component: Presupuesto },
   { path: 'movimientos', component: Movimientos },
   { path: 'metas-ahorro', component: MetasAhorro },
+  { path: 'admin', component: Admin },
   { path: '**', redirectTo: 'dashboard' }
 ];

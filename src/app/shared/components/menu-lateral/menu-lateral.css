@@ -130,3 +130,13 @@
     box-shadow: 12px 0 32px rgba(15, 23, 42, 0.2);
   }
 }
+
+/* Enlace de administrador: azul */
+.menu-item-admin {
+  color: var(--primary-500);
+  font-weight: 600;
+}
+
+.menu-item-admin:hover {
+  background-color: var(--primary-50);
+}

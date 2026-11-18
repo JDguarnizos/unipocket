@@ -1,0 +1,4501 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+================================================================
+File Summary
+================================================================
+
+Purpose:
+--------
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+
+File Format:
+------------
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  a. A separator line (================)
+  b. The file path (File: path/to/file)
+  c. Another separator line
+  d. The full contents of the file
+  e. A blank line
+
+Usage Guidelines:
+-----------------
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+
+Notes:
+------
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+
+
+================================================================
+Directory Structure
+================================================================
+public/
+  local-auth-api/
+    admins.json
+    estadisticas.json
+    metas.json
+    movimientos.json
+    notificaciones.json
+    registrosFinancieros.json
+    usuarios.json
+  favicon.ico
+src/
+  app/
+    core/
+      models/
+        admin.model.ts
+        estadisticas.model.ts
+        meta_ahorro.model.ts
+        movimiento.model.ts
+        notificacion.model.ts
+        reg_financiero.model.ts
+        usuario.model.ts
+      services/
+        local-api.spec.ts
+        local-api.ts
+      utils/
+        formato.ts
+    features/
+      admin/
+        .gitkeep
+      auth/
+        login/
+          login.css
+          login.html
+          login.ts
+        .gitkeep
+      dashboard/
+        .gitkeep
+        dashboard.css
+        dashboard.html
+        dashboard.spec.ts
+        dashboard.ts
+      metas-ahorro/
+        .gitkeep
+        metas-ahorro.css
+        metas-ahorro.html
+        metas-ahorro.spec.ts
+        metas-ahorro.ts
+      movimientos/
+        registro-movimiento/
+          registro-movimiento.css
+          registro-movimiento.html
+          registro-movimiento.ts
+        .gitkeep
+        movimientos.css
+        movimientos.html
+        movimientos.spec.ts
+        movimientos.ts
+      presupuesto/
+        .gitkeep
+        presupuesto.css
+        presupuesto.html
+        presupuesto.spec.ts
+        presupuesto.ts
+    shared/
+      components/
+        boton-generico/
+          boton-generico.css
+          boton-generico.html
+          boton-generico.spec.ts
+          boton-generico.ts
+        desglose-categorias/
+          desglose-categorias.css
+          desglose-categorias.html
+          desglose-categorias.ts
+        header/
+          header.css
+          header.html
+          header.spec.ts
+          header.ts
+        item-movimiento/
+          item-movimiento.css
+          item-movimiento.html
+          item-movimiento.spec.ts
+          item-movimiento.ts
+        menu-lateral/
+          menu-lateral.css
+          menu-lateral.html
+          menu-lateral.spec.ts
+          menu-lateral.ts
+        tarjeta-resumen/
+          tarjeta-resumen.css
+          tarjeta-resumen.html
+          tarjeta-resumen.spec.ts
+          tarjeta-resumen.ts
+      layout/
+        .gitkeep
+    app.config.ts
+    app.css
+    app.html
+    app.routes.ts
+    app.spec.ts
+    app.ts
+  index.html
+  main.ts
+  styles.css
+.editorconfig
+.gitignore
+.prettierrc
+angular.json
+package.json
+README.md
+tsconfig.app.json
+tsconfig.json
+tsconfig.spec.json
+
+================================================================
+Files
+================================================================
+
+================
+File: public/local-auth-api/estadisticas.json
+================
+[
+	{
+		"fecha": "2026-11-01T00:00:00.000Z",
+		"cantidadUsuarios": 3,
+		"cantidadMetasActivas": 3
+	},
+	{
+		"fecha": "2026-11-08T00:00:00.000Z",
+		"cantidadUsuarios": 3,
+		"cantidadMetasActivas": 3
+	}
+]
+
+================
+File: src/app/core/models/admin.model.ts
+================
+import { Usuario } from "./usuario.model";
+
+export interface Admin extends Usuario {
+    rol: string; //Nota, preguntar que de tipos de roles hay
+    correo: string;
+    ultimoAcceso: Date;
+    fechaUltimoAcceso: Date;
+    fechasEstadisticas: Array<Date>; //Este seria el FK para buscar objetos de estadisticas
+}
+
+================
+File: src/app/core/models/estadisticas.model.ts
+================
+export interface Estadisticas {
+    fecha: Date;
+    cantidadUsuarios: number;
+    cantidadMetasActivas: number;
+}
+
+================
+File: src/app/core/models/movimiento.model.ts
+================
+// Modelo de un movimiento (ingreso o gasto).
+// Define la "forma" de los datos que produce el formulario del modal "Registrar movimiento".
+export interface Movimiento {
+  tipo: 'gasto' | 'ingreso';
+  monto: number;
+  categoria: string;
+  fecha: string;        // formato AAAA-MM-DD
+  descripcion: string;  // opcional: puede venir vacía
+}
+
+// Movimiento tal como se guarda en la API local (public/local-auth-api/movimientos.json).
+// Es el mismo Movimiento + el id del usuario dueño, para saber de quién es cada uno.
+// (Mismo estilo que usa Juan: Admin extends Usuario)
+export interface MovimientoUsuario extends Movimiento {
+  idUsuario: number;
+}
+
+================
+File: src/app/core/models/reg_financiero.model.ts
+================
+export interface RegistroFinanciero {
+    idUsuario: number;
+    totalIngresos: number;
+    presupuesto: number;
+    totalGastos: number;
+}
+
+================
+File: src/app/features/admin/.gitkeep
+================
+
+
+================
+File: src/app/features/auth/login/login.css
+================
+/* Página completa dividida en dos columnas */
+.login-pagina {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 560px 1fr;
+  gap: var(--space-6);
+  padding: var(--space-6);
+  box-sizing: border-box;
+  background-color: var(--bg-main);
+}
+
+/* ===== Columna izquierda ===== */
+.panel-info {
+  background-color: var(--primary-50);
+  border-radius: 24px;
+  padding: 48px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.logo-texto {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--navy-900);
+}
+
+.logo-azul {
+  color: var(--primary-500);
+}
+
+.titulo-info {
+  margin: var(--space-8) 0 var(--space-3);
+  font-size: 28px;
+  line-height: 1.3;
+  color: var(--navy-900);
+}
+
+.texto-info {
+  margin: 0 0 var(--space-6);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--neutral-600);
+}
+
+.beneficios {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.beneficios li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: 15px;
+  color: var(--neutral-700);
+}
+
+/* Cuadrito de color detrás de cada ícono */
+.icono-beneficio {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.icono-beneficio.azul    { background-color: var(--primary-100); color: var(--primary-500); }
+.icono-beneficio.celeste { background-color: var(--info-100);    color: var(--info-600); }
+.icono-beneficio.verde   { background-color: var(--success-100); color: var(--success-600); }
+.icono-beneficio.blanco  { background-color: var(--bg-surface);  color: var(--success-600); }
+
+.mini-tarjetas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.mini-tarjeta {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-6);
+}
+
+/* La tarjeta de la meta es verde */
+.mini-tarjeta.meta {
+  background-color: var(--success-50);
+  border-color: var(--success-200);
+}
+
+.mini-cabecera {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: 14px;
+  color: var(--neutral-700);
+}
+
+.mini-valor {
+  margin: var(--space-4) 0 var(--space-2);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--navy-900);
+}
+
+.verde-texto {
+  color: var(--success-700);
+}
+
+.mini-detalle {
+  margin: 0;
+  font-size: 12px;
+  color: var(--neutral-600);
+}
+
+/* Barra de progreso de la meta */
+.barra {
+  height: 8px;
+  background-color: var(--neutral-200);
+  border-radius: var(--radius-full);
+  margin-bottom: var(--space-3);
+  overflow: hidden;
+}
+
+.barra-relleno {
+  height: 100%;
+  background-color: var(--success-500);
+  border-radius: var(--radius-full);
+}
+
+/* ===== Columna derecha ===== */
+.panel-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-tarjeta {
+  width: 100%;
+  max-width: 440px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-8);
+  box-sizing: border-box;
+}
+
+.titulo-form {
+  margin: 0;
+  font-size: 22px;
+  color: var(--navy-900);
+}
+
+.subtitulo-form {
+  margin: var(--space-2) 0 var(--space-6);
+  font-size: 14px;
+  color: var(--neutral-600);
+}
+
+/* Botón que ocupa todo el ancho de la tarjeta */
+.btn-ancho {
+  width: 100%;
+  margin-top: var(--space-2);
+}
+
+.crear-cuenta {
+  margin: var(--space-6) 0 0;
+  text-align: center;
+  font-size: 14px;
+  color: var(--neutral-600);
+}
+
+.crear-cuenta a {
+  font-weight: 600;
+  color: var(--primary-500);
+  text-decoration: none;
+}
+
+.nota-seguridad {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--space-4);
+  font-size: 12px;
+  color: var(--neutral-500);
+}
+
+/* ===== Responsive: en tablet/celular solo se ve el formulario ===== */
+@media (max-width: 992px) {
+  .login-pagina {
+    grid-template-columns: 1fr;
+    padding: var(--space-4);
+  }
+
+  .panel-info {
+    display: none;
+  }
+
+  .login-tarjeta {
+    padding: var(--space-6);
+  }
+}
+
+================
+File: src/app/features/auth/login/login.html
+================
+<div class="login-pagina">
+
+  <!-- ===== COLUMNA IZQUIERDA: panel informativo (solo visual, se oculta en celular) ===== -->
+  <section class="panel-info">
+    <!-- Logo -->
+    <div class="logo">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M5 5v7a7 7 0 0 0 14 0V5" stroke="var(--primary-500)" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="19" cy="3" r="3" fill="var(--success-500)"/>
+      </svg>
+      <span class="logo-texto">Uni<span class="logo-azul">Pocket</span></span>
+    </div>
+
+    <h1 class="titulo-info">Tu dinero de estudiante, organizado y bajo control</h1>
+    <p class="texto-info">Define tu presupuesto, registra tus gastos en segundos y avanza hacia tus metas de ahorro.</p>
+
+    <!-- Lista de beneficios con ícono -->
+    <ul class="beneficios">
+      <li>
+        <span class="icono-beneficio azul">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></svg>
+        </span>
+        Mira cuánto has usado de tu presupuesto
+      </li>
+      <li>
+        <span class="icono-beneficio celeste">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
+        </span>
+        Recibe un gasto diario recomendado
+      </li>
+      <li>
+        <span class="icono-beneficio verde">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        </span>
+        Ahorra para lo que de verdad te importa
+      </li>
+    </ul>
+
+    <!-- Dos mini tarjetas de ejemplo -->
+    <div class="mini-tarjetas">
+      <div class="mini-tarjeta">
+        <div class="mini-cabecera">
+          <span class="icono-beneficio azul">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
+          </span>
+          Dinero disponible
+        </div>
+        <p class="mini-valor">$ 860.000</p>
+        <p class="mini-detalle">Te quedan 12 días</p>
+      </div>
+
+      <div class="mini-tarjeta meta">
+        <div class="mini-cabecera">
+          <span class="icono-beneficio blanco">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          </span>
+          Laptop para la U
+        </div>
+        <p class="mini-valor verde-texto">62 %</p>
+        <div class="barra"><div class="barra-relleno" style="width: 62%"></div></div>
+        <p class="mini-detalle">$ 1.240.000 de $ 2.000.000</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== COLUMNA DERECHA: formulario de inicio de sesión (RNF10) ===== -->
+  <section class="panel-form">
+    <div class="login-tarjeta">
+      <h2 class="titulo-form">Bienvenido a UniPocket</h2>
+      <p class="subtitulo-form">Inicia sesión para revisar tu presupuesto y tus metas.</p>
+
+      <!-- Error general cuando las credenciales no coinciden -->
+      @if (mensajeError) {
+        <div class="alerta-error">{{ mensajeError }}</div>
+      }
+
+      <!-- [formGroup] conecta este formulario con loginForm del .ts -->
+      <form [formGroup]="loginForm" (ngSubmit)="iniciarSesion()" novalidate>
+
+        <!-- Campo: correo -->
+        <div class="campo">
+          <label for="correo">Correo electrónico</label>
+          <div class="input-grupo" [class.invalido]="campoInvalido('correo')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            <input id="correo" type="email" formControlName="correo" placeholder="tucorreo@unal.edu.co">
+          </div>
+          @if (campoInvalido('correo')) {
+            <p class="texto-error">Ingresa un correo válido.</p>
+          }
+        </div>
+
+        <!-- Campo: contraseña -->
+        <div class="campo">
+          <label for="contrasena">Contraseña</label>
+          <div class="input-grupo" [class.invalido]="campoInvalido('contrasena')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <input id="contrasena" type="password" formControlName="contrasena" placeholder="••••••••••">
+          </div>
+          @if (campoInvalido('contrasena')) {
+            <p class="texto-error">La contraseña debe tener al menos 6 caracteres.</p>
+          }
+        </div>
+
+        <!-- Botón de ancho completo -->
+        <button type="submit" class="btn btn-principal btn-ancho">Iniciar sesión</button>
+
+        <!-- RNF10: link debajo del botón para crear una cuenta (la vista de registro no está en el alcance) -->
+        <p class="crear-cuenta">
+          ¿No tienes cuenta?
+          <a href="#" (click)="$event.preventDefault()">Crear una cuenta</a>
+        </p>
+      </form>
+    </div>
+
+    <p class="nota-seguridad">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Tus datos están protegidos y nunca se comparten.
+    </p>
+  </section>
+</div>
+
+================
+File: src/app/features/auth/login/login.ts
+================
+import { Component, inject } from '@angular/core';
+// ReactiveFormsModule habilita [formGroup] y formControlName en el HTML
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { LocalApi } from '../../../core/services/local-api';
+
+@Component({
+  selector: 'app-login',
+  standalone: true,
+  imports: [ReactiveFormsModule],
+  templateUrl: './login.html',
+  styleUrls: ['./login.css']
+})
+export class Login {
+  // inject() trae los servicios de Angular (equivale a recibirlos en el constructor)
+  private fb = inject(FormBuilder);
+  private router = inject(Router);
+  // RF13: los usuarios demostrativos vienen de la API local de Juan
+  // (public/local-auth-api/usuarios.json y admins.json), SIN base de datos.
+  private api = inject(LocalApi);
+
+  // Mensaje que se muestra si las credenciales no coinciden (CU-2, curso alterno)
+  mensajeError = '';
+
+  // Formulario reactivo: cada campo con su valor inicial y sus validaciones
+  loginForm = this.fb.group({
+    correo: ['', [Validators.required, Validators.email]],
+    contrasena: ['', [Validators.required, Validators.minLength(6)]]
+  });
+
+  // true si el campo es inválido Y el usuario ya lo tocó (así no salen errores apenas abre la página)
+  campoInvalido(campo: string): boolean {
+    const control = this.loginForm.get(campo);
+    return !!control && control.invalid && control.touched;
+  }
+
+  // CU-1 / CU-2: se ejecuta al enviar el formulario
+  iniciarSesion(): void {
+    // Si hay errores, marcamos todos los campos como tocados para que se vean los mensajes
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      return;
+    }
+
+    const { correo, contrasena } = this.loginForm.value;
+
+    // Le pedimos al servicio que busque el correo y la contraseña en los JSON.
+    // Como leer un archivo tarda, el resultado llega dentro de subscribe().
+    this.api.validarCredenciales(correo ?? '', contrasena ?? '').subscribe({
+      next: usuario => {
+        if (usuario) {
+          this.mensajeError = '';
+          // Guardamos quién entró (con su rol: "usuario" o "administrador")
+          this.api.iniciarSesion(usuario);
+          // Por ahora ambos roles van al dashboard. Juan separará usuario/admin con los Guards.
+          this.router.navigate(['/dashboard']);
+        } else {
+          this.mensajeError = 'Correo o contraseña incorrectos.';
+        }
+      },
+      // Si no se pudo leer el JSON (ej. el archivo no existe)
+      error: () => {
+        this.mensajeError = 'No se pudo verificar el usuario. Intenta de nuevo.';
+      }
+    });
+  }
+}
+
+================
+File: src/app/features/auth/.gitkeep
+================
+
+
+================
+File: src/app/features/dashboard/.gitkeep
+================
+
+
+================
+File: src/app/features/metas-ahorro/.gitkeep
+================
+
+
+================
+File: src/app/features/metas-ahorro/metas-ahorro.css
+================
+
+
+================
+File: src/app/features/metas-ahorro/metas-ahorro.html
+================
+<p>metas-ahorro works!</p>
+
+================
+File: src/app/features/metas-ahorro/metas-ahorro.spec.ts
+================
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MetasAhorro } from './metas-ahorro';
+
+describe('MetasAhorro', () => {
+  let component: MetasAhorro;
+  let fixture: ComponentFixture<MetasAhorro>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [MetasAhorro],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(MetasAhorro);
+    component = fixture.componentInstance;
+    await fixture.whenStable();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+
+================
+File: src/app/features/metas-ahorro/metas-ahorro.ts
+================
+import { Component } from '@angular/core';
+
+@Component({
+  imports: [],
+  selector: 'app-metas-ahorro',
+  styleUrl: './metas-ahorro.css',
+  templateUrl: './metas-ahorro.html',
+})
+export class MetasAhorro {}
+
+================
+File: src/app/features/movimientos/registro-movimiento/registro-movimiento.css
+================
+/* Fondo oscuro semitransparente que cubre toda la pantalla */
+.modal-fondo {
+  position: fixed;
+  inset: 0;               /* top, right, bottom y left en 0 */
+  z-index: 1000;          /* encima del header y del menú */
+  background-color: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+}
+
+/* Cuadro blanco del modal */
+.modal-caja {
+  width: 100%;
+  max-width: 560px;
+  max-height: 100%;
+  overflow-y: auto;
+  background-color: var(--bg-surface);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.2);
+}
+
+/* ===== Encabezado ===== */
+.modal-encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: var(--space-6);
+  border-bottom: 1px solid var(--neutral-200);
+}
+
+.modal-titulo {
+  margin: 0;
+  font-size: 20px;
+  color: var(--navy-900);
+}
+
+.modal-subtitulo {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: var(--neutral-600);
+}
+
+.btn-cerrar {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: var(--neutral-600);
+  border-radius: var(--radius-sm);
+}
+
+.btn-cerrar:hover {
+  background-color: var(--neutral-100);
+}
+
+/* ===== Cuerpo ===== */
+.modal-cuerpo {
+  padding: var(--space-6);
+}
+
+.sin-margen {
+  margin-bottom: 0;
+}
+
+/* Botones Gasto / Ingreso */
+.selector-tipo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+.opcion-tipo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--neutral-300);
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-weight: 500;
+  font-family: inherit;
+  color: var(--neutral-900);
+  cursor: pointer;
+}
+
+/* El ícono de flecha toma el color del tipo aunque no esté activo */
+.opcion-tipo:first-child svg { color: var(--expense-500); }
+.opcion-tipo:last-child svg  { color: var(--success-600); }
+
+/* Gasto seleccionado: rojo suave */
+.opcion-tipo.activo-gasto {
+  background-color: var(--expense-50);
+  border: 2px solid var(--expense-500);
+  color: var(--expense-700);
+}
+
+/* Ingreso seleccionado: verde suave */
+.opcion-tipo.activo-ingreso {
+  background-color: var(--success-50);
+  border: 2px solid var(--success-600);
+  color: var(--success-700);
+}
+
+/* Input de monto más grande que los demás */
+.input-monto {
+  min-height: 52px;
+}
+
+.input-monto input {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.simbolo {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--neutral-700);
+}
+
+.moneda {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--neutral-600);
+}
+
+/* Quita las flechitas del input number (Chrome y Firefox) */
+.input-monto input::-webkit-outer-spin-button,
+.input-monto input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.input-monto input {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* Select sin la flecha nativa; usamos nuestro ícono azul */
+.input-grupo select {
+  appearance: none;
+  cursor: pointer;
+}
+
+.input-grupo .flecha-select {
+  color: var(--primary-500);
+  pointer-events: none;
+}
+
+/* Categoría y fecha lado a lado */
+.fila {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+/* ===== Pie ===== */
+.modal-pie {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-6);
+  border-top: 1px solid var(--neutral-200);
+}
+
+/* ===== Responsive: en celular todo en una columna ===== */
+@media (max-width: 576px) {
+  .fila {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .modal-pie .btn {
+    flex: 1;
+  }
+}
+
+================
+File: src/app/features/movimientos/registro-movimiento/registro-movimiento.html
+================
+<!-- Fondo oscuro. Si se hace clic afuera del cuadro, se cierra el modal -->
+<div class="modal-fondo" (click)="cerrar()">
+
+  <!-- stopPropagation evita que un clic DENTRO del cuadro cierre el modal -->
+  <div class="modal-caja" role="dialog" aria-modal="true" aria-labelledby="titulo-modal" (click)="$event.stopPropagation()">
+
+    <!-- ===== Encabezado ===== -->
+    <div class="modal-encabezado">
+      <div>
+        <h2 id="titulo-modal" class="modal-titulo">Registrar movimiento</h2>
+        <p class="modal-subtitulo">Anota un gasto o ingreso en segundos</p>
+      </div>
+      <button type="button" class="btn-cerrar" (click)="cerrar()" aria-label="Cerrar">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+
+    <form [formGroup]="movimientoForm" (ngSubmit)="guardar()" novalidate>
+
+      <!-- ===== Cuerpo ===== -->
+      <div class="modal-cuerpo">
+
+        <!-- Tipo de movimiento: dos botones que cambian el valor de "tipo" -->
+        <div class="campo">
+          <span class="etiqueta">Tipo de movimiento</span>
+          <div class="selector-tipo">
+            <button type="button" class="opcion-tipo" [class.activo-gasto]="esGasto" (click)="seleccionarTipo('gasto')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
+              Gasto
+            </button>
+            <button type="button" class="opcion-tipo" [class.activo-ingreso]="!esGasto" (click)="seleccionarTipo('ingreso')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 7 7 17"/><path d="M17 17H7V7"/></svg>
+              Ingreso
+            </button>
+          </div>
+        </div>
+
+        <!-- Monto: input grande con "$" a la izquierda y "COP" a la derecha -->
+        <div class="campo">
+          <label for="monto">Monto</label>
+          <div class="input-grupo input-monto" [class.invalido]="campoInvalido('monto')">
+            <span class="simbolo">$</span>
+            <input id="monto" type="number" formControlName="monto" placeholder="0" min="1">
+            <span class="moneda">COP</span>
+          </div>
+          @if (campoInvalido('monto')) {
+            <p class="texto-error">Ingresa un monto mayor a 0.</p>
+          }
+        </div>
+
+        <!-- Categoría y fecha en la misma fila -->
+        <div class="fila">
+          <div class="campo">
+            <label for="categoria">Categoría</label>
+            <div class="input-grupo" [class.invalido]="campoInvalido('categoria')">
+              <select id="categoria" formControlName="categoria">
+                <option value="" disabled>Selecciona</option>
+                <!-- @for recorre la lista de categorías según el tipo -->
+                @for (cat of categorias; track cat) {
+                  <option [value]="cat">{{ cat }}</option>
+                }
+              </select>
+              <svg class="flecha-select" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+            </div>
+            @if (campoInvalido('categoria')) {
+              <p class="texto-error">Selecciona una categoría.</p>
+            }
+          </div>
+
+          <div class="campo">
+            <label for="fecha">Fecha</label>
+            <div class="input-grupo" [class.invalido]="campoInvalido('fecha')">
+              <input id="fecha" type="date" formControlName="fecha" [max]="hoy">
+            </div>
+            @if (campoInvalido('fecha')) {
+              <p class="texto-error">Selecciona una fecha.</p>
+            }
+          </div>
+        </div>
+
+        <!-- Descripción opcional -->
+        <div class="campo sin-margen">
+          <label for="descripcion">Descripción (opcional)</label>
+          <div class="input-grupo">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+            <input id="descripcion" type="text" formControlName="descripcion" placeholder="Ej: Almuerzo con el grupo de estudio">
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== Pie: botones ===== -->
+      <div class="modal-pie">
+        <!-- type="button" para que Cancelar NO envíe el formulario -->
+        <button type="button" class="btn btn-secundario" (click)="cerrar()">Cancelar</button>
+        <button type="submit" class="btn btn-principal">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          Guardar movimiento
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+================
+File: src/app/features/movimientos/registro-movimiento/registro-movimiento.ts
+================
+import { Component, EventEmitter, HostListener, Input, OnInit, Output, inject } from '@angular/core';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { Movimiento } from '../../../core/models/movimiento.model';
+
+/*
+  Modal "Registrar movimiento".
+  - El padre (ej. el Dashboard) lo muestra con @if y le dice con qué tipo abrir.
+  - Cuando el usuario guarda, el modal AVISA al padre con el evento (guardado).
+  - Cuando cierra o cancela, avisa con el evento (cerrado).
+*/
+@Component({
+  selector: 'app-registro-movimiento',
+  standalone: true,
+  imports: [ReactiveFormsModule],
+  templateUrl: './registro-movimiento.html',
+  styleUrls: ['./registro-movimiento.css']
+})
+export class RegistroMovimiento implements OnInit {
+  private fb = inject(FormBuilder);
+
+  // @Input: dato que recibe del padre. Con qué tipo se abre el modal.
+  @Input() tipoInicial: 'gasto' | 'ingreso' = 'gasto';
+
+  // @Output: eventos que el modal le envía al padre
+  @Output() cerrado = new EventEmitter<void>();
+  @Output() guardado = new EventEmitter<Movimiento>();
+
+  // Categorías de gasto (coinciden con los colores --cat-* de styles.css)
+  categoriasGasto = ['Alimentación', 'Transporte', 'Materiales e impresiones', 'Entretenimiento', 'Suscripciones', 'Otros'];
+  categoriasIngreso = ['Mesada', 'Trabajo', 'Beca', 'Monitoría', 'Otros ingresos'];
+
+  // Fecha de hoy en formato AAAA-MM-DD (el formato que usa el input type="date")
+  hoy = new Date().toLocaleDateString('en-CA');
+
+  // Formulario reactivo. La descripción es OPCIONAL (solo tiene límite de caracteres).
+  movimientoForm = this.fb.group({
+    tipo: ['gasto' as 'gasto' | 'ingreso', Validators.required],
+    monto: [null as number | null, [Validators.required, Validators.min(1)]],
+    categoria: ['', Validators.required],
+    fecha: [this.hoy, Validators.required],
+    descripcion: ['', Validators.maxLength(60)]
+  });
+
+  ngOnInit(): void {
+    // Al abrir, seleccionamos el tipo que nos mandó el padre
+    this.movimientoForm.patchValue({ tipo: this.tipoInicial });
+  }
+
+  // Atajo para saber si el tipo seleccionado es gasto
+  get esGasto(): boolean {
+    return this.movimientoForm.value.tipo === 'gasto';
+  }
+
+  // Lista de categorías según el tipo
+  get categorias(): string[] {
+    return this.esGasto ? this.categoriasGasto : this.categoriasIngreso;
+  }
+
+  // Cambia el tipo con los botones Gasto / Ingreso y limpia la categoría (las listas son distintas)
+  seleccionarTipo(tipo: 'gasto' | 'ingreso'): void {
+    this.movimientoForm.patchValue({ tipo, categoria: '' });
+  }
+
+  campoInvalido(campo: string): boolean {
+    const control = this.movimientoForm.get(campo);
+    return !!control && control.invalid && control.touched;
+  }
+
+  guardar(): void {
+    if (this.movimientoForm.invalid) {
+      this.movimientoForm.markAllAsTouched();
+      return;
+    }
+
+    // Armamos el objeto Movimiento con los valores del formulario
+    const valores = this.movimientoForm.getRawValue();
+    const movimiento: Movimiento = {
+      tipo: valores.tipo!,
+      monto: Number(valores.monto),
+      categoria: valores.categoria!,
+      fecha: valores.fecha!,
+      descripcion: valores.descripcion ?? ''
+    };
+
+    // Le enviamos el movimiento al padre. Él decide qué hacer (sumar/restar saldo, guardarlo en la API, etc.)
+    this.guardado.emit(movimiento);
+  }
+
+  cerrar(): void {
+    this.cerrado.emit();
+  }
+
+  // Permite cerrar el modal con la tecla Escape
+  @HostListener('document:keydown.escape')
+  alPresionarEscape(): void {
+    this.cerrar();
+  }
+}
+
+================
+File: src/app/features/movimientos/.gitkeep
+================
+
+
+================
+File: src/app/features/presupuesto/.gitkeep
+================
+
+
+================
+File: src/app/features/presupuesto/presupuesto.css
+================
+
+
+================
+File: src/app/features/presupuesto/presupuesto.html
+================
+<p>presupuesto works!</p>
+
+================
+File: src/app/features/presupuesto/presupuesto.spec.ts
+================
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Presupuesto } from './presupuesto';
+
+describe('Presupuesto', () => {
+  let component: Presupuesto;
+  let fixture: ComponentFixture<Presupuesto>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [Presupuesto],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(Presupuesto);
+    component = fixture.componentInstance;
+    await fixture.whenStable();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+
+================
+File: src/app/features/presupuesto/presupuesto.ts
+================
+import { Component } from '@angular/core';
+
+@Component({
+  imports: [],
+  selector: 'app-presupuesto',
+  styleUrl: './presupuesto.css',
+  templateUrl: './presupuesto.html',
+})
+export class Presupuesto {}
+
+================
+File: src/app/shared/components/boton-generico/boton-generico.css
+================
+/* Estilo base para todos los botones */
+.btn-base {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  border: 1px solid transparent; /* Borde transparente por defecto */
+  transition: all 0.2s ease;
+}
+
+/* Tipos de botones usando las variables globales */
+.principal {
+  background-color: var(--primary-500);
+  color: #FFFFFF;
+}
+
+.secundario {
+  background-color: #FFFFFF;
+  border-color: var(--neutral-300);
+  color: var(--neutral-900);
+}
+
+.ingreso {
+  background-color: var(--success-100);
+  border-color: var(--success-200);
+  color: var(--success-700);
+}
+
+.gasto {
+  background-color: var(--expense-50);
+  border-color: var(--expense-100);
+  color: var(--expense-700);
+}
+
+================
+File: src/app/shared/components/boton-generico/boton-generico.html
+================
+<button class="btn-base" [ngClass]="tipo">
+  {{ texto }}
+</button>
+
+================
+File: src/app/shared/components/desglose-categorias/desglose-categorias.css
+================
+.desglose-tarjeta {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-6);
+}
+
+.desglose-titulo {
+  margin: 0;
+  font-size: 16px;
+  color: var(--navy-900);
+}
+
+.desglose-subtitulo {
+  margin: 4px 0 var(--space-6);
+  font-size: 13px;
+  color: var(--neutral-600);
+}
+
+/* Dona a la izquierda y lista a la derecha (se apilan si no hay espacio) */
+.desglose-contenido {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-6);
+}
+
+/* La dona es un círculo con el conic-gradient de fondo */
+.dona {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Círculo blanco del centro */
+.dona-centro {
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+  background-color: var(--bg-surface);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.dona-valor {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--navy-900);
+}
+
+.dona-texto {
+  font-size: 12px;
+  color: var(--neutral-600);
+}
+
+.lista-categorias {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex: 1;
+  min-width: 240px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* Cada fila: punto | nombre | monto | % */
+.fila-categoria {
+  display: grid;
+  grid-template-columns: 10px 1fr auto 44px;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: 14px;
+}
+
+.punto {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.nombre {
+  color: var(--neutral-700);
+}
+
+.monto {
+  color: var(--neutral-600);
+}
+
+.porcentaje {
+  text-align: right;
+  font-weight: 600;
+  color: var(--neutral-900);
+}
+
+.vacio {
+  margin: 0;
+  padding: var(--space-6) 0;
+  text-align: center;
+  font-size: 14px;
+  color: var(--neutral-500);
+}
+
+================
+File: src/app/shared/components/desglose-categorias/desglose-categorias.html
+================
+<section class="desglose-tarjeta">
+  <h3 class="desglose-titulo">Gastos por categoría</h3>
+  <p class="desglose-subtitulo">En qué se ha ido tu dinero</p>
+
+  @if (totalGastos() > 0) {
+    <div class="desglose-contenido">
+      <!-- Dona: el color sale del conic-gradient calculado en el .ts -->
+      <div class="dona" [style.background]="gradienteDona()" role="img"
+           [attr.aria-label]="'Total gastado: ' + formatearPesos(totalGastos())"> <!-- la etiqueta y el atributos sirven para dar accesibilidad :) (el usuario puede escuchar lo que hay en la dona)-->
+        <!-- Círculo blanco del centro (es lo que hace que parezca una dona) -->
+        <div class="dona-centro">
+          <span class="dona-valor">{{ formatearPesosCorto(totalGastos()) }}</span>
+          <span class="dona-texto">gastado</span>
+        </div>
+      </div>
+
+      <!-- Lista: punto de color, categoría, monto y porcentaje -->
+      <ul class="lista-categorias">
+        @for (cat of categorias(); track cat.nombre) {
+          <li class="fila-categoria">
+            <span class="punto" [style.background-color]="cat.color"></span>
+            <span class="nombre">{{ cat.nombre }}</span>
+            <span class="monto">{{ formatearPesos(cat.monto) }}</span>
+            <span class="porcentaje">{{ cat.porcentaje }} %</span>
+          </li>
+        }
+      </ul>
+    </div>
+  } @else {
+    <!-- Estado vacío -->
+    <p class="vacio">Aún no tienes gastos registrados.</p>
+  }
+</section>
+
+================
+File: src/app/shared/components/header/header.spec.ts
+================
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Header } from './header';
+
+describe('Header', () => {
+  let component: Header;
+  let fixture: ComponentFixture<Header>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [Header],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(Header);
+    component = fixture.componentInstance;
+    await fixture.whenStable();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+
+================
+File: src/app/shared/components/item-movimiento/item-movimiento.css
+================
+.item-contenedor {
+  display: flex;
+  align-items: center;
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--neutral-200); /* Línea divisoria suave */
+}
+
+/* Para que el último elemento no tenga línea abajo */
+.item-contenedor:last-child {
+  border-bottom: none;
+}
+
+.icono-placeholder {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background-color: var(--neutral-100);
+  margin-right: var(--space-3);
+}
+
+.info-central {
+  flex: 1; /* Ocupa todo el espacio disponible empujando el monto a la derecha */
+}
+
+.titulo {
+  margin: 0;
+  color: var(--neutral-900);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.subtitulo {
+  margin: 4px 0 0 0;
+  color: var(--neutral-500);
+  font-size: 12px;
+}
+
+.monto {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* Colores dinámicos según el tipo de movimiento */
+.ingreso {
+  color: var(--success-600);
+}
+
+.gasto {
+  color: var(--expense-700);
+}
+
+================
+File: src/app/shared/components/item-movimiento/item-movimiento.html
+================
+<div class="item-contenedor">
+  <!-- Círculo simulando el icono -->
+  <div class="icono-placeholder"></div>
+  
+  <div class="info-central">
+    <h4 class="titulo">{{ titulo }}</h4>
+    <p class="subtitulo">{{ subtitulo }}</p>
+  </div>
+  
+  <div class="monto" [ngClass]="tipo">
+    <!-- Si es ingreso le ponemos un +, si es gasto le ponemos un - -->
+    <span *ngIf="tipo === 'ingreso'">+</span>
+    <span *ngIf="tipo === 'gasto'">-</span>
+    {{ monto }}
+  </div>
+</div>
+
+================
+File: src/app/shared/components/item-movimiento/item-movimiento.ts
+================
+import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-item-movimiento',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './item-movimiento.html',
+  styleUrls: ['./item-movimiento.css']
+})
+export class ItemMovimientoComponent {
+  @Input() titulo: string = 'Movimiento';
+  @Input() subtitulo: string = 'Categoría - Fecha';
+  @Input() monto: string = '$0';
+  @Input() tipo: string = 'gasto'; // Puede ser 'ingreso' o 'gasto'
+}
+
+================
+File: src/app/shared/components/menu-lateral/menu-lateral.spec.ts
+================
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MenuLateral } from './menu-lateral';
+
+describe('MenuLateral', () => {
+  let component: MenuLateral;
+  let fixture: ComponentFixture<MenuLateral>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [MenuLateral],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(MenuLateral);
+    component = fixture.componentInstance;
+    await fixture.whenStable();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+
+================
+File: src/app/shared/components/tarjeta-resumen/tarjeta-resumen.css
+================
+.tarjeta-contenedor {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3); /* Separación entre el título y el valor */
+}
+
+.titulo {
+  color: var(--neutral-700);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.valor-principal {
+  color: var(--neutral-900);
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0; /* Quitamos márgenes por defecto del h3 */
+}
+
+.texto-secundario {
+  color: var(--neutral-500);
+  font-size: 12px;
+  margin-top: 4px;
+  margin-bottom: 0;
+}
+
+================
+File: src/app/shared/components/tarjeta-resumen/tarjeta-resumen.html
+================
+<div class="tarjeta-contenedor">
+  <div class="tarjeta-header">
+    <span class="titulo">{{ titulo }}</span>
+  </div>
+  
+  <div class="tarjeta-body">
+    <h3 class="valor-principal">{{ valorPrincipal }}</h3>
+    
+    <!-- Este texto solo aparece si le enviamos información -->
+    <p class="texto-secundario" *ngIf="textoSecundario">
+      {{ textoSecundario }}
+    </p>
+  </div>
+</div>
+
+================
+File: src/app/shared/components/tarjeta-resumen/tarjeta-resumen.ts
+================
+import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-tarjeta-resumen',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './tarjeta-resumen.html',
+  styleUrls: ['./tarjeta-resumen.css']
+})
+export class TarjetaResumenComponent {
+  // Con esto, la tarjeta puede mostrar cualquier información que le pasemos
+  @Input() titulo: string = 'Título por defecto';
+  @Input() valorPrincipal: string = '$0';
+  @Input() textoSecundario: string = 'Detalle extra';
+}
+
+================
+File: src/app/shared/layout/.gitkeep
+================
+
+
+================
+File: src/app/app.config.ts
+================
+import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { provideRouter } from '@angular/router';
+import { routes } from './app.routes';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideBrowserGlobalErrorListeners(),
+    provideRouter(routes)
+  ]
+};
+
+================
+File: src/app/app.spec.ts
+================
+import { TestBed } from '@angular/core/testing';
+import { App } from './app';
+
+describe('App', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [App],
+    })
+      .compileComponents();
+  });
+
+  it('should create the app', () => {
+    const fixture = TestBed.createComponent(App);
+    const app = fixture.componentInstance;
+    expect(app).toBeTruthy();
+  });
+
+  it('should render title', async () => {
+    const fixture = TestBed.createComponent(App);
+    await fixture.whenStable();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, unipocket');
+  });
+});
+
+================
+File: src/index.html
+================
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Unipocket</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
+  <app-root></app-root>
+</body>
+</html>
+
+================
+File: src/main.ts
+================
+import { bootstrapApplication } from '@angular/platform-browser';
+import { appConfig } from './app/app.config';
+import { App } from './app/app';
+
+bootstrapApplication(App, appConfig)
+  .catch((err) => console.error(err));
+
+================
+File: .editorconfig
+================
+# Editor configuration, see https://editorconfig.org
+root = true
+
+[*]
+charset = utf-8
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.ts]
+quote_type = single
+ij_typescript_use_double_quotes = false
+
+[*.md]
+max_line_length = off
+trim_trailing_whitespace = false
+
+================
+File: .prettierrc
+================
+{
+  "printWidth": 100,
+  "singleQuote": true,
+  "overrides": [
+    {
+      "files": "*.html",
+      "options": {
+        "parser": "angular"
+      }
+    }
+  ]
+}
+
+================
+File: package.json
+================
+{
+  "name": "unipocket",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test"
+  },
+  "private": true,
+  "packageManager": "npm@11.16.0",
+  "dependencies": {
+    "@angular/common": "^22.2.0",
+    "@angular/compiler": "^22.2.0",
+    "@angular/core": "^22.2.0",
+    "@angular/forms": "^22.2.0",
+    "@angular/platform-browser": "^22.2.0",
+    "@angular/router": "^22.2.0",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^22.2.2",
+    "@angular/cli": "^22.2.2",
+    "@angular/compiler-cli": "^22.2.0",
+    "jsdom": "^30.0.0",
+    "prettier": "^3.8.1",
+    "typescript": "~6.0.2",
+    "vitest": "^5.0.0"
+  }
+}
+
+================
+File: README.md
+================
+# Unipocket
+
+This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.2.
+
+## Development server
+
+To start a local development server, run:
+
+```bash
+ng serve
+```
+
+Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+
+## Code scaffolding
+
+Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+
+```bash
+ng generate component component-name
+```
+
+For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+
+```bash
+ng generate --help
+```
+
+## Building
+
+To build the project run:
+
+```bash
+ng build
+```
+
+This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+
+## Running unit tests
+
+To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+
+```bash
+ng test
+```
+
+## Running end-to-end tests
+
+For end-to-end (e2e) testing, run:
+
+```bash
+ng e2e
+```
+
+Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+
+## Additional Resources
+
+For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+================
+File: tsconfig.app.json
+================
+/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
+/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": []
+  },
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "src/**/*.spec.ts"
+  ]
+}
+
+================
+File: tsconfig.json
+================
+/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
+/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "preserve"
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true
+  },
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
+    }
+  ]
+}
+
+================
+File: tsconfig.spec.json
+================
+/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
+/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": [
+      "vitest/globals"
+    ]
+  },
+  "include": [
+    "src/**/*.d.ts",
+    "src/**/*.spec.ts"
+  ]
+}
+
+================
+File: public/local-auth-api/admins.json
+================
+[
+	{
+		"nombre": "Laura Méndez",
+		"id": 100,
+		"id_reg_financiero": 100,
+		"rol": "administrador",
+		"correo": "laura.mendez@unipocket.com",
+		"contrasena": "admin12345",
+		"ultimoAcceso": "2026-11-10T14:30:00.000Z",
+		"fechaUltimoAcceso": "2026-11-10T14:30:00.000Z",
+		"fechasEstadisticas": [
+			"2026-11-01T00:00:00.000Z",
+			"2026-11-08T00:00:00.000Z"
+		]
+	}
+]
+
+================
+File: public/local-auth-api/movimientos.json
+================
+[
+	{
+		"idUsuario": 4,
+		"tipo": "gasto",
+		"monto": 14500,
+		"categoria": "Alimentación",
+		"fecha": "2026-11-12",
+		"descripcion": "Almuerzo en la cafetería"
+	},
+	{
+		"idUsuario": 4,
+		"tipo": "gasto",
+		"monto": 15000,
+		"categoria": "Materiales e impresiones",
+		"fecha": "2026-11-12",
+		"descripcion": "Impresiones parcial de cálculo"
+	},
+	{
+		"idUsuario": 4,
+		"tipo": "ingreso",
+		"monto": 150000,
+		"categoria": "Monitoría",
+		"fecha": "2026-11-11",
+		"descripcion": "Monitoría académica"
+	},
+	{
+		"idUsuario": 1,
+		"tipo": "gasto",
+		"monto": 8000,
+		"categoria": "Transporte",
+		"fecha": "2026-11-12",
+		"descripcion": "Recarga tarjeta de bus"
+	},
+	{
+		"idUsuario": 1,
+		"tipo": "ingreso",
+		"monto": 400000,
+		"categoria": "Mesada",
+		"fecha": "2026-11-01",
+		"descripcion": "Mesada de noviembre"
+	},
+	{
+		"idUsuario": 2,
+		"tipo": "gasto",
+		"monto": 25900,
+		"categoria": "Suscripciones",
+		"fecha": "2026-11-10",
+		"descripcion": "Plan de streaming"
+	},
+	{
+		"idUsuario": 3,
+		"tipo": "ingreso",
+		"monto": 600000,
+		"categoria": "Trabajo",
+		"fecha": "2026-11-05",
+		"descripcion": "Pago medio tiempo"
+	},
+
+	{ "idUsuario": 4, "tipo": "ingreso", "monto": 1050000, "categoria": "Mesada", "fecha": "2026-11-01", "descripcion": "Mesada de noviembre" },
+{ "idUsuario": 4, "tipo": "gasto", "monto": 62000, "categoria": "Alimentación", "fecha": "2026-11-08", "descripcion": "Mercado de la semana" },
+{ "idUsuario": 4, "tipo": "gasto", "monto": 18000, "categoria": "Alimentación", "fecha": "2026-11-10", "descripcion": "Almuerzo con el grupo de estudio" },
+{ "idUsuario": 4, "tipo": "gasto", "monto": 24500, "categoria": "Alimentación", "fecha": "2026-11-06", "descripcion": "Onces en la biblioteca" },
+{ "idUsuario": 4, "tipo": "gasto", "monto": 20000, "categoria": "Transporte", "fecha": "2026-11-09", "descripcion": "Recarga TransMilenio" },
+{ "idUsuario": 4, "tipo": "gasto", "monto": 48000, "categoria": "Transporte", "fecha": "2026-11-02", "descripcion": "Recarga TransMilenio del mes" },
+{ "idUsuario": 4, "tipo": "gasto", "monto": 38000, "categoria": "Materiales e impresiones", "fecha": "2026-11-04", "descripcion": "Libro de cálculo usado" },
+{ "idUsuario": 4, "tipo": "gasto", "monto": 15000, "categoria": "Materiales e impresiones", "fecha": "2026-11-03", "descripcion": "Cuadernos y esferos" },
+{ "idUsuario": 4, "tipo": "gasto", "monto": 24000, "categoria": "Entretenimiento", "fecha": "2026-11-07", "descripcion": "Cine con amigos" },
+{ "idUsuario": 4, "tipo": "gasto", "monto": 16800, "categoria": "Entretenimiento", "fecha": "2026-11-05", "descripcion": "Partido de fútbol 5" },
+{ "idUsuario": 4, "tipo": "gasto", "monto": 27200, "categoria": "Suscripciones", "fecha": "2026-11-01", "descripcion": "Plan de celular" },
+{ "idUsuario": 4, "tipo": "gasto", "monto": 17000, "categoria": "Otros", "fecha": "2026-11-06", "descripcion": "Corte de pelo" }
+]
+
+================
+File: public/local-auth-api/notificaciones.json
+================
+[
+  {
+    "idsNotificar": [1, 2, 3, 100],
+    "mensaje": "Revisa tus metas y actualiza tus aportes de este mes.",
+    "importancia": "media"
+  },
+  {
+    "idsNotificar": [2],
+    "mensaje": "Tu meta de viaje está cerca de alcanzar el 50%.",
+    "importancia": "baja"
+  }
+]
+
+================
+File: public/local-auth-api/registrosFinancieros.json
+================
+[
+	{
+		"idUsuario": 1,
+		"totalIngresos": 3200000,
+		"presupuesto": 2800000,
+		"totalGastos": 2450000
+	},
+	{
+		"idUsuario": 2,
+		"totalIngresos": 2700000,
+		"presupuesto": 2300000,
+		"totalGastos": 1980000
+	},
+	{
+		"idUsuario": 3,
+		"totalIngresos": 4100000,
+		"presupuesto": 3500000,
+		"totalGastos": 3120000
+	},
+	{
+		"idUsuario": 4,
+		"totalIngresos": 1200000,
+		"presupuesto": 500000,
+		"totalGastos": 340000
+	},
+	{
+		"idUsuario": 100,
+		"totalIngresos": 0,
+		"presupuesto": 0,
+		"totalGastos": 0
+	}
+]
+
+================
+File: public/local-auth-api/usuarios.json
+================
+[
+	{
+		"nombre": "Sofía Ramírez",
+		"id": 1,
+		"id_reg_financiero": 1,
+		"correo": "sofia.ramirez@unal.edu.co",
+		"contrasena": "sofia12345",
+		"rol": "usuario"
+	},
+	{
+		"nombre": "Mateo Torres",
+		"id": 2,
+		"id_reg_financiero": 2,
+		"correo": "mateo.torres@unal.edu.co",
+		"contrasena": "mateo12345",
+		"rol": "usuario"
+	},
+	{
+		"nombre": "Valentina Rojas",
+		"id": 3,
+		"id_reg_financiero": 3,
+		"correo": "valentina.rojas@unal.edu.co",
+		"contrasena": "valentina12345",
+		"rol": "usuario"
+	},
+	{
+		"nombre": "Laura Gómez",
+		"id": 4,
+		"id_reg_financiero": 4,
+		"correo": "laura.gomez@unal.edu.co",
+		"contrasena": "laura12345",
+		"rol": "usuario"
+	}
+]
+
+================
+File: src/app/core/models/notificacion.model.ts
+================
+export interface Notificacion {
+    idsNotificar: number[]; //Ids de usuarios y admins a notificar
+    mensaje: string;
+    importancia: 'urgente' | 'alta' | 'media' | 'baja' ; 
+}
+
+================
+File: src/app/core/models/usuario.model.ts
+================
+export interface Usuario {
+    nombre: string;
+    id: number;
+    id_reg_financiero: number;
+    // Campos agregados para el login (Nicolás):
+    correo: string;
+    contrasena: string; // Solo para la demo: en un sistema real NUNCA se guarda la contraseña en texto plano
+    rol: string;        // "usuario" (estudiante) o "administrador"
+}
+
+================
+File: src/app/core/utils/formato.ts
+================
+// Funciones de ayuda reutilizables para mostrar datos en pantalla :).
+// Son funciones normales (no componentes ni servicios): se importan donde se necesiten.
+
+// Convierte un numero a pesos colombianos con NumberFormat (herramienta nativa de JS (interesante)): 860000 -> "$860.000"
+export function formatearPesos(valor: number): string {
+  return '$' + valor.toLocaleString('es-CO');
+}
+
+// Versión corta para espacios pequeños: 340000 -> "$340k"
+export function formatearPesosCorto(valor: number): string {
+  return valor >= 1000 ? '$' + Math.round(valor / 1000) + 'k' : '$' + valor;
+}
+
+// Convierte "2026-11-12" -> "12 de nov de 2026"
+// Se agrega 'T00:00' para que JavaScript use la hora local y no cambie el día.
+export function formatearFecha(fecha: string): string {
+  return new Date(fecha + 'T00:00').toLocaleDateString('es-CO', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  });
+}
+
+// Color de cada categoría de gasto (variables --cat-* de styles.css).
+// Si la categoría no está en la lista, usa el color de "Otros".
+const COLORES_CATEGORIA: Record<string, string> = {
+  'Alimentación': 'var(--cat-alimentacion)',
+  'Transporte': 'var(--cat-transporte)',
+  'Materiales e impresiones': 'var(--cat-materiales)',
+  'Entretenimiento': 'var(--cat-entretenimiento)',
+  'Suscripciones': 'var(--cat-suscripciones)'
+};
+
+export function colorCategoria(categoria: string): string {
+  return COLORES_CATEGORIA[categoria] ?? 'var(--cat-otros)';
+}
+
+================
+File: src/app/features/dashboard/dashboard.spec.ts
+================
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Dashboard } from './dashboard';
+
+describe('Dashboard', () => {
+  let component: Dashboard;
+  let fixture: ComponentFixture<Dashboard>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [Dashboard],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(Dashboard);
+    component = fixture.componentInstance;
+    await fixture.whenStable();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+
+================
+File: src/app/features/movimientos/movimientos.css
+================
+/* ===== es momento de darle forma a esos movimientos===== */
+
+.historial-contenedor {
+  padding: var(--space-6);
+  max-width: 1200px;
+}
+
+/* ===== Cabecera ===== */
+.cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.titulo {
+  margin: 0;
+  color: var(--navy-900);
+}
+
+.subtitulo {
+  margin: 4px 0 0;
+  color: var(--neutral-600);
+}
+
+.botones-accion {
+  display: flex;
+  gap: var(--space-3);
+}
+
+/* ===== Totales ===== */
+.totales {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.total-tarjeta {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.total-etiqueta {
+  font-size: 13px;
+  color: var(--neutral-600);
+}
+
+.total-valor {
+  font-size: 20px;
+  white-space: nowrap; /* evita que el "+" quede en una línea y el número en otra  (esto no me lo sabia, gracias google)*/
+  font-weight: 700;
+  color: var(--navy-900);
+}
+
+.total-valor.ingreso { color: var(--success-700); }
+.total-valor.gasto   { color: var(--expense-700); }
+
+/* ===== Dos columnas: lista (más ancha) y desglose ===== */
+.grid-historial {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.tarjeta {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-6);
+}
+
+/* ===== Filtros ===== */
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.buscador {
+  flex: 1 1 100%; /* la búsqueda ocupa toda la primera fila */
+}
+
+.selector-categoria {
+  flex: 1;
+  min-width: 180px;
+}
+
+.input-grupo select {
+  appearance: none;
+  cursor: pointer;
+}
+
+.flecha-select {
+  color: var(--primary-500);
+  pointer-events: none;
+}
+
+/* Pastillas Todos / Ingresos / Gastos */
+.pastillas {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.pastilla {
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-4);
+  min-height: 44px;
+  border: 1px solid var(--neutral-300);
+  border-radius: var(--radius-full);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--neutral-700);
+  cursor: pointer;
+}
+
+/* Ocultamos el círculo del radio, pero sigue funcionando con teclado */
+.pastilla input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+}
+
+.pastilla:focus-within {
+  box-shadow: 0 0 0 3px var(--primary-100);
+}
+
+.pastilla.activa {
+  background-color: var(--primary-50);
+  border-color: var(--primary-500);
+  color: var(--primary-500);
+}
+
+/* ===== Estado vacío ===== */
+.vacio {
+  text-align: center;
+  padding: var(--space-8) 0;
+  color: var(--neutral-600);
+  font-size: 14px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 1100px) {
+  /* El desglose pasa debajo de la lista */
+  .grid-historial {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 576px) {
+  .historial-contenedor {
+    padding: 0;
+  }
+
+  .totales {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .total-tarjeta {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .total-valor {
+    font-size: 17px;
+  }
+
+  .pastillas {
+    flex: 1 1 100%;
+  }
+
+  .pastilla {
+    flex: 1;
+    justify-content: center;
+    padding: 0 var(--space-2);
+  }
+
+  .botones-accion {
+    width: 100%;
+  }
+}
+
+================
+File: src/app/features/movimientos/movimientos.html
+================
+<div class="historial-contenedor">
+
+  <!-- ===== Cabecera ===== -->
+  <div class="cabecera">
+    <div>
+      <h2 class="titulo">Historial de movimientos</h2>
+      <p class="subtitulo">Todos tus ingresos y gastos en un solo lugar</p>
+    </div>
+    <div class="botones-accion">
+      <app-boton-generico texto="Registrar ingreso" tipo="ingreso" (click)="abrirModal('ingreso')"></app-boton-generico>
+      <app-boton-generico texto="Registrar gasto" tipo="gasto" (click)="abrirModal('gasto')"></app-boton-generico>
+    </div>
+  </div>
+
+  <!-- ===== Totales de lo filtrado ===== -->
+  <div class="totales">
+    <div class="total-tarjeta">
+      <span class="total-etiqueta">Ingresos</span>
+      <span class="total-valor ingreso">+ {{ formatearPesos(totalIngresos()) }}</span>
+    </div>
+    <div class="total-tarjeta">
+      <span class="total-etiqueta">Gastos</span>
+      <span class="total-valor gasto">- {{ formatearPesos(totalGastos()) }}</span>
+    </div>
+    <div class="total-tarjeta">
+      <span class="total-etiqueta">Movimientos</span>
+      <span class="total-valor">{{ movimientosFiltrados().length }}</span>
+    </div>
+  </div>
+
+  <div class="grid-historial">
+
+    <!-- ===== Columna izquierda: filtros + lista ===== -->
+    <section class="tarjeta">
+      <form [formGroup]="filtrosForm" class="filtros">
+
+        <!-- Búsqueda por texto -->
+        <div class="input-grupo buscador">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" formControlName="busqueda" placeholder="Buscar por descripción o categoría" aria-label="Buscar movimientos">
+        </div>
+
+        <!-- Tipo: tres opciones con apariencia de pastilla (radios ocultos) -->
+        <div class="pastillas" role="radiogroup" aria-label="Tipo de movimiento">
+          <label class="pastilla" [class.activa]="filtros().tipo === 'todos'">
+            <input type="radio" formControlName="tipo" value="todos"> Todos
+          </label>
+          <label class="pastilla" [class.activa]="filtros().tipo === 'ingreso'">
+            <input type="radio" formControlName="tipo" value="ingreso"> Ingresos
+          </label>
+          <label class="pastilla" [class.activa]="filtros().tipo === 'gasto'">
+            <input type="radio" formControlName="tipo" value="gasto"> Gastos
+          </label>
+        </div>
+
+        <!-- Categoría -->
+        <div class="input-grupo selector-categoria">
+          <select formControlName="categoria" aria-label="Filtrar por categoría">
+            <option value="">Todas las categorías</option>
+            @for (cat of categoriasDisponibles(); track cat) {
+              <option [value]="cat">{{ cat }}</option>
+            }
+          </select>
+          <svg class="flecha-select" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+      </form>
+
+      <!-- Lista de movimientos (reutiliza <app-item-movimiento>) -->
+      @if (movimientosFiltrados().length > 0) {
+        <div class="lista">
+          @for (mov of movimientosFiltrados(); track $index) {
+            <app-item-movimiento
+              [titulo]="mov.descripcion || mov.categoria"
+              [subtitulo]="mov.categoria + ' · ' + formatearFecha(mov.fecha)"
+              [monto]="formatearPesos(mov.monto)"
+              [tipo]="mov.tipo">
+            </app-item-movimiento>
+          }
+        </div>
+      } @else {
+        <!-- Estado vacío: no hay movimientos o ninguno cumple los filtros -->
+        <div class="vacio">
+          <p>No hay movimientos que coincidan con los filtros.</p>
+          <button type="button" class="btn btn-secundario" (click)="limpiarFiltros()">Limpiar filtros</button>
+        </div>
+      }
+    </section>
+
+    <!-- ===== Columna derecha: desglose por categoría (componente compartido) ===== -->
+    <aside>
+      <app-desglose-categorias [movimientos]="misMovimientos()"></app-desglose-categorias>
+    </aside>
+  </div>
+</div>
+
+<!-- Modal "Registrar movimiento" (el mismo componente que usa el Dashboard) -->
+@if (modalAbierto) {
+  <app-registro-movimiento
+    [tipoInicial]="tipoModal"
+    (cerrado)="cerrarModal()"
+    (guardado)="registrarMovimiento($event)">
+  </app-registro-movimiento>
+}
+
+================
+File: src/app/features/movimientos/movimientos.spec.ts
+================
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Movimientos } from './movimientos';
+
+describe('Movimientos', () => {
+  let component: Movimientos;
+  let fixture: ComponentFixture<Movimientos>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [Movimientos],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(Movimientos);
+    component = fixture.componentInstance;
+    await fixture.whenStable();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+
+================
+File: src/app/features/movimientos/movimientos.ts
+================
+import { Component, OnInit, computed, inject } from '@angular/core';
+import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
+// toSignal convierte los cambios de un formulario (Observable) en un signal
+import { toSignal } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
+
+import { LocalApi } from '../../core/services/local-api';
+import { Movimiento } from '../../core/models/movimiento.model';
+import { formatearFecha, formatearPesos } from '../../core/utils/formato';
+import { BotonGenericoComponent } from '../../shared/components/boton-generico/boton-generico';
+import { ItemMovimientoComponent } from '../../shared/components/item-movimiento/item-movimiento';
+import { DesgloseCategorias } from '../../shared/components/desglose-categorias/desglose-categorias';
+import { RegistroMovimiento } from './registro-movimiento/registro-movimiento';
+
+/*
+  Vista "Historial de movimientos".
+  - Muestra TODOS los movimientos del usuario, del más reciente al más antiguo.
+  - Tiene filtros (búsqueda, tipo y categoría) hechos con un formulario reactivo.
+  - Al lado muestra el desglose de gastos por categoría.
+*/
+@Component({
+  selector: 'app-movimientos',
+  standalone: true,
+  imports: [ReactiveFormsModule, BotonGenericoComponent, ItemMovimientoComponent, DesgloseCategorias, RegistroMovimiento],
+  templateUrl: './movimientos.html',
+  styleUrls: ['./movimientos.css']
+})
+export class Movimientos implements OnInit {
+  private api = inject(LocalApi);
+  private router = inject(Router);
+  private fb = inject(FormBuilder);
+
+  // ===== Filtros (formulario reactivo) =====
+  filtrosForm = this.fb.group({
+    busqueda: [''],
+    tipo: ['todos'],   // 'todos' | 'ingreso' | 'gasto'
+    categoria: ['']    // '' = todas las categorías
+  });
+
+  // Cada vez que el usuario escribe o cambia un filtro, este signal se actualiza.
+  // initialValue: el valor que tiene antes de que el usuario toque algo.
+  filtros = toSignal(this.filtrosForm.valueChanges, { initialValue: this.filtrosForm.value });
+
+  // ===== Datos =====
+
+  // Todos los movimientos del usuario, ordenados por fecha (más reciente primero).
+  // localeCompare compara textos: como la fecha es "AAAA-MM-DD", el orden alfabético = orden por fecha.
+  misMovimientos = computed(() => {
+    const usuario = this.api.usuarioActual();
+    return this.api.movimientos()
+      .filter(m => m.idUsuario === usuario?.id)
+      .sort((a, b) => b.fecha.localeCompare(a.fecha));
+  });
+
+  // Lista de categorías que el usuario ha usado (para el select del filtro), sin repetidas
+  categoriasDisponibles = computed(() =>
+    [...new Set(this.misMovimientos().map(m => m.categoria))].sort()
+  );
+
+  // Movimientos que cumplen TODOS los filtros
+  movimientosFiltrados = computed(() => {
+    const f = this.filtros();
+    const texto = (f.busqueda ?? '').trim().toLowerCase();
+
+    return this.misMovimientos().filter(m => {
+      const cumpleTipo = f.tipo === 'todos' || m.tipo === f.tipo;
+      const cumpleCategoria = !f.categoria || m.categoria === f.categoria;
+      const cumpleTexto = !texto
+        || m.descripcion.toLowerCase().includes(texto)
+        || m.categoria.toLowerCase().includes(texto);
+      return cumpleTipo && cumpleCategoria && cumpleTexto;
+    });
+  });
+
+  // Totales de lo que se está viendo (cambian con los filtros)
+  totalIngresos = computed(() => this.sumar(this.movimientosFiltrados(), 'ingreso'));
+  totalGastos = computed(() => this.sumar(this.movimientosFiltrados(), 'gasto'));
+
+  // ===== Modal "Registrar movimiento" (el mismo del Dashboard) =====
+  modalAbierto = false;
+  tipoModal: 'gasto' | 'ingreso' = 'gasto';
+
+  ngOnInit(): void {
+    // TEMPORAL (igual que en el Dashboard): sin sesión, volvemos al login.
+    // Cuando estén los Guards de Juan, esta validación pasa a ellos.
+    if (!this.api.usuarioActual()) {
+      this.router.navigate(['/login']);
+      return;
+    }
+    this.api.cargarDatosFinancieros();
+  }
+
+  // Suma los montos de un tipo (ingreso o gasto)
+  private sumar(lista: Movimiento[], tipo: 'ingreso' | 'gasto'): number {
+    return lista.filter(m => m.tipo === tipo).reduce((suma, m) => suma + m.monto, 0);
+  }
+
+  limpiarFiltros(): void {
+    this.filtrosForm.reset({ busqueda: '', tipo: 'todos', categoria: '' });
+  }
+
+  abrirModal(tipo: 'gasto' | 'ingreso'): void {
+    this.tipoModal = tipo;
+    this.modalAbierto = true;
+  }
+
+  cerrarModal(): void {
+    this.modalAbierto = false;
+  }
+
+  // El modal emite (guardado): el servicio lo guarda y TODAS las listas se recalculan solas
+  registrarMovimiento(movimiento: Movimiento): void {
+    const usuario = this.api.usuarioActual();
+    if (!usuario) return;
+    this.api.registrarMovimiento(usuario.id, movimiento);
+    this.cerrarModal();
+  }
+
+  // Funciones de formato para usarlas en el HTML
+  formatearPesos = formatearPesos;
+  formatearFecha = formatearFecha;
+}
+
+================
+File: src/app/shared/components/boton-generico/boton-generico.spec.ts
+================
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { BotonGenericoComponent } from './boton-generico';
+
+describe('BotonGenericoComponent', () => {
+  let component: BotonGenericoComponent;
+  let fixture: ComponentFixture<BotonGenericoComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [BotonGenericoComponent],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(BotonGenericoComponent);
+    component = fixture.componentInstance;
+    await fixture.whenStable();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+
+================
+File: src/app/shared/components/boton-generico/boton-generico.ts
+================
+import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common'; // 1. Importamos las herramientas comunes de Angular
+
+@Component({
+  selector: 'app-boton-generico',
+  standalone: true, // 2. Le decimos que es un componente independiente
+  imports: [CommonModule], // 3. Le inyectamos el módulo para que entienda el [ngClass]
+  templateUrl: './boton-generico.html',
+  styleUrls: ['./boton-generico.css']
+})
+export class BotonGenericoComponent {
+  @Input() texto: string = 'Botón'; 
+  @Input() tipo: string = 'principal'; 
+}
+
+================
+File: src/app/shared/components/desglose-categorias/desglose-categorias.ts
+================
+import { Component, computed, input } from '@angular/core';
+import { Movimiento } from '../../../core/models/movimiento.model';
+import { colorCategoria, formatearPesos, formatearPesosCorto } from '../../../core/utils/formato';
+
+// Forma de cada fila del desglose
+interface CategoriaDesglose {
+  nombre: string;
+  monto: number;
+  porcentaje: number; // redondeado, para mostrar en pantalla
+  color: string;
+}
+
+/*
+  Desglose visual de los gastos por categoría (es la gráfica de dona + la lista).
+  Es un componente COMPARTIDO: recibe una lista de movimientos y calcula todo solo.
+  Se puede usar en el Historial, en el Dashboard o en Reportes :).
+
+  Nota: Uso:  <app-desglose-categorias [movimientos]="misMovimientos()" />
+*/
+@Component({
+  selector: 'app-desglose-categorias',
+  standalone: true,
+  imports: [],
+  templateUrl: './desglose-categorias.html',
+  styleUrls: ['./desglose-categorias.css']
+})
+export class DesgloseCategorias {
+  // input() es la versión "signal" de @Input().
+  // La usamos porque así los computed() de abajo se recalculan solos cuando cambia la lista.
+  movimientos = input<Movimiento[]>([]);
+
+  // 1) Solo nos interesan los gastos
+  private gastos = computed(() => this.movimientos().filter(m => m.tipo === 'gasto'));
+
+  // 2) Total gastado (se muestra en el centro de la dona)
+  totalGastos = computed(() => this.gastos().reduce((suma, m) => suma + m.monto, 0));
+
+  // 3) Agrupamos por categoría y calculamos el porcentaje de cada una
+  categorias = computed<CategoriaDesglose[]>(() => {
+    const total = this.totalGastos();
+
+    // Objeto acumulador: { "Alimentación": 119000, "Transporte": 68000, ... }
+    const totalesPorCategoria: Record<string, number> = {};
+    for (const gasto of this.gastos()) {
+      totalesPorCategoria[gasto.categoria] = (totalesPorCategoria[gasto.categoria] ?? 0) + gasto.monto;
+    }
+
+    // Convertimos el objeto en una lista y la ordenamos de mayor a menor gasto
+    return Object.entries(totalesPorCategoria)
+      .map(([nombre, monto]) => ({
+        nombre,
+        monto,
+        porcentaje: total > 0 ? Math.round((monto / total) * 100) : 0,
+        color: colorCategoria(nombre)
+      }))
+      .sort((a, b) => b.monto - a.monto);
+  });
+
+  // 4) Fondo de la dona: un conic-gradient (degradado en círculo) con un tramo por categoría.
+  //    Ej: "conic-gradient(amarillo 0% 35%, azul 35% 55%, ...)"
+  gradienteDona = computed(() => {
+    const total = this.totalGastos();
+    if (total === 0) return 'var(--neutral-200)';
+
+    let acumulado = 0; // porcentaje donde empieza cada tramo
+    const tramos = this.categorias().map(cat => {
+      const inicio = acumulado;
+      acumulado += (cat.monto / total) * 100;
+      return `${cat.color} ${inicio}% ${acumulado}%`;
+    });
+    return `conic-gradient(${tramos.join(', ')})`;
+  });
+
+  // Funciones de formato para usarlas en el HTML
+  formatearPesos = formatearPesos;
+  formatearPesosCorto = formatearPesosCorto;
+}
+
+================
+File: src/app/shared/components/header/header.html
+================
+<header class="top-header">
+  <!-- Izquierda: Botón de hamburguesa y Buscador -->
+  <div class="header-left">
+    <button class="menu-toggle-btn" aria-label="Abrir menú" (click)="onToggleMenu()">
+      ☰
+    </button>
+    <div class="header-search">
+      <input type="text" placeholder="Buscar movimientos, categorías o metas..." class="search-input" />
+    </div>
+  </div>
+
+  <!-- Derecha: Notificaciones y Perfil de Usuario -->
+  <div class="header-user-section">
+
+    <!-- Botón de notificaciones -->
+    <div class="notificaciones-wrapper">
+      <button
+        class="notification-btn"
+        aria-label="Notificaciones"
+        (click)="toggleNotificaciones()"
+      >
+        <span class="bell-icon">🔔</span>
+        @if (cantidadSinLeer > 0) {
+          <span class="badge">{{ cantidadSinLeer }}</span>
+        }
+      </button>
+
+      <!-- Panel desplegable de notificaciones -->
+      @if (mostrarNotificaciones()) {
+        <div class="notificaciones-panel" role="dialog" aria-label="Notificaciones">
+
+          <div class="notif-cabecera">
+            <h4 class="notif-titulo">Notificaciones</h4>
+            @if (cantidadSinLeer > 0) {
+              <button class="notif-btn-leer-todo" (click)="marcarTodasComoLeidas()">
+                Marcar todas como leídas
+              </button>
+            }
+          </div>
+
+          <ul class="notif-lista">
+            @for (notif of notificaciones; track notif.id) {
+              <li
+                class="notif-item"
+                [class.notif-item--sin-leer]="!notif.leida"
+                (click)="marcarComoLeida(notif.id)"
+              >
+                @if (!notif.leida) {
+                  <span class="notif-punto"></span>
+                }
+                <div class="notif-contenido">
+                  <p class="notif-mensaje">{{ notif.mensaje }}</p>
+                  <span class="notif-tiempo">{{ notif.tiempo }}</span>
+                </div>
+              </li>
+            }
+          </ul>
+
+          @if (cantidadSinLeer === 0) {
+            <p class="notif-vacio">Todo al día ✓</p>
+          }
+
+        </div>
+      }
+    </div>
+    
+
+    <div class="user-profile">
+      <div class="user-avatar">U</div>
+      <div class="user-details">
+        <span class="user-name">{{ nombreUsuario }}</span>
+        <span class="user-role">{{ rolUsuario }}</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+================
+File: src/app/shared/components/item-movimiento/item-movimiento.spec.ts
+================
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ItemMovimientoComponent } from './item-movimiento';
+
+describe('ItemMovimientoComponent', () => {
+  let component: ItemMovimientoComponent;
+  let fixture: ComponentFixture<ItemMovimientoComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [ItemMovimientoComponent],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(ItemMovimientoComponent);
+    component = fixture.componentInstance;
+    await fixture.whenStable();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+
+================
+File: src/app/shared/components/menu-lateral/menu-lateral.ts
+================
+import { Component, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+
+@Component({
+  selector: 'app-menu-lateral',
+  imports: [CommonModule, RouterModule],
+  templateUrl: './menu-lateral.html',
+  styleUrl: './menu-lateral.css'
+})
+export class MenuLateral {
+  @Output() menuClosed = new EventEmitter<void>();
+
+  cerrarMenu(): void {
+    this.menuClosed.emit();
+  }
+}
+
+================
+File: src/app/shared/components/tarjeta-resumen/tarjeta-resumen.spec.ts
+================
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TarjetaResumenComponent } from './tarjeta-resumen';
+
+describe('TarjetaResumenComponent', () => {
+  let component: TarjetaResumenComponent;
+  let fixture: ComponentFixture<TarjetaResumenComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [TarjetaResumenComponent],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(TarjetaResumenComponent);
+    component = fixture.componentInstance;
+    await fixture.whenStable();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+
+================
+File: angular.json
+================
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "cli": {
+    "packageManager": "npm",
+    "analytics": false
+  },
+  "newProjectRoot": "projects",
+  "projects": {
+    "unipocket": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "browser": "src/main.ts",
+            "tsConfig": "tsconfig.app.json",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "public"
+              }
+            ],
+            "styles": [
+              "src/styles.css"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "unipocket:build:production"
+            },
+            "development": {
+              "buildTarget": "unipocket:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test"
+        }
+      }
+    }
+  }
+}
+
+================
+File: public/local-auth-api/metas.json
+================
+[
+	{
+		"idUsuario": 1,
+		"nombre": "Fondo de emergencia",
+		"listaAportes": [
+			{ "monto": 150000, "fechaAporte": "2026-09-01T00:00:00.000Z" },
+			{ "monto": 200000, "fechaAporte": "2026-10-01T00:00:00.000Z" },
+			{ "monto": 175000, "fechaAporte": "2026-11-01T00:00:00.000Z" }
+		],
+		"valorObjetivo": 2000000,
+		"fechaLimite": "2027-01-01T00:00:00.000Z",
+		"completado": false
+	},
+	{
+		"idUsuario": 2,
+		"nombre": "Viaje a Medellín",
+		"listaAportes": [
+			{ "monto": 120000, "fechaAporte": "2026-09-01T00:00:00.000Z" },
+			{ "monto": 180000, "fechaAporte": "2026-10-01T00:00:00.000Z" },
+			{ "monto": 100000, "fechaAporte": "2026-11-01T00:00:00.000Z" }
+		],
+		"valorObjetivo": 1200000,
+		"fechaLimite": "2026-12-01T00:00:00.000Z",
+		"completado": false
+	},
+	{
+		"idUsuario": 3,
+		"nombre": "Nuevo computador",
+		"listaAportes": [
+			{ "monto": 300000, "fechaAporte": "2026-08-31T00:00:00.000Z" },
+			{ "monto": 250000, "fechaAporte": "2026-09-30T00:00:00.000Z" }
+		],
+		"valorObjetivo": 3500000,
+		"fechaLimite": "2026-10-31T13:20:00.000Z",
+		"completado": false
+	}
+]
+
+================
+File: src/app/core/models/meta_ahorro.model.ts
+================
+// Esto es una meta de ahorro
+// Nada relacionado con el sufijo griego
+export interface MetaAhorro {
+    idUsuario: number;
+    nombre: string;
+    listaAportes: { monto: number; fechaAporte: string | null }[];
+    valorObjetivo: number;
+    fechaLimite: string;
+    completado: boolean;
+}
+
+================
+File: src/app/core/services/local-api.spec.ts
+================
+import { TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { LocalApi } from './local-api';
+
+describe('LocalApi', () => {
+  let service: LocalApi;
+  let httpTestingController: HttpTestingController;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), provideHttpClientTesting()],
+    });
+    service = TestBed.inject(LocalApi);
+    httpTestingController = TestBed.inject(HttpTestingController);
+  });
+
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+
+  it('loads the goal before adding contributions and marks it completed at its target', () => {
+    service.registrarAporteMetaAhorro(1, 'fondo de emergencia', 25);
+
+    httpTestingController.expectOne('local-auth-api/metas.json').flush([
+      {
+        idUsuario: 1,
+        nombre: 'Fondo de emergencia',
+        listaAportes: [{ monto: 150, fechaAporte: null }],
+        valorObjetivo: 200,
+        fechaLimite: '2027-01-01T00:00:00.000Z',
+        completado: false,
+      },
+    ]);
+
+    expect(service.metasAhorro()[0].listaAportes.map(({ monto }) => monto)).toEqual([150, 25]);
+    expect(typeof service.metasAhorro()[0].listaAportes[1].fechaAporte).toBe('string');
+    expect(service.metasAhorro()[0].completado).toBe(false);
+    service.calcularProgresoMetaAhorro(1, 'Fondo de emergencia').subscribe((progreso) => {
+      expect(progreso).toBe(87.5);
+    });
+
+    service.registrarAporteMetaAhorro(1, 'FONDO DE EMERGENCIA', 25);
+
+    expect(service.metasAhorro()[0].listaAportes.map(({ monto }) => monto)).toEqual([150, 25, 25]);
+    expect(
+      service.metasAhorro()[0].listaAportes.slice(1).every(({ fechaAporte }) => typeof fechaAporte === 'string'),
+    ).toBe(true);
+    expect(service.metasAhorro()[0].completado).toBe(true);
+    httpTestingController.verify();
+  });
+});
+
+================
+File: src/app/features/dashboard/dashboard.css
+================
+.dashboard-contenedor {
+  padding: var(--space-6);
+  max-width: 1000px;
+}
+
+.cabecera-dashboard {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-6);
+}
+
+.cabecera-dashboard h2 {
+  margin: 0;
+  color: var(--navy-900);
+}
+
+.fecha {
+  margin: 4px 0 0 0;
+  color: var(--neutral-600);
+}
+
+.botones-accion {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.titulo-seccion {
+  margin-bottom: var(--space-4);
+  color: var(--navy-900);
+  font-size: 16px;
+}
+
+.grid-tarjetas {
+  display: flex;
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+}
+
+/* Hacemos que cada tarjeta ocupe el mismo ancho */
+.grid-tarjetas > * {
+  flex: 1;
+}
+
+.lista-movimientos {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-lg);
+  padding: 0 var(--space-6);
+}
+
+================
+File: src/app/shared/components/header/header.ts
+================
+import { Component, signal, HostListener, ElementRef, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+// Interfaz que define cómo se ve cada notificación
+interface Notificacion {
+  id: number;
+  mensaje: string;    // Texto principal de la notificación
+  tiempo: string;     // Cuándo ocurrió (ej: "Hace 5 min")
+  leida: boolean;     // Si el usuario ya la vio o no
+}
+
+@Component({
+  imports: [CommonModule],
+  selector: 'app-header',
+  styleUrl: './header.css',
+  templateUrl: './header.html',
+})
+export class Header {
+
+  //Abrir y cerrar el menu lateral en los dispositivos moviles
+  @Output() toggleMenu = new EventEmitter<void>();
+
+  onToggleMenu(): void {
+    this.toggleMenu.emit();
+  }
+
+  // ── Datos del usuario ──────────────────────────────────────────────────────
+  nombreUsuario: string = 'Estudiante';
+  rolUsuario: string = 'Ucompensar';
+
+  // ── Estado del menú de notificaciones ─────────────────────────────────────
+  // signal() es la forma moderna de Angular para variables reactivas.
+  // Cuando cambia, el HTML se actualiza automáticamente.
+  mostrarNotificaciones = signal(false);
+
+  // ── Lista de notificaciones de ejemplo ────────────────────────────────────
+  notificaciones: Notificacion[] = [
+    {
+      id: 1,
+      mensaje: 'Llevas el 68% de tu presupuesto mensual.',
+      tiempo: 'Hace 5 min',
+      leida: false,
+    },
+    {
+      id: 2,
+      mensaje: 'Meta "Viaje de semestre" al 45% 🎯',
+      tiempo: 'Hace 1 hora',
+      leida: false,
+    },
+    {
+      id: 3,
+      mensaje: 'Se registró un ingreso de $150.000.',
+      tiempo: 'Ayer, 16:00',
+      leida: true,
+    },
+  ];
+
+  // Calculamos cuántas notificaciones NO han sido leídas
+  get cantidadSinLeer(): number {
+    return this.notificaciones.filter(n => !n.leida).length;
+  }
+
+  // ── Constructor con inyección del elemento raíz ───────────────────────────
+  // Necesitamos la referencia al elemento para detectar clics fuera del menú
+  constructor(private elementRef: ElementRef) {}
+
+  // ── Abrir / cerrar el panel de notificaciones ─────────────────────────────
+  toggleNotificaciones(): void {
+    this.mostrarNotificaciones.update(valor => !valor);
+  }
+
+  // ── Marcar una notificación como leída ────────────────────────────────────
+  marcarComoLeida(id: number): void {
+    const notif = this.notificaciones.find(n => n.id === id);
+    if (notif) {
+      notif.leida = true;
+    }
+  }
+
+  // ── Marcar todas como leídas ──────────────────────────────────────────────
+  marcarTodasComoLeidas(): void {
+    this.notificaciones.forEach(n => (n.leida = true));
+  }
+
+  // ── Cerrar el panel si el usuario hace clic fuera del header ─────────────
+  // @HostListener escucha eventos en toda la página (document)
+  @HostListener('document:click', ['$event'])
+  cerrarAlClickearAfuera(evento: MouseEvent): void {
+    // Si el clic ocurrió FUERA de este componente, cerramos el panel
+    const dentroDelComponente = this.elementRef.nativeElement.contains(evento.target);
+    if (!dentroDelComponente) {
+      this.mostrarNotificaciones.set(false);
+    }
+  }
+}
+
+================
+File: src/app/shared/components/menu-lateral/menu-lateral.css
+================
+.menu-lateral {
+  width: 260px;
+  background-color: var(--bg-surface);
+  border-right: 1px solid var(--neutral-200);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* <--- Soluciona el espacio vacío vertical */
+  gap: var(--space-4); /* Espacio ordenado entre elementos */
+  padding: var(--space-6) var(--space-4);
+  height: calc(100vh - 70px);
+  box-sizing: border-box;
+}
+
+/* Ocultamos la cabecera móvil por defecto en escritorio */
+.menu-header-mobile {
+  display: none;
+}
+
+.menu-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.menu-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--neutral-500);
+  letter-spacing: 0.05em;
+  padding-left: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
+.menu-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 10px var(--space-3);
+  color: var(--neutral-700);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+}
+
+.menu-item:hover {
+  background-color: var(--neutral-100);
+  color: var(--neutral-900);
+}
+
+/* Opción activa en el menú */
+.menu-item.active {
+  background-color: var(--primary-50);
+  color: var(--primary-500);
+  font-weight: 600;
+}
+
+.menu-footer {
+  border-top: 1px solid var(--neutral-200);
+  padding-top: var(--space-4);
+  margin-top: auto; /* Empuja el footer hacia abajo si sobra espacio */
+}
+
+/* --- Estilos Responsivos y Menú Hamburguesa --- */
+
+@media (max-width: 1024px) {
+  /* Ocultamos la etiqueta fija de escritorio en móvil */
+  .desktop-only {
+    display: none;
+  }
+
+  /* Mostramos la cabecera móvil ordenada arriba */
+  .menu-header-mobile {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--neutral-200);
+    margin-bottom: var(--space-2);
+  }
+
+  .menu-label-top {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--neutral-500);
+    letter-spacing: 0.05em;
+    padding-left: var(--space-3);
+  }
+
+  .close-menu-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: var(--neutral-700);
+    padding: var(--space-2);
+    border-radius: var(--radius-sm);
+  }
+
+  .close-menu-btn:hover {
+    background-color: var(--neutral-100);
+  }
+
+  /* Comportamiento flotante en pantallas pequeñas */
+  .menu-lateral {
+    position: fixed;
+    top: 70px;
+    left: -260px;
+    width: 260px;
+    height: calc(100vh - 70px);
+    z-index: 1000;
+    transition: left 0.3s ease-in-out;
+    background-color: var(--bg-surface, #ffffff);
+    box-shadow: none;
+  }
+
+  /* Al abrirse, se desliza y muestra sombra clara */
+  :host(.open) .menu-lateral,
+  .menu-lateral.open {
+    left: 0;
+    box-shadow: 12px 0 32px rgba(15, 23, 42, 0.2);
+  }
+}
+
+================
+File: src/app/app.css
+================
+/* ============================================================
+   LAYOUT PRINCIPAL DE LA APLICACIÓN
+   ============================================================ */
+
+.main-layout-container {
+  display: flex;
+  min-height: calc(100vh - 70px);
+  background-color: var(--bg-main, #f8fafc);
+  width: 100%;
+  position: relative;
+}
+
+/* Área principal de contenido */
+.content-area {
+  flex: 1;
+  min-width: 0;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+/* ============================================================
+   RESPONSIVE: TABLETS Y MÓVILES
+   ============================================================ */
+@media (max-width: 1024px) {
+  .content-area {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .content-area {
+    padding: 12px;
+  }
+}
+
+================
+File: src/styles.css
+================
+:root {
+  /* =========================================
+     1. PALETA PRINCIPAL (Navegación y Acciones)
+     ========================================= */
+  --primary-50: #EFF6FF; /* Fondo sidebar activo y hover */
+  --primary-100: #DBEAFE; /* Anillos de enfoque */
+  --primary-500: #2563EB; /* Botones principales, sidebar activo */
+  --primary-600: #1D4ED8; /* Hover de botones principales */
+  --primary-700: #1E40AF; /* Estado pressed */
+  --navy-900: #172554; /* Logotipo y valores destacados */
+
+  /* =========================================
+     2. AHORRO E INGRESOS (Metas y Resultados)
+     ========================================= */
+  --success-50: #ECFDF5; /* Fondo de contenedores de ahorro */
+  --success-100: #D1FAE5; /* Fondo botón 'Registrar Ingreso' */
+  --success-200: #A7F3D0; /* Borde botón 'Registrar Ingreso' */
+  --success-500: #10B981; /* Barras de progreso de metas */
+  --success-600: #059669; /* Iconos de ingresos */
+  --success-700: #047857; /* Texto de ingresos y metas */
+
+  /* =========================================
+     3. GASTOS Y ESTADOS SEMÁNTICOS
+     ========================================= */
+  /* Gastos normales (No destructivo) */
+  --expense-50: #FFF1F2; /* Fondo botón 'Registrar Gasto' */
+  --expense-100: #FFE4E6; /* Borde botón 'Registrar Gasto' */
+  --expense-500: #E11D48; /* Valores de salida en movimientos */
+  --expense-700: #BE123C; /* Texto de gastos */
+
+  /* Advertencias (Presupuesto al límite) */
+  --warning-50: #FFFBEB; /* Fondo de alerta */
+  --warning-500: #F59E0B; /* Icono de alerta */
+  --warning-800: #92400E; /* Texto de alerta */
+
+  /* Información (Consejo del día) */
+  --info-100: #E0F2FE; /* Fondo de tarjeta de consejo */
+  --info-600: #0284C7; /* Texto e icono de consejo */
+
+  /* Errores críticos */
+  --error-50: #FEF2F2;
+  --error-600: #DC2626;
+  --error-700: #B91C1C;
+
+  /* =========================================
+     4. NEUTROS (Fondos, Textos y Bordes)
+     ========================================= */
+  --bg-main: #F8FAFC; /* Fondo principal de toda la app */
+  --bg-surface: #FFFFFF; /* Tarjetas, sidebar, header */
+  --neutral-100: #F1F5F9; /* Hover de botones secundarios */
+  --neutral-200: #E2E8F0; /* Bordes de tarjetas y header */
+  --neutral-300: #CBD5E1; /* Bordes de inputs */
+  --neutral-500: #64748B; /* Placeholders */
+  --neutral-600: #475569; /* Fechas e historial inactivo */
+  --neutral-700: #334155; /* Subtítulos */
+  --neutral-900: #0F172A; /* Textos principales */
+
+  /* =========================================
+     5. CATEGORÍAS (Gráfica de distribución)
+     ========================================= */
+  --cat-alimentacion: #F59E0B;
+  --cat-transporte: #3B82F6;
+  --cat-materiales: #8B5CF6;
+  --cat-entretenimiento: #EC4899;
+  --cat-suscripciones: #6366F1;
+  --cat-otros: #64748B;
+
+  /* =========================================
+     6. SISTEMA DE DISEÑO (Estructura)
+     ========================================= */
+  /* Radios */
+  --radius-sm: 8px;
+  --radius-md: 12px; /* Botones e inputs */
+  --radius-lg: 16px; /* Tarjetas de resumen */
+  --radius-full: 9999px; /* Pastillas / Badges */
+
+  /* Sombras */
+  --shadow-card: 0 4px 6px -1px rgba(15, 23, 42, 0.05), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
+  --shadow-header: 0 1px 3px 0 rgba(15, 23, 42, 0.05);
+
+  /* Espaciados */
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px; /* Padding interno de tarjetas */
+  --space-8: 32px;
+}
+
+/* Reset básico para asegurar que el fondo general aplique en toda la SPA */
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-main);
+  color: var(--neutral-900);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif; /* Recomendación de fuente limpia */
+}
+
+/* =========================================
+   7. FORMULARIOS (compartido por Login y Registrar movimiento)
+   ========================================= */
+/* Contenedor de cada campo: etiqueta + input + mensaje de error */
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: var(--space-4);
+}
+
+.campo label,
+.etiqueta {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--neutral-700);
+}
+
+/* Caja del input. Puede llevar un ícono a la izquierda */
+.input-grupo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 var(--space-3);
+  min-height: 44px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--neutral-300);
+  border-radius: var(--radius-md);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* :focus-within = cuando el input que está adentro tiene el foco */
+.input-grupo:focus-within {
+  border-color: var(--primary-500);
+  box-shadow: 0 0 0 3px var(--primary-100);
+}
+
+/* Borde rojo cuando el campo es inválido */
+.input-grupo.invalido {
+  border-color: var(--error-600);
+}
+
+.input-grupo svg {
+  flex-shrink: 0;
+  color: var(--neutral-500);
+}
+
+/* El input real no tiene borde: el borde lo pone .input-grupo */
+.input-grupo input,
+.input-grupo select {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 15px;
+  font-family: inherit;
+  color: var(--neutral-900);
+  padding: 10px 0;
+}
+
+.input-grupo input::placeholder {
+  color: var(--neutral-500);
+}
+
+/* Texto pequeño de error debajo del input */
+.texto-error {
+  margin: 0;
+  font-size: 12px;
+  color: var(--error-700);
+}
+
+/* Mensaje general (ej: credenciales incorrectas) */
+.alerta-error {
+  padding: var(--space-3);
+  margin-bottom: var(--space-4);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  background-color: var(--error-50);
+  color: var(--error-700);
+}
+
+/* Botones nativos de formulario.
+   No usamos <app-boton-generico> aquí porque necesitamos type="submit"/"button" e íconos */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-4);
+  min-height: 44px;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-principal {
+  background-color: var(--primary-500);
+  color: #FFFFFF;
+}
+
+.btn-principal:hover {
+  background-color: var(--primary-600);
+}
+
+.btn-secundario {
+  background-color: var(--bg-surface);
+  border-color: var(--neutral-300);
+  color: var(--neutral-700);
+}
+
+.btn-secundario:hover {
+  background-color: var(--neutral-100);
+}
+
+================
+File: .gitignore
+================
+# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+
+# Compiled output
+/dist
+/tmp
+/out-tsc
+/bazel-out
+
+# Node
+/node_modules
+npm-debug.log
+yarn-error.log
+
+# IDEs and editors
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/mcp.json
+.history/*
+
+# Miscellaneous
+/.angular/cache
+.sass-cache/
+/connect.lock
+/coverage
+/libpeerconnection.log
+testem.log
+/typings
+__screenshots__/
+
+# System files
+.DS_Store
+Thumbs.db
+
+================
+File: src/app/shared/components/header/header.css
+================
+/* ============================================================
+   HEADER PRINCIPAL
+   Barra fija en la parte superior de toda la aplicación
+   ============================================================ */
+.top-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+  padding: 0 var(--space-6);
+  background-color: var(--bg-surface);
+  border-bottom: 1px solid var(--neutral-200);
+  box-shadow: var(--shadow-header);
+  box-sizing: border-box;
+  width: 100%;
+  /* Garantiza que quede por encima del panel desplegable */
+  position: relative;
+  z-index: 100;
+}
+
+/* ── Lado izquierdo: hamburguesa + buscador ───────────────────────────────── */
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex: 1;
+}
+
+/* Botón de hamburguesa (☰).
+   En escritorio se oculta; en móvil se muestra */
+.menu-toggle-btn {
+  display: none; /* ocultamos en desktop */
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--neutral-600);
+  padding: var(--space-2);
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.menu-toggle-btn:hover {
+  background-color: var(--neutral-100);
+}
+
+/* Caja del buscador */
+.header-search {
+  max-width: 400px;
+  width: 100%;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px var(--space-4);
+  border: 1px solid var(--neutral-300);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-main);
+  font-size: 14px;
+  color: var(--neutral-900);
+  outline: none;
+  transition: border-color 0.2s, background-color 0.2s;
+  box-sizing: border-box;
+}
+
+.search-input::placeholder {
+  color: var(--neutral-500);
+}
+
+.search-input:focus {
+  border-color: var(--primary-500);
+  background-color: var(--bg-surface);
+  box-shadow: 0 0 0 3px var(--primary-100);
+}
+
+/* ── Lado derecho: notificaciones + perfil ───────────────────────────────── */
+.header-user-section {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  flex-shrink: 0;
+}
+
+/* ── Contenedor posicional del botón + panel ─────────────────────────────── */
+.notificaciones-wrapper {
+  position: relative; /* el panel se posiciona respecto a este div */
+}
+
+/* Botón de la campana */
+.notification-btn {
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  padding: var(--space-2);
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.notification-btn:hover {
+  background-color: var(--neutral-100);
+}
+
+/* Badge rojo con la cantidad de no leídas */
+.badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background-color: var(--error-600);
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 2px 5px;
+  border-radius: var(--radius-full);
+  line-height: 1;
+}
+
+/* ── Panel desplegable de notificaciones ─────────────────────────────────── */
+.notificaciones-panel {
+  position: absolute;
+  top: calc(100% + 10px); /* 10px debajo del botón */
+  right: 0;               /* alineado al borde derecho del wrapper */
+  width: 320px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+  z-index: 200;           /* por encima de todo el contenido */
+  overflow: hidden;
+}
+
+/* Cabecera del panel: título + botón "marcar todas" */
+.notif-cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-4) var(--space-4) var(--space-3);
+  border-bottom: 1px solid var(--neutral-200);
+}
+
+.notif-titulo {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--neutral-900);
+}
+
+.notif-btn-leer-todo {
+  background: none;
+  border: none;
+  font-size: 12px;
+  color: var(--primary-500);
+  cursor: pointer;
+  padding: 0;
+  font-weight: 500;
+}
+
+.notif-btn-leer-todo:hover {
+  text-decoration: underline;
+}
+
+/* Lista de notificaciones */
+.notif-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 280px;
+  overflow-y: auto; /* scroll si hay muchas notificaciones */
+}
+
+/* Cada fila de notificación */
+.notif-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  cursor: pointer;
+  transition: background-color 0.15s;
+  border-bottom: 1px solid var(--neutral-100);
+}
+
+.notif-item:last-child {
+  border-bottom: none;
+}
+
+.notif-item:hover {
+  background-color: var(--neutral-100);
+}
+
+/* Fondo azul suave para notificaciones sin leer */
+.notif-item--sin-leer {
+  background-color: var(--primary-50);
+}
+
+.notif-item--sin-leer:hover {
+  background-color: var(--primary-100);
+}
+
+/* Punto azul indicador */
+.notif-punto {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  margin-top: 5px;
+  background-color: var(--primary-500);
+  border-radius: 50%;
+}
+
+.notif-contenido {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.notif-mensaje {
+  margin: 0;
+  font-size: 13px;
+  color: var(--neutral-900);
+  line-height: 1.4;
+}
+
+.notif-tiempo {
+  font-size: 11px;
+  color: var(--neutral-500);
+}
+
+/* Mensaje cuando todo está leído */
+.notif-vacio {
+  text-align: center;
+  padding: var(--space-6);
+  font-size: 13px;
+  color: var(--neutral-500);
+  margin: 0;
+}
+
+/* ── Perfil de usuario ───────────────────────────────────────────────────── */
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.user-avatar {
+  width: 38px;
+  height: 38px;
+  background-color: var(--primary-500);
+  color: white;
+  font-weight: 600;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--neutral-900);
+}
+
+.user-role {
+  font-size: 12px;
+  color: var(--neutral-600);
+}
+
+/* ============================================================
+   RESPONSIVE: TABLET (≤ 768px)
+   El menú lateral se oculta y aparece el botón hamburguesa
+   ============================================================ */
+@media (max-width: 768px) {
+  /* Mostramos el botón hamburguesa en tablets y móviles */
+  .menu-toggle-btn {
+    display: block;
+  }
+
+  /* El buscador se reduce un poco */
+  .header-search {
+    max-width: 100%;
+  }
+
+  /* Ocultamos el nombre y rol del usuario para ahorrar espacio */
+  .user-details {
+    display: none;
+  }
+
+  /* El panel de notificaciones se pone a la derecha de la pantalla */
+  .notificaciones-panel {
+    right: -10px;
+    width: 290px;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE: MÓVIL (≤ 480px)
+   Versión muy compacta
+   ============================================================ */
+@media (max-width: 480px) {
+  .top-header {
+    padding: 0 var(--space-4);
+    gap: var(--space-2);
+  }
+
+  /* En pantallas muy pequeñas el buscador ocupa todo el espacio disponible */
+  .header-search {
+    flex: 1;
+  }
+
+  /* Reducimos gap entre elementos de la derecha */
+  .header-user-section {
+    gap: var(--space-3);
+  }
+
+  /* El panel ocupa casi todo el ancho de la pantalla */
+  .notificaciones-panel {
+    width: calc(100vw - 32px);
+    right: -50px;
+  }
+}
+
+================
+File: src/app/shared/components/menu-lateral/menu-lateral.html
+================
+<aside class="menu-lateral">
+  <!-- 1. Cabecera superior móvil: Título "MENÚ" y botón de cierre (✕) -->
+  <div class="menu-header-mobile">
+    <span class="menu-label-top">MENÚ</span>
+    <button class="close-menu-btn" aria-label="Cerrar menú" (click)="cerrarMenu()">✕</button>
+  </div>
+
+  <!-- 2. Opciones de navegación del menú -->
+  <div class="menu-section">
+    <span class="menu-label desktop-only">MENÚ</span>
+    <nav class="menu-list">
+      <a routerLink="/dashboard" routerLinkActive="active" class="menu-item" (click)="cerrarMenu()">Panel</a>
+      <a routerLink="/presupuesto" routerLinkActive="active" class="menu-item" (click)="cerrarMenu()">Presupuesto</a>
+      <a routerLink="/movimientos" routerLinkActive="active" class="menu-item" (click)="cerrarMenu()">Movimientos</a>
+      <a routerLink="/metas-ahorro" routerLinkActive="active" class="menu-item" (click)="cerrarMenu()">Metas de ahorro</a>
+    </nav>
+  </div>
+
+  <div class="menu-footer">
+    <!-- Pie de página opcional -->
+  </div>
+</aside>
+
+================
+File: src/app/features/dashboard/dashboard.html
+================
+<div class="dashboard-contenedor">
+  <div class="cabecera-dashboard">
+    <div>
+      <h2>Hola, {{ usuario()?.nombre ?? 'Usuario' }}</h2>
+      <p class="fecha">{{ mesActual }}</p>
+    </div>
+    <div class="botones-accion">
+      <app-boton-generico texto="Registrar ingreso" tipo="ingreso" (click)="abrirModal('ingreso')"></app-boton-generico>
+      <app-boton-generico texto="Registrar gasto" tipo="gasto" (click)="abrirModal('gasto')"></app-boton-generico>
+    </div>
+  </div>
+
+  <h3 class="titulo-seccion">Resumen rápido</h3>
+  <div class="grid-tarjetas">
+    <!-- Tarjeta 1: Dinero disponible -->
+    <app-tarjeta-resumen 
+      titulo="Dinero disponible" 
+      [valorPrincipal]="formatearPesos(saldoDisponible())"
+      [textoSecundario]="'De ' + formatearPesos(registroActual()?.totalIngresos ?? 0) + ' del periodo'">
+    </app-tarjeta-resumen>
+
+    <!-- Tarjeta 2: Presupuesto utilizado -->
+    <app-tarjeta-resumen 
+      titulo="Presupuesto utilizado" 
+      [valorPrincipal]="porcentajePresupuesto() + '%'" 
+      [textoSecundario]="formatearPesos(registroActual()?.totalGastos ?? 0) + ' de ' + formatearPesos(registroActual()?.presupuesto ?? 0)">
+    </app-tarjeta-resumen>
+
+    <!-- Tarjeta 3: Gasto diario recomendado -->
+    <app-tarjeta-resumen 
+      titulo="Gasto diario recomendado" 
+      [valorPrincipal]="formatearPesos(gastoDiarioRecomendado()) + ' / día'" 
+      [textoSecundario]="presupuestoRestante() >= 0
+        ? 'Te quedan ' + formatearPesos(presupuestoRestante()) + ' para ' + diasRestantes() + ' días'
+        : 'Te pasaste por ' + formatearPesos(-presupuestoRestante())">
+    </app-tarjeta-resumen>
+  </div>
+
+  <h3 class="titulo-seccion">Movimientos recientes</h3>
+  
+  <div class="lista-movimientos">
+    @for (mov of movimientosRecientes(); track $index) {
+      <app-item-movimiento
+        [titulo]="mov.titulo"
+        [subtitulo]="mov.subtitulo"
+        [monto]="formatearPesos(mov.monto)"
+        [tipo]="mov.tipo">
+      </app-item-movimiento>
+    }
+  </div>
+</div>
+
+@if (modalAbierto) {
+  <app-registro-movimiento
+    [tipoInicial]="tipoModal"
+    (cerrado)="cerrarModal()"
+    (guardado)="registrarMovimiento($event)">
+  </app-registro-movimiento>
+}
+
+================
+File: src/app/features/dashboard/dashboard.ts
+================
+import { Component, OnInit, computed, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+
+import { BotonGenericoComponent } from '../../shared/components/boton-generico/boton-generico';
+import { TarjetaResumenComponent } from '../../shared/components/tarjeta-resumen/tarjeta-resumen';
+import { ItemMovimientoComponent } from '../../shared/components/item-movimiento/item-movimiento';
+import { RegistroMovimiento } from '../movimientos/registro-movimiento/registro-movimiento';
+import { Movimiento } from '../../core/models/movimiento.model';
+import { LocalApi } from '../../core/services/local-api';
+
+@Component({
+  selector: 'app-dashboard',
+  standalone: true,
+  imports: [CommonModule, BotonGenericoComponent, TarjetaResumenComponent, ItemMovimientoComponent, RegistroMovimiento],
+  templateUrl: './dashboard.html',
+  styleUrls: ['./dashboard.css']
+})
+export class Dashboard implements OnInit {
+  private api = inject(LocalApi);
+  private router = inject(Router);
+
+  modalAbierto = false;
+  tipoModal: 'gasto' | 'ingreso' = 'gasto';
+
+  // ===== Datos conectados a la API local =====
+  usuario = this.api.usuarioActual;
+
+  // 1) El registro financiero del usuario. Lo buscamos una sola vez y las demás tarjetas salen de aquí.
+registroActual = computed(() => {
+    const usuario = this.api.usuarioActual();
+    if (!usuario) return undefined;
+  // Buscamos haciendo match estricto o flexible con el id del usuario
+  return this.api.registrosFinancieros().find(r => r.idUsuario == usuario.id);
+  });
+  // 2) Dinero disponible = lo que ha entrado - lo que ha salido
+  saldoDisponible = computed(() => {
+    const r = this.registroActual();
+    return r ? r.totalIngresos - r.totalGastos : 0;
+  });
+
+  // 3) Porcentaje del presupuesto que ya se gastó
+  porcentajePresupuesto = computed(() => {
+    const r = this.registroActual();
+    if (!r || r.presupuesto === 0) return 0;
+    return Math.round((r.totalGastos / r.presupuesto) * 100);
+  });
+
+  // 4) Presupuesto restante (puede ser negativo si se pasó del límite)
+  presupuestoRestante = computed(() => {
+    const r = this.registroActual();
+    return r ? r.presupuesto - r.totalGastos : 0;
+  });
+
+  // 5) Días que faltan para terminar el mes (contando hoy)
+  diasRestantes = computed(() => {
+    const hoy = new Date();
+    const ultimoDia = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0).getDate();
+    return ultimoDia - hoy.getDate() + 1;
+  });
+
+  // 6) Gasto diario recomendado = lo que queda del presupuesto / días que faltan
+  gastoDiarioRecomendado = computed(() =>
+    Math.round(Math.max(0, this.presupuestoRestante()) / this.diasRestantes())
+  );
+
+  // Mes actual para la cabecera: "noviembre de 2026"
+  mesActual = new Date().toLocaleDateString('es-co', { month: 'long', year: 'numeric' });
+
+  // Movimientos del usuario que inició sesión
+  movimientosRecientes = computed(() => {
+    const usuario = this.api.usuarioActual();
+    return this.api.movimientos()
+      .filter(m => m.idUsuario === usuario?.id)
+      .slice(0, 5)
+      .map(m => ({
+        titulo: m.descripcion || m.categoria,
+        subtitulo: `${m.categoria} - ${m.fecha}`,
+        monto: m.monto,
+        tipo: m.tipo
+      }));
+  });
+
+  ngOnInit(): void {
+    if (!this.api.usuarioActual()) {
+      this.router.navigate(['/login']);
+      return;
+    }
+    // Lee los JSON solo la primera vez gracias a la bandera restaurada
+    this.api.cargarDatosFinancieros();
+  }
+
+  abrirModal(tipo: 'gasto' | 'ingreso'): void {
+    this.tipoModal = tipo;
+    this.modalAbierto = true;
+  }
+
+  cerrarModal(): void {
+    this.modalAbierto = false;
+  }
+
+  registrarMovimiento(movimiento: Movimiento): void {
+    const usuario = this.api.usuarioActual();
+    if (!usuario) return;
+
+    this.api.registrarMovimiento(usuario.id, movimiento);
+    this.cerrarModal();
+  }
+
+  formatearPesos(valor: number): string {
+    return '$' + Number(valor || 0).toLocaleString('es-CO');
+  }
+}
+
+================
+File: src/app/app.routes.ts
+================
+import { Routes } from '@angular/router';
+import { Login } from './features/auth/login/login';
+import { Dashboard } from './features/dashboard/dashboard';
+import { Presupuesto } from './features/presupuesto/presupuesto';
+import { Movimientos } from './features/movimientos/movimientos';
+import { MetasAhorro } from './features/metas-ahorro/metas-ahorro';
+
+export const routes: Routes = [
+  { path: '', redirectTo: 'login', pathMatch: 'full' }, // la app arranca en el login
+  { path: 'login', component: Login },
+  { path: 'dashboard', component: Dashboard },
+  { path: 'presupuesto', component: Presupuesto },
+  { path: 'movimientos', component: Movimientos },
+  { path: 'metas-ahorro', component: MetasAhorro },
+  { path: '**', redirectTo: 'dashboard' }
+];
+
+================
+File: src/app/app.ts
+================
+import { Component, signal, inject } from '@angular/core';
+import { Router, RouterOutlet } from '@angular/router';
+import { Header } from './shared/components/header/header';
+import { MenuLateral } from './shared/components/menu-lateral/menu-lateral';
+
+@Component({
+  imports: [Header, MenuLateral, RouterOutlet],
+  selector: 'app-root',
+  styleUrl: './app.css',
+  templateUrl: './app.html',
+})
+export class App {
+  protected readonly title = signal('unipocket');
+  private router = inject(Router);
+
+  // ── Menú lateral en móvil (Santiago) ──
+  isMenuOpen = false;
+
+  toggleMenuLateral(): void {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  // ── Login sin layout (Nicolás) ──
+  // El layout (header + menú lateral) solo se muestra cuando NO estamos en el login
+  mostrarLayout(): boolean {
+    return !this.router.url.startsWith('/login');
+  }
+}
+
+================
+File: src/app/app.html
+================
+<!-- El layout (header + menú) solo se muestra cuando NO estamos en el login -->
+@if (mostrarLayout()) {
+  <!-- Escuchamos el evento (toggleMenu) que emite el header -->
+  <app-header (toggleMenu)="toggleMenuLateral()"></app-header>
+
+  <div class="main-layout-container">
+    <!-- Pasamos la clase .open y escuchamos cuando el menú emite su cierre -->
+    <app-menu-lateral
+      [class.open]="isMenuOpen"
+      (menuClosed)="isMenuOpen = false">
+    </app-menu-lateral>
+
+    <main class="content-area">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+} @else {
+  <!-- Login: pantalla completa, sin header ni menú -->
+  <router-outlet></router-outlet>
+}
+
+================
+File: src/app/core/services/local-api.ts
+================
+import { inject, Injectable, Service, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, catchError, forkJoin, map, of, shareReplay, tap, throwError } from 'rxjs';
+import { Admin } from '../models/admin.model';
+import { Estadisticas } from '../models/estadisticas.model';
+import { MetaAhorro } from '../models/meta_ahorro.model';
+import { Notificacion } from '../models/notificacion.model';
+import { RegistroFinanciero } from '../models/reg_financiero.model';
+import { Usuario } from '../models/usuario.model';
+import { Movimiento, MovimientoUsuario } from '../models/movimiento.model';
+
+@Service()
+export class LocalApi {
+  private http = inject(HttpClient);
+
+  // =====================================================================
+  // 1. LECTURA DE LOS JSON
+  // Cada método lee un archivo de public/local-auth-api/ con HttpClient
+  // y devuelve un Observable (los datos llegan cuando alguien hace .subscribe()).
+  // =====================================================================
+
+  obtenerAdmins(): Observable<Admin[]> {
+    return this.http.get<Admin[]>('local-auth-api/admins.json');
+  }
+  obtenerEstadisticas(): Observable<Estadisticas[]> {
+    return this.http.get<Estadisticas[]>('local-auth-api/estadisticas.json');
+  }
+  // Corregido (Nicolás): antes usaba como tipo el componente MetasAhorro; el tipo correcto es el modelo Meta
+  // Cambiado (Guarniz): Reflejado el cambio de nombre a MetaAhorro.
+  obtenerMetasAhorro(): Observable<MetaAhorro[]> {
+    return this.http.get<MetaAhorro[]>('local-auth-api/metas.json');
+  }
+  obtenerNotificaciones(): Observable<Notificacion[]> {
+    return this.http.get<Notificacion[]>('local-auth-api/notificaciones.json');
+  }
+  obtenerRegistrosFinancieros(): Observable<RegistroFinanciero[]> {
+    return this.http.get<RegistroFinanciero[]>('local-auth-api/registrosFinancieros.json');
+  }
+  // Corregido (Nicolás): antes leía admins.json en vez de usuarios.json
+  obtenerUsuarios(): Observable<Usuario[]> {
+    return this.http.get<Usuario[]>('local-auth-api/usuarios.json');
+  }
+  // Nuevo (Nicolás): movimientos (ingresos y gastos) de todos los usuarios
+  obtenerMovimientos(): Observable<MovimientoUsuario[]> {
+    return this.http.get<MovimientoUsuario[]>('local-auth-api/movimientos.json');
+  }
+
+  // =====================================================================
+  // 2. LOGIN
+  // =====================================================================
+
+  // Usuario que inició sesión. null = nadie ha iniciado sesión.
+  // Es un signal: cualquier componente que lo lea se actualiza solo cuando cambia.
+  usuarioActual = signal<Usuario | null>(null);
+
+  // Busca un usuario o admin con ese correo y contraseña.
+  // forkJoin espera a que lleguen LOS DOS archivos (usuarios y admins) y luego
+  // map une las dos listas y busca la coincidencia. Devuelve undefined si no existe.
+  validarCredenciales(correo: string, contrasena: string): Observable<Usuario | undefined> {
+    return forkJoin([this.obtenerUsuarios(), this.obtenerAdmins()]).pipe(
+      map(([usuarios, admins]) =>
+        [...usuarios, ...admins].find((u) => u.correo === correo && u.contrasena === contrasena),
+      ),
+    );
+  }
+
+  // Guarda en memoria quién inició sesión (incluye su rol: "usuario" o "administrador")
+  iniciarSesion(usuario: Usuario): void {
+    this.usuarioActual.set(usuario);
+  }
+
+  // =====================================================================
+  // 3. DATOS FINANCIEROS EN MEMORIA
+  // Los .json de public/ son de SOLO LECTURA (HttpClient no puede escribir en ellos).
+  // Por eso: los leemos UNA vez, los copiamos en signals y desde ahí los modificamos.
+  // Como el servicio es único en toda la app, los cambios se mantienen al navegar
+  // entre vistas, pero se pierden al recargar la página (vuelve a leer el JSON).
+  // =====================================================================
+
+  movimientos = signal<MovimientoUsuario[]>([]);
+  registrosFinancieros = signal<RegistroFinanciero[]>([]);
+  private datosFinancierosCargados = false;
+
+  // Lee movimientos.json y registrosFinancieros.json y llena los signals.
+  // Si ya se cargaron antes, no hace nada (así no se borran los movimientos nuevos).
+  cargarDatosFinancieros(): void {
+    if (this.datosFinancierosCargados) return;
+    this.datosFinancierosCargados = true;
+
+    forkJoin([this.obtenerMovimientos(), this.obtenerRegistrosFinancieros()]).subscribe({
+      next: ([movimientos, registros]) => {
+        this.movimientos.set(movimientos);
+        this.registrosFinancieros.set(registros);
+      },
+      error: () => {
+        // Si falla la lectura, permitimos intentarlo de nuevo la próxima vez
+        this.datosFinancierosCargados = false;
+        console.error('No se pudieron cargar los datos financieros');
+      },
+    });
+  }
+
+  // Registra un movimiento nuevo del usuario indicado.
+  registrarMovimiento(idUsuario: number, movimiento: Movimiento): void {
+    // 1) Agregamos el movimiento de PRIMERO en la lista (es el más reciente).
+    //    update() recibe la lista actual y devuelve una lista nueva.
+    const nuevo: MovimientoUsuario = { ...movimiento, idUsuario };
+    this.movimientos.update((lista) => [nuevo, ...lista]);
+
+    // 2) Actualizamos los totales del registro financiero de ese usuario:
+    //    un ingreso suma a totalIngresos y un gasto suma a totalGastos.
+    //    (El saldo disponible = totalIngresos - totalGastos, así que el ingreso
+    //    lo hace subir y el gasto lo hace bajar.)
+    this.registrosFinancieros.update((registros) =>
+      registros.map((registro) => {
+        if (registro.idUsuario !== idUsuario) return registro; // los demás quedan igual
+        return movimiento.tipo === 'ingreso'
+          ? { ...registro, totalIngresos: registro.totalIngresos + movimiento.monto }
+          : { ...registro, totalGastos: registro.totalGastos + movimiento.monto };
+      }),
+    );
+  }
+
+  // Actualización de datos dentro de metas de ahorro, hecho con las manos.
+  // La idea es usar la misma forma que se usa arriba para cargar datos, manipularlos en memoria
+  // Dado que angular por defecto no puede modificar JSONs
+
+  metasAhorro = signal<MetaAhorro[]>([]);
+  private metasAhorroCargadas = false;
+  private metasAhorroCarga: Observable<MetaAhorro[]> | null = null;
+
+  // Mismo flujo, obtener datos suscribiendose al observable, si falla notificando en consola
+  cargarMetasAhorro(): Observable<MetaAhorro[]> {
+    if (this.metasAhorroCargadas) return of(this.metasAhorro());
+
+    if (!this.metasAhorroCarga) {
+      this.metasAhorroCarga = this.obtenerMetasAhorro().pipe(
+        tap((metasAhorro) => {
+          this.metasAhorro.set(metasAhorro);
+          this.metasAhorroCargadas = true;
+        }),
+        catchError((error) => {
+          this.metasAhorroCarga = null;
+          console.error('La carga de MetasAhorro ha fallado.');
+          return throwError(() => error);
+        }),
+        shareReplay({ bufferSize: 1, refCount: false }),
+      );
+    }
+
+    return this.metasAhorroCarga;
+  }
+
+  // Carga usuarios, verifica que el usuario dentro de la meta de ahorro exista y inserta la meta en tal caso
+  registrarMetaAhorro(nuevaMetaAhorro: MetaAhorro): void {
+    // Cargar la lista de usuarios.
+    // Podría dejar esto en una función nueva pero no se puede suscribir a la misma para hacer los cambios, dado que se desincroniza
+    // y puede saltarse uno de los usuarios.
+    var listaUsuarios = signal<Usuario[]>([]);
+    this.obtenerUsuarios().subscribe({
+      next: (Usuarios) => {
+        listaUsuarios.set(Usuarios);
+        var usuarioExiste = false;
+
+        // Es la manera que encontré para iterar en esta lista xd, en general no hace cambios en la lista de usuarios
+        listaUsuarios.update((usuarios) =>
+          usuarios.map((usuario) => {
+            if (nuevaMetaAhorro.idUsuario == usuario.id) {
+              usuarioExiste = true;
+            }
+            return usuario;
+          }),
+        );
+
+        if (usuarioExiste)
+          this.metasAhorro.update((MetasActuales) => [nuevaMetaAhorro, ...MetasActuales]);
+      },
+      error: () => {
+        console.error('La carga de ListaUsuarios ha fallado durante el registro de MetaAhorro.');
+      },
+    });
+  }
+
+  // Verifica que el aporte no sea 0, que haya expirado, verifica nombre y id del usuario con la lista actual de metas, añade los aportes
+  registrarAporteMetaAhorro(
+    idUsuario: number,
+    nombreMeta: string,
+    aporte: number,
+    fechaAporte: Date = new Date(),
+  ): void {
+    if (aporte <= 0) return;
+    const now = new Date();
+    if (fechaAporte < now) return;
+    this.cargarMetasAhorro().subscribe({
+      next: () =>
+        this.metasAhorro.update((metas) =>
+          metas.map((meta) => {
+            // Si la meta no concuerda con el idUsuario y nombre, no hace NADA.
+            if (meta.idUsuario !== idUsuario) return meta;
+            if (meta.nombre.toLowerCase() !== nombreMeta.toLowerCase()) return meta;
+
+            const listaAportes = [
+              ...meta.listaAportes,
+              { monto: aporte, fechaAporte: fechaAporte.toISOString() },
+            ];
+            const totalAportes = listaAportes.reduce((total, valor) => total + valor.monto, 0);
+
+            return {
+              ...meta,
+              listaAportes,
+              completado: meta.completado || totalAportes >= meta.valorObjetivo,
+            };
+          }),
+        ),
+      error: () => console.error('No se pudo registrar el aporte a la meta.'),
+    });
+  }
+
+
+  // Devuelve el progreso de meta de ahorro en porcentaje, pide id y nombre meta buscar y calcular esa meta. 
+  // Esto debe ser totalAportado, o lo que sea que le dijo claude a nico, no voy a modificar las interfaces y json para añadir un total que se puede calcular tan facil como un for each
+  calcularProgresoMetaAhorro(idUsuario: number, nombreMeta: string): Observable<number> {
+    return this.cargarMetasAhorro().pipe(
+      map((metas) => {
+        const meta = metas.find(
+          (item) =>
+            item.idUsuario === idUsuario &&
+            item.nombre.toLowerCase() === nombreMeta.toLowerCase(),
+        );
+        if (!meta || meta.valorObjetivo <= 0) return 0;
+
+        const totalAportes = meta.listaAportes.reduce((total, aporte) => total + aporte.monto, 0);
+        return (totalAportes / meta.valorObjetivo) * 100;
+      }),
+    );
+  }
+}
+
+
+
+
+
+================================================================
+End of Codebase
+================================================================
