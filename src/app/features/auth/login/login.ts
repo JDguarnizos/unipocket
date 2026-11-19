@@ -52,8 +52,10 @@ export class Login {
           this.mensajeError = '';
           // Guardamos quién entró (con su rol: "usuario" o "administrador")
           this.api.iniciarSesion(usuario);
-          // Por ahora ambos roles van al dashboard. Juan separará usuario/admin con los Guards.
-          this.router.navigate(['/dashboard']);
+                   // Cada rol va a su vista: el administrador al panel de admin y el estudiante al dashboard.
+          // (Los Guards de Juan se encargan de que nadie entre a una vista que no le corresponde.)
+          const destino = usuario.rol === 'administrador' ? '/admin' : '/dashboard';
+          this.router.navigate([destino]);
         } else {
           this.mensajeError = 'Correo o contraseña incorrectos.';
         }

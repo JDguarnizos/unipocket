@@ -4,6 +4,7 @@ import { Dashboard } from './features/dashboard/dashboard';
 import { Presupuesto } from './features/presupuesto/presupuesto';
 import { Movimientos } from './features/movimientos/movimientos';
 import { MetasAhorro } from './features/metas-ahorro/metas-ahorro';
+import { PanelAdmin } from './features/admin/panel-admin/panel-admin';
 import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
 
@@ -20,5 +21,7 @@ export const routes: Routes = [
   { path: 'presupuesto', component: Presupuesto },
   { path: 'movimientos', component: Movimientos },
   { path: 'metas-ahorro', component: MetasAhorro },
-  { path: '**', redirectTo: 'dashboard' },
+  { path: 'admin', component: PanelAdmin, canActivate: [authGuard, roleGuard],
+  data: { roles: ['administrador'] } }, // panel del administrador 
+  { path: '**', redirectTo: 'dashboard' }
 ];
