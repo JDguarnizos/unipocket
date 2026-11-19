@@ -1,0 +1,189 @@
+<div class="admin-contenedor">
+
+  <!-- ===== Cabecera ===== -->
+  <div class="cabecera">
+    <h2 class="titulo">Panel de administración</h2>
+    <p class="subtitulo">Hola, {{ admin()?.nombre }}. Así va UniPocket hoy.</p>
+  </div>
+
+  <!-- ===== 1. Estadísticas generales (RF15) - reutiliza <app-tarjeta-resumen> ===== -->
+  <h3 class="titulo-seccion">Estadísticas generales</h3>
+  <div class="grid-estadisticas">
+    <app-tarjeta-resumen
+      titulo="Usuarios registrados"
+      [valorPrincipal]="'' + totalUsuarios()"
+      [textoSecundario]="usuariosBloqueados() + ' cuenta(s) bloqueada(s)'">
+    </app-tarjeta-resumen>
+
+    <app-tarjeta-resumen
+      titulo="Metas de ahorro activas"
+      [valorPrincipal]="'' + metasActivas()"
+      [textoSecundario]="'De ' + totalMetas() + ' metas creadas'">
+    </app-tarjeta-resumen>
+
+    <app-tarjeta-resumen
+      titulo="Metas completadas"
+      [valorPrincipal]="'' + metasCompletadas()"
+      textoSecundario="Alcanzaron su valor objetivo">
+    </app-tarjeta-resumen>
+
+    <app-tarjeta-resumen
+      titulo="Movimientos registrados"
+      [valorPrincipal]="'' + totalMovimientos()"
+      textoSecundario="Ingresos y gastos de toda la plataforma">
+    </app-tarjeta-resumen>
+  </div>
+
+  <div class="grid-admin">
+
+    <!-- ===== 2. Gestión de usuarios (RF14) ===== -->
+    <section class="tarjeta">
+      <div class="tarjeta-cabecera">
+        <div>
+          <h3 class="tarjeta-titulo">Gestión de usuarios</h3>
+          <p class="tarjeta-subtitulo">Bloquea o elimina cuentas de prueba</p>
+        </div>
+      </div>
+
+      <!-- Búsqueda -->
+      <form [formGroup]="busquedaForm" class="buscador">
+        <div class="input-grupo">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" formControlName="texto" placeholder="Buscar por nombre o correo" aria-label="Buscar usuarios">
+        </div>
+      </form>
+
+      <!-- Mensaje de la última acción -->
+      @if (mensajeAccion()) {
+        <div class="aviso-exito" role="status">{{ mensajeAccion() }}</div>
+      }
+
+      <!-- Lista de usuarios -->
+      <ul class="lista-usuarios">
+        @for (usuario of usuariosFiltrados(); track usuario.id) {
+          <li class="fila-usuario">
+            <!-- Avatar con iniciales -->
+            <span class="avatar" [class.avatar-bloqueado]="usuario.bloqueado">{{ iniciales(usuario.nombre) }}</span>
+
+            <div class="datos-usuario">
+              <span class="nombre">{{ usuario.nombre }}</span>
+              <span class="correo">{{ usuario.correo }}</span>
+            </div>
+
+            <!-- Estado de la cuenta -->
+            <span class="estado" [class.estado-bloqueado]="usuario.bloqueado">
+              {{ usuario.bloqueado ? 'Bloqueado' : 'Activo' }}
+            </span>
+
+            <!-- Acciones: si se pidió eliminar, se muestra la confirmación en la misma fila -->
+            <div class="acciones">
+              @if (idPorEliminar() === usuario.id) {
+                <span class="pregunta">¿Eliminar?</span>
+                <button type="button" class="btn-mini btn-peligro" (click)="eliminarUsuario(usuario)">Sí, eliminar</button>
+                <button type="button" class="btn-mini" (click)="cancelarEliminacion()">Cancelar</button>
+              } @else {
+                <button type="button" class="btn-mini" (click)="alternarBloqueo(usuario)">
+                  {{ usuario.bloqueado ? 'Desbloquear' : 'Bloquear' }}
+                </button>
+                <button type="button" class="btn-mini btn-peligro-suave" (click)="pedirConfirmacion(usuario)"
+                        [attr.aria-label]="'Eliminar a ' + usuario.nombre">
+                  Eliminar
+                </button>
+              }
+            </div>
+          </li>
+        } @empty {
+          <!-- @empty se muestra cuando la lista está vacía -->
+          <li class="vacio">No hay usuarios que coincidan con la búsqueda.</li>
+        }
+      </ul>
+    </section>
+
+    <div class="columna-derecha">
+
+      <!-- ===== 3. Notificación global (RF16) ===== -->
+      <section class="tarjeta">
+        <h3 class="tarjeta-titulo">Enviar notificación</h3>
+        <p class="tarjeta-subtitulo">Avisa sobre mantenimientos o novedades</p>
+
+        @if (mensajeNotificacion()) {
+          <div class="aviso-exito" role="status">{{ mensajeNotificacion() }}</div>
+        }
+
+        <form [formGroup]="notificacionForm" (ngSubmit)="enviarNotificacion()" novalidate>
+          <div class="fila-campos">
+            <div class="campo">
+              <label for="destinatario">Para</label>
+              <div class="input-grupo">
+                <select id="destinatario" formControlName="destinatario">
+                  <option value="todos">Todos los usuarios</option>
+                  @for (usuario of usuarios(); track usuario.id) {
+                    <option [value]="usuario.id">{{ usuario.nombre }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+
+            <div class="campo">
+              <label for="importancia">Importancia</label>
+              <div class="input-grupo">
+                <select id="importancia" formControlName="importancia">
+                  @for (nivel of importancias; track nivel) {
+                    <option [value]="nivel">{{ nivel }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="campo">
+            <label for="mensaje">Mensaje</label>
+            <div class="input-grupo area" [class.invalido]="campoInvalido('mensaje')">
+              <textarea id="mensaje" rows="3" formControlName="mensaje"
+                        placeholder="Ej: El sábado habrá mantenimiento de 2:00 a 4:00 a. m."></textarea>
+            </div>
+            <div class="ayuda-mensaje">
+              @if (campoInvalido('mensaje')) {
+                <p class="texto-error">Escribe entre 10 y 200 caracteres.</p>
+              }
+              <span class="contador">{{ caracteresMensaje() }}/200</span>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-principal btn-ancho">Enviar notificación</button>
+        </form>
+      </section>
+
+      <!-- ===== Historial de estadísticas (estadisticas.json) ===== -->
+      <section class="tarjeta">
+        <h3 class="tarjeta-titulo">Historial de estadísticas</h3>
+        <p class="tarjeta-subtitulo">Cortes guardados de la plataforma</p>
+
+        <table class="tabla-historial">
+          <thead>
+            <tr>
+              <th scope="col">Fecha</th>
+              <th scope="col">Usuarios</th>
+              <th scope="col">Metas activas</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (corte of historialEstadisticas(); track $index) {
+              <tr>
+                <td>{{ formatearFechaEstadistica(corte.fecha) }}</td>
+                <td>{{ corte.cantidadUsuarios }}</td>
+                <td>{{ corte.cantidadMetasActivas }}</td>
+              </tr>
+            }
+            <!-- Fila "Hoy": calculada en vivo con los computed de arriba -->
+            <tr class="fila-hoy">
+              <td>Hoy</td>
+              <td>{{ totalUsuarios() }}</td>
+              <td>{{ metasActivas() }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </div>
+  </div>
+</div>
