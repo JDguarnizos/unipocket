@@ -4,8 +4,8 @@ import { Dashboard } from './features/dashboard/dashboard';
 import { Presupuesto } from './features/presupuesto/presupuesto';
 import { Movimientos } from './features/movimientos/movimientos';
 import { MetasAhorro } from './features/metas-ahorro/metas-ahorro';
-import { authGuard } from './core/guards/role.guard';
-import { roleGuard } from './core/guards/auth.guard';
+import { authGuard } from './core/guards/auth.guard';
+import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' }, // la app arranca en el login
