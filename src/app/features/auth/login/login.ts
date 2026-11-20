@@ -15,11 +15,11 @@ export class Login {
   // inject() trae los servicios de Angular (equivale a recibirlos en el constructor)
   private fb = inject(FormBuilder);
   private router = inject(Router);
-  // RF13: los usuarios demostrativos vienen de la API local de Juan
+  // RF13: los usuarios demostrativos vienen de la API local
   // (public/local-auth-api/usuarios.json y admins.json), SIN base de datos.
   private api = inject(LocalApi);
 
-  // Mensaje que se muestra si las credenciales no coinciden (CU-2, curso alterno)
+  // Mensaje que se muestra si no se puede iniciar sesión (CU-2, curso alterno)
   mensajeError = '';
 
   // Formulario reactivo: cada campo con su valor inicial y sus validaciones
@@ -44,21 +44,32 @@ export class Login {
 
     const { correo, contrasena } = this.loginForm.value;
 
-    // Le pedimos al servicio que busque el correo y la contraseña en los JSON.
+    // Le pedimos al servicio que busque el correo y la contraseña.
     // Como leer un archivo tarda, el resultado llega dentro de subscribe().
     this.api.validarCredenciales(correo ?? '', contrasena ?? '').subscribe({
       next: usuario => {
-        if (usuario) {
-          this.mensajeError = '';
-          // Guardamos quién entró (con su rol: "usuario" o "administrador")
-          this.api.iniciarSesion(usuario);
-                   // Cada rol va a su vista: el administrador al panel de admin y el estudiante al dashboard.
-          // (Los Guards de Juan se encargan de que nadie entre a una vista que no le corresponde.)
-          const destino = usuario.rol === 'administrador' ? '/admin' : '/dashboard';
-          this.router.navigate([destino]);
-        } else {
+        // Caso 1: no existe nadie con ese correo y contraseña
+        if (!usuario) {
           this.mensajeError = 'Correo o contraseña incorrectos.';
+          return;
         }
+
+        // Caso 2 (nuevo, RF14): las credenciales son correctas, pero el administrador
+        // bloqueó la cuenta. No guardamos la sesión y mostramos un mensaje distinto.
+        if (usuario.bloqueado) {
+          this.mensajeError = 'Tu cuenta está bloqueada. Contacta al administrador.';
+          return;
+        }
+
+        // Caso 3: todo correcto
+        this.mensajeError = '';
+        // Guardamos quién entró (con su rol: "usuario" o "administrador")
+        this.api.iniciarSesion(usuario);
+
+        // Cada rol va a su vista: el administrador al panel de admin y el estudiante al dashboard.
+        // Los Guards se encargan de que nadie entre a una vista que no le corresponde.
+        const destino = usuario.rol === 'administrador' ? '/admin' : '/dashboard';
+        this.router.navigate([destino]);
       },
       // Si no se pudo leer el JSON (ej. el archivo no existe)
       error: () => {

@@ -53,13 +53,16 @@ export class LocalApi {
   // Es un signal: cualquier componente que lo lea se actualiza solo cuando cambia.
   usuarioActual = signal<Usuario | null>(null);
 
-  // Busca un usuario o admin con ese correo y contraseña.
-  // forkJoin espera a que lleguen LOS DOS archivos (usuarios y admins) y luego
-  // map une las dos listas y busca la coincidencia. Devuelve undefined si no existe.
+   // Busca un usuario o admin con ese correo y contraseña.
+  // Cambiado (Nicolás): los usuarios ya no se leen directo del JSON, sino de la lista
+  // EN MEMORIA (signal usuarios). Así, si el admin elimina a alguien, ese usuario
+  // ya no puede iniciar sesión; y si lo bloquea, el login puede revisar el campo "bloqueado".
+  // forkJoin espera a que terminen las dos cargas y luego map une las listas y busca la coincidencia.
   validarCredenciales(correo: string, contrasena: string): Observable<Usuario | undefined> {
-    return forkJoin([this.obtenerUsuarios(), this.obtenerAdmins()]).pipe(
-      map(([usuarios, admins]) =>
-        [...usuarios, ...admins].find((u) => u.correo === correo && u.contrasena === contrasena),
+    return forkJoin([this.cargarUsuarios(), this.obtenerAdmins()]).pipe(
+      map(([, admins]) =>
+        // Usamos this.usuarios() (la lista actualizada) y no la que llegó del JSON
+        [...this.usuarios(), ...admins].find((u) => u.correo === correo && u.contrasena === contrasena),
       ),
     );
   }
@@ -67,6 +70,49 @@ export class LocalApi {
   // Guarda en memoria quién inició sesión (incluye su rol: "usuario" o "administrador")
   iniciarSesion(usuario: Usuario): void {
     this.usuarioActual.set(usuario);
+  }
+    // Cierra la sesión: borra el usuario actual de memoria.
+  // (El botón para usarlo se agrega en el header en la siguiente fase.)
+  cerrarSesion(): void {
+    this.usuarioActual.set(null);
+  }
+
+  // =====================================================================
+  // 2.1 USUARIOS EN MEMORIA (RF14 - gestión de usuarios)
+  // Igual que con los movimientos: usuarios.json es de solo lectura, así que
+  // lo leemos UNA vez, lo guardamos en un signal y los cambios del administrador
+  // (bloquear, desbloquear, eliminar) se hacen sobre ese signal.
+  // Como LocalApi es un servicio único, el panel de admin y el login ven la misma lista.
+  // =====================================================================
+
+  usuarios = signal<Usuario[]>([]);
+  private usuariosCargados = false;
+
+  // Devuelve la lista de usuarios. La primera vez lee el JSON; las siguientes
+  // devuelve lo que ya está en memoria (con of(), que crea un Observable con ese valor),
+  // para no borrar los cambios que haya hecho el administrador.
+  cargarUsuarios(): Observable<Usuario[]> {
+    if (this.usuariosCargados) return of(this.usuarios());
+
+    return this.obtenerUsuarios().pipe(
+      tap((lista) => {
+        this.usuarios.set(lista);
+        this.usuariosCargados = true;
+      }),
+    );
+  }
+
+  // Bloquea o desbloquea la cuenta: invierte el valor del campo "bloqueado".
+  // map() recorre la lista y solo cambia al usuario con ese id; los demás quedan igual.
+  alternarBloqueo(idUsuario: number): void {
+    this.usuarios.update((lista) =>
+      lista.map((u) => (u.id === idUsuario ? { ...u, bloqueado: !u.bloqueado } : u)),
+    );
+  }
+
+  // Elimina la cuenta: filter() devuelve una lista nueva sin ese usuario.
+  eliminarUsuario(idUsuario: number): void {
+    this.usuarios.update((lista) => lista.filter((u) => u.id !== idUsuario));
   }
 
   // =====================================================================
@@ -181,7 +227,9 @@ export class LocalApi {
     });
   }
 
-  // Verifica que el aporte no sea 0, que haya expirado, verifica nombre y id del usuario con la lista actual de metas, añade los aportes
+  // Verifica que el aporte no sea 0, 
+  // Valida que la fecha del aporte no sea futura y luego suma el monto a la meta.
+  //  verifica nombre y id del usuario con la lista actual de metas, añade los aportes
   registrarAporteMetaAhorro(
     idUsuario: number,
     nombreMeta: string,
@@ -189,8 +237,19 @@ export class LocalApi {
     fechaAporte: Date = new Date(),
   ): void {
     if (aporte <= 0) return;
-    const now = new Date();
-    if (fechaAporte < now) return;
+    // Comparamos solo el DÍA, sin horas. Si comparáramos con new Date() directamente,
+    // una fecha de hoy tomada de un <input type="date"> (que queda a medianoche)
+    // sería "menor" que la hora actual y se rechazaría por error.
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+
+    const diaAporte = new Date(fechaAporte);
+    diaAporte.setHours(0, 0, 0, 0);
+
+    // Solo rechazamos aportes con fecha FUTURA.
+    // No bloqueamos por fechaLimite: una meta atrasada todavía debe poder recibir abonos
+    // (así aparece en la referencia visual de Metas de ahorro).
+    if (diaAporte > hoy) return;
     this.cargarMetasAhorro().subscribe({
       next: () =>
         this.metasAhorro.update((metas) =>

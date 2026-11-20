@@ -12,15 +12,9 @@ export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' }, // la app arranca en el login
   { path: 'login', component: Login },
   { path: 'dashboard', component: Dashboard, canActivate: [authGuard] },
-  {
-    path: 'admin',
-    component: Dashboard, //Cambiar este componente por el de admins cuando lo creen, por favor, os los ruego.
-    canActivate: [authGuard, roleGuard],
-    data: { roles: ['administrador'] }, //Requiere que el usuario cargado tenga el rol de admin
-  },
-  { path: 'presupuesto', component: Presupuesto },
-  { path: 'movimientos', component: Movimientos },
-  { path: 'metas-ahorro', component: MetasAhorro },
+  { path: 'presupuesto', component: Presupuesto, canActivate: [authGuard] },
+  { path: 'movimientos', component: Movimientos, canActivate: [authGuard] },
+  { path: 'metas-ahorro', component: MetasAhorro, canActivate: [authGuard] },
   { path: 'admin', component: PanelAdmin, canActivate: [authGuard, roleGuard],
   data: { roles: ['administrador'] } }, // panel del administrador 
   { path: '**', redirectTo: 'dashboard' }

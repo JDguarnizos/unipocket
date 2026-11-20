@@ -15,9 +15,8 @@ import { TarjetaResumenComponent } from '../../../shared/components/tarjeta-resu
   - RF14: lista de usuarios con acciones de bloquear / desbloquear y eliminar.
   - RF16: formulario para redactar una notificación global.
 
-  Diseño (Nicolás): esta vista ya funciona en memoria para la demo.
-  Conexión (Santiago): pasar los métodos marcados con "PENDIENTE (Santiago)" a LocalApi,
-  para que los cambios se compartan con el resto de vistas.
+  Los usuarios ahora viven en LocalApi (signal compartido): si el admin bloquea o elimina
+  una cuenta, el cambio se mantiene al navegar y el login lo respeta.
 */
 @Component({
   selector: 'app-panel-admin',
@@ -39,8 +38,9 @@ export class PanelAdmin implements OnInit {
   // ===================================================================
 
   // Lista de usuarios que se muestra en la tabla.
-  // TEMPORAL: es una copia local para que la demo funcione; Santiago la mueve a LocalApi.
-  usuarios = signal<Usuario[]>([]);
+  // Cambiado: ya no es una copia local; apunta al signal de LocalApi,
+  // que es el mismo que revisa el login.
+  usuarios = this.api.usuarios;
 
   // Historial de estadísticas (estadisticas.json). toSignal convierte el Observable en signal.
   historialEstadisticas = toSignal(this.api.obtenerEstadisticas(), { initialValue: [] });
@@ -102,7 +102,7 @@ export class PanelAdmin implements OnInit {
   mensajeNotificacion = signal('');
 
   ngOnInit(): void {
-    // TEMPORAL (hasta los Guards de Juan): solo el administrador puede ver esta vista
+    // Respaldo de los Guards: solo el administrador puede ver esta vista
     const actual = this.api.usuarioActual();
     if (!actual) {
       this.router.navigate(['/login']);
@@ -113,20 +113,20 @@ export class PanelAdmin implements OnInit {
       return;
     }
 
-    // Cargamos los datos que necesitan las estadísticas
-    this.api.obtenerUsuarios().subscribe(usuarios => this.usuarios.set(usuarios));
+    // Cargamos los datos que necesitan las estadísticas.
+    // cargarUsuarios() solo lee el JSON la primera vez; después devuelve la lista en memoria,
+    // así no se pierden los bloqueos o eliminaciones al salir y volver al panel.
+    this.api.cargarUsuarios().subscribe();
     this.api.cargarMetasAhorro().subscribe();
     this.api.cargarDatosFinancieros();
   }
 
   // ----- Acciones de usuarios -----
 
-  // Bloquea o desbloquea la cuenta (cambia el campo "bloqueado")
-  // PENDIENTE (Santiago): mover a LocalApi (ej. api.cambiarBloqueoUsuario(id)).
+  // Bloquea o desbloquea la cuenta. El cambio se guarda en LocalApi.
   alternarBloqueo(usuario: Usuario): void {
-    this.usuarios.update(lista =>
-      lista.map(u => u.id === usuario.id ? { ...u, bloqueado: !u.bloqueado } : u)
-    );
+    this.api.alternarBloqueo(usuario.id);
+    // "usuario" todavía tiene el valor ANTERIOR al cambio, por eso la condición va al revés
     this.mensajeAccion.set(usuario.bloqueado
       ? `Se desbloqueó la cuenta de ${usuario.nombre}.`
       : `Se bloqueó la cuenta de ${usuario.nombre}.`);
@@ -141,10 +141,9 @@ export class PanelAdmin implements OnInit {
     this.idPorEliminar.set(null);
   }
 
-  // Segundo clic ("Sí, eliminar"): quitamos al usuario de la lista
-  // PENDIENTE (Santiago): mover a LocalApi (ej. api.eliminarUsuario(id)).
+  // Segundo clic ("Sí, eliminar"): quitamos al usuario. El cambio se guarda en LocalApi.
   eliminarUsuario(usuario: Usuario): void {
-    this.usuarios.update(lista => lista.filter(u => u.id !== usuario.id));
+    this.api.eliminarUsuario(usuario.id);
     this.idPorEliminar.set(null);
     this.mensajeAccion.set(`Se eliminó la cuenta de ${usuario.nombre}.`);
   }
@@ -176,7 +175,7 @@ export class PanelAdmin implements OnInit {
       importancia: valores.importancia!
     };
 
-    // PENDIENTE (Santiago): guardar con LocalApi para que aparezca en la campana del header.
+    // PENDIENTE (Fase 2): guardar con LocalApi para que aparezca en la campana del header.
     console.log('Notificación a enviar:', notificacion);
 
     this.mensajeNotificacion.set(`Notificación enviada a ${ids.length} usuario(s).`);
