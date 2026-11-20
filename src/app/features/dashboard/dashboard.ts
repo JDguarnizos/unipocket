@@ -7,7 +7,8 @@ import { TarjetaResumenComponent } from '../../shared/components/tarjeta-resumen
 import { ItemMovimientoComponent } from '../../shared/components/item-movimiento/item-movimiento';
 import { RegistroMovimiento } from '../movimientos/registro-movimiento/registro-movimiento';
 import { Movimiento } from '../../core/models/movimiento.model';
-import { LocalApi } from '../../core/services/local-api';
+import { SesionApi } from '../../core/services/sesion-api';
+import { MovimientosApi } from '../../core/services/movimientos-api';
 
 @Component({
   selector: 'app-dashboard',
@@ -17,21 +18,23 @@ import { LocalApi } from '../../core/services/local-api';
   styleUrls: ['./dashboard.css']
 })
 export class Dashboard implements OnInit {
-  private api = inject(LocalApi);
+  // Cambiado: antes todo venía de LocalApi; ahora la sesión y los movimientos tienen su propio servicio
+  private sesion = inject(SesionApi);
+  private movimientosApi = inject(MovimientosApi);
   private router = inject(Router);
 
   modalAbierto = false;
   tipoModal: 'gasto' | 'ingreso' = 'gasto';
 
   // ===== Datos conectados a la API local =====
-  usuario = this.api.usuarioActual;
+  usuario = this.sesion.usuarioActual;
 
   // 1) El registro financiero del usuario. Lo buscamos una sola vez y las demás tarjetas salen de aquí.
 registroActual = computed(() => {
-    const usuario = this.api.usuarioActual();
+    const usuario = this.sesion.usuarioActual();
     if (!usuario) return undefined;
   // Buscamos haciendo match estricto o flexible con el id del usuario
-  return this.api.registrosFinancieros().find(r => r.idUsuario == usuario.id);
+  return this.movimientosApi.registrosFinancieros().find(r => r.idUsuario == usuario.id);
   });
   // 2) Dinero disponible = lo que ha entrado - lo que ha salido
   saldoDisponible = computed(() => {
@@ -69,8 +72,8 @@ registroActual = computed(() => {
 
   // Movimientos del usuario que inició sesión
   movimientosRecientes = computed(() => {
-    const usuario = this.api.usuarioActual();
-    return this.api.movimientos()
+    const usuario = this.sesion.usuarioActual();
+    return this.movimientosApi.movimientos()
       .filter(m => m.idUsuario === usuario?.id)
       .slice(0, 5)
       .map(m => ({
@@ -82,12 +85,12 @@ registroActual = computed(() => {
   });
 
   ngOnInit(): void {
-    if (!this.api.usuarioActual()) {
+    if (!this.sesion.usuarioActual()) {
       this.router.navigate(['/login']);
       return;
     }
     // Lee los JSON solo la primera vez gracias a la bandera restaurada
-    this.api.cargarDatosFinancieros();
+    this.movimientosApi.cargarDatosFinancieros();
   }
 
   abrirModal(tipo: 'gasto' | 'ingreso'): void {
@@ -100,10 +103,10 @@ registroActual = computed(() => {
   }
 
   registrarMovimiento(movimiento: Movimiento): void {
-    const usuario = this.api.usuarioActual();
+    const usuario = this.sesion.usuarioActual();
     if (!usuario) return;
 
-    this.api.registrarMovimiento(usuario.id, movimiento);
+    this.movimientosApi.registrarMovimiento(usuario.id, movimiento);
     this.cerrarModal();
   }
 

@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 // ReactiveFormsModule habilita [formGroup] y formControlName en el HTML
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { LocalApi } from '../../../core/services/local-api';
+import { SesionApi } from '../../../core/services/sesion-api';
 
 @Component({
   selector: 'app-login',
@@ -17,7 +17,8 @@ export class Login {
   private router = inject(Router);
   // RF13: los usuarios demostrativos vienen de la API local
   // (public/local-auth-api/usuarios.json y admins.json), SIN base de datos.
-  private api = inject(LocalApi);
+  // Cambiado: el login ahora usa SesionApi (antes LocalApi hacía todo)
+  private sesion = inject(SesionApi);
 
   // Mensaje que se muestra si no se puede iniciar sesión (CU-2, curso alterno)
   mensajeError = '';
@@ -46,7 +47,7 @@ export class Login {
 
     // Le pedimos al servicio que busque el correo y la contraseña.
     // Como leer un archivo tarda, el resultado llega dentro de subscribe().
-    this.api.validarCredenciales(correo ?? '', contrasena ?? '').subscribe({
+    this.sesion.validarCredenciales(correo ?? '', contrasena ?? '').subscribe({
       next: usuario => {
         // Caso 1: no existe nadie con ese correo y contraseña
         if (!usuario) {
@@ -64,7 +65,7 @@ export class Login {
         // Caso 3: todo correcto
         this.mensajeError = '';
         // Guardamos quién entró (con su rol: "usuario" o "administrador")
-        this.api.iniciarSesion(usuario);
+        this.sesion.iniciarSesion(usuario);
 
         // Cada rol va a su vista: el administrador al panel de admin y el estudiante al dashboard.
         // Los Guards se encargan de que nadie entre a una vista que no le corresponde.
