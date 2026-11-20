@@ -1,21 +1,22 @@
-import { Component, signal, HostListener, ElementRef, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
-
-// Interfaz que define cómo se ve cada notificación
-interface Notificacion {
-  id: number;
-  mensaje: string;    // Texto principal de la notificación
-  tiempo: string;     // Cuándo ocurrió (ej: "Hace 5 min")
-  leida: boolean;     // Si el usuario ya la vio o no
-}
+import { Component, signal, computed, inject, HostListener, ElementRef, Output, EventEmitter } from '@angular/core';
+import { Router } from '@angular/router';
+import { Notificacion } from '../../../core/models/notificacion.model';
+import { SesionApi } from '../../../core/services/sesion-api';
+import { NotificacionesApi } from '../../../core/services/notificaciones-api';
 
 @Component({
-  imports: [CommonModule],
+  imports: [],
   selector: 'app-header',
   styleUrl: './header.css',
   templateUrl: './header.html',
 })
 export class Header {
+  // inject() trae los servicios (reemplaza al constructor con parámetros)
+  private sesion = inject(SesionApi);
+  private notificacionesApi = inject(NotificacionesApi);
+  private router = inject(Router);
+  // Referencia al elemento del header, para detectar clics fuera del panel
+  private elementRef = inject(ElementRef);
 
   //Abrir y cerrar el menu lateral en los dispositivos moviles
   @Output() toggleMenu = new EventEmitter<void>();
@@ -24,62 +25,63 @@ export class Header {
     this.toggleMenu.emit();
   }
 
-  // ── Datos del usuario ──────────────────────────────────────────────────────
-  nombreUsuario: string = 'Estudiante';
-  rolUsuario: string = 'Ucompensar';
+  // Al crear el header pedimos las notificaciones.
+  // El servicio solo lee el JSON la primera vez, así que no se duplican.
+  constructor() {
+    this.notificacionesApi.cargarNotificaciones();
+  }
+
+  // ── Datos del usuario (antes estaban fijos: "Estudiante" / "Ucompensar") ──
+  // computed() se recalcula solo cuando cambia usuarioActual (al iniciar o cerrar sesión).
+  nombreUsuario = computed(() => this.sesion.usuarioActual()?.nombre ?? '');
+
+  // En los JSON el rol es "usuario" o "administrador"; en pantalla mostramos un texto más claro
+  rolUsuario = computed(() =>
+    this.sesion.usuarioActual()?.rol === 'administrador' ? 'Administrador' : 'Estudiante'
+  );
+
+  // Iniciales para el avatar: "Sofía Ramírez" -> "SR"
+  iniciales = computed(() =>
+    this.nombreUsuario().split(' ').map(p => p[0]).slice(0, 2).join('').toUpperCase()
+  );
 
   // ── Estado del menú de notificaciones ─────────────────────────────────────
   // signal() es la forma moderna de Angular para variables reactivas.
   // Cuando cambia, el HTML se actualiza automáticamente.
   mostrarNotificaciones = signal(false);
 
-  // ── Lista de notificaciones de ejemplo ────────────────────────────────────
-  notificaciones: Notificacion[] = [
-    {
-      id: 1,
-      mensaje: 'Llevas el 68% de tu presupuesto mensual.',
-      tiempo: 'Hace 5 min',
-      leida: false,
-    },
-    {
-      id: 2,
-      mensaje: 'Meta "Viaje de semestre" al 45% 🎯',
-      tiempo: 'Hace 1 hora',
-      leida: false,
-    },
-    {
-      id: 3,
-      mensaje: 'Se registró un ingreso de $150.000.',
-      tiempo: 'Ayer, 16:00',
-      leida: true,
-    },
-  ];
+  // ── Notificaciones del usuario actual (RF01, RF16) ────────────────────────
+  // Antes era un array de ejemplo. Ahora sale de NotificacionesApi y solo dejamos
+  // las que incluyen el id del usuario en "idsNotificar".
+  notificaciones = computed(() => {
+    const usuario = this.sesion.usuarioActual();
+    if (!usuario) return [];
+    return this.notificacionesApi.notificaciones().filter(n => n.idsNotificar.includes(usuario.id));
+  });
 
-  // Calculamos cuántas notificaciones NO han sido leídas
-  get cantidadSinLeer(): number {
-    return this.notificaciones.filter(n => !n.leida).length;
-  }
+  // El globo de la campana muestra el total de notificaciones del usuario
+  cantidadNotificaciones = computed(() => this.notificaciones().length);
 
-  // ── Constructor con inyección del elemento raíz ───────────────────────────
-  // Necesitamos la referencia al elemento para detectar clics fuera del menú
-  constructor(private elementRef: ElementRef) {}
+  // RNF07: título que se muestra según la importancia de la notificación.
+  // Record<A, B> es un objeto que tiene una propiedad de tipo B por cada valor de A.
+  titulos: Record<Notificacion['importancia'], string> = {
+    urgente: 'Aviso urgente',
+    alta: 'Atención',
+    media: 'Aviso',
+    baja: 'Información',
+  };
 
   // ── Abrir / cerrar el panel de notificaciones ─────────────────────────────
   toggleNotificaciones(): void {
     this.mostrarNotificaciones.update(valor => !valor);
   }
 
-  // ── Marcar una notificación como leída ────────────────────────────────────
-  marcarComoLeida(id: number): void {
-    const notif = this.notificaciones.find(n => n.id === id);
-    if (notif) {
-      notif.leida = true;
-    }
-  }
-
-  // ── Marcar todas como leídas ──────────────────────────────────────────────
-  marcarTodasComoLeidas(): void {
-    this.notificaciones.forEach(n => (n.leida = true));
+  // ── Cerrar sesión ─────────────────────────────────────────────────────────
+  // Borra el usuario actual, cierra el panel y vuelve al login sin recargar la página.
+  cerrarSesion(): void {
+    this.sesion.cerrarSesion();
+    this.mostrarNotificaciones.set(false);
+    this.router.navigate(['/login']);
   }
 
   // ── Cerrar el panel si el usuario hace clic fuera del header ─────────────

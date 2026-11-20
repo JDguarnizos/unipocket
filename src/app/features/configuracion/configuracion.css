@@ -1,0 +1,60 @@
+/* ===== Vista de Configuración ===== */
+.config-contenedor {
+  padding: var(--space-6);
+  max-width: 1200px;
+}
+
+/* ===== Cabecera ===== */
+.cabecera {
+  margin-bottom: var(--space-6);
+}
+
+.titulo {
+  margin: 0;
+  color: var(--navy-900);
+}
+
+.subtitulo {
+  margin: 4px 0 0;
+  color: var(--neutral-600);
+}
+
+/* ===== Dos columnas: cuenta (más ancha) y sesión ===== */
+.grid-config {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.tarjeta {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-6);
+}
+
+.tarjeta-titulo {
+  margin: 0;
+  font-size: 16px;
+  color: var(--navy-900);
+}
+
+.tarjeta-subtitulo {
+  margin: 4px 0 var(--space-4);
+  font-size: 13px;
+  color: var(--neutral-600);
+}
+
+/* Los campos de solo lectura llevan fondo gris para que se note que no se editan */
+.input-grupo.solo-lectura {
+  background-color: var(--neutral-100);
+}
+
+/* ===== Responsive: en pantallas pequeñas, una sola columna ===== */
+@media (max-width: 768px) {
+  .grid-config {
+    grid-template-columns: 1fr;
+  }
+}
