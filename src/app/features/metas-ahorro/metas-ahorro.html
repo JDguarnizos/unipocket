@@ -1,1 +1,139 @@
-<p>metas-ahorro works!</p>
+<div class="metas-contenedor">
+
+  <!-- ===== Cabecera ===== -->
+  <div class="cabecera">
+    <div>
+      <h2 class="titulo">Metas de ahorro</h2>
+      <p class="subtitulo">
+        Llevas {{ formatearPesos(totalAhorrado()) }} ahorrados en {{ misMetas().length }}
+        {{ misMetas().length === 1 ? 'meta' : 'metas' }}
+      </p>
+    </div>
+    <!-- RF08 / CU-10 -->
+    <button type="button" class="btn btn-principal" (click)="abrirNuevaMeta()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+      Nueva meta
+    </button>
+  </div>
+
+  <!-- Confirmación de la última acción -->
+  @if (mensajeExito()) {
+    <div class="aviso-exito" role="status">{{ mensajeExito() }}</div>
+  }
+
+  @if (tarjetas().length > 0) {
+    <!-- ===== Grilla de metas ===== -->
+    <div class="grid-metas">
+      @for (t of tarjetas(); track t.meta.nombre) {
+        <article class="tarjeta-meta" [class.cumplida]="t.meta.completado">
+
+          <!-- Nombre con ícono -->
+          <div class="meta-encabezado">
+            <span class="meta-icono">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            </span>
+            <h3 class="meta-nombre">{{ t.meta.nombre }}</h3>
+          </div>
+
+          <!-- Insignias de estado: RF12 (cumplida) y meta atrasada -->
+          @if (t.meta.completado) {
+            <span class="insignia insignia-cumplida">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+              Meta cumplida
+            </span>
+          } @else if (t.atrasada) {
+            <span class="insignia insignia-atrasada">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              Meta atrasada
+            </span>
+          }
+
+          <!-- RF11: progreso en porcentaje con barra -->
+          <div class="progreso-fila">
+            <span>Progreso</span>
+            <span class="progreso-porcentaje">{{ t.porcentaje }} %</span>
+          </div>
+          <div class="barra" role="progressbar" [attr.aria-valuenow]="t.porcentaje" aria-valuemin="0" aria-valuemax="100">
+            <div class="barra-relleno" [style.width.%]="t.porcentaje"></div>
+          </div>
+          <p class="meta-montos">{{ formatearPesos(t.aportado) }} de {{ formatearPesos(t.meta.valorObjetivo) }}</p>
+
+          <!-- Fecha límite y ahorro mensual sugerido (o fecha en que se cumplió) -->
+          <p class="meta-detalle">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
+            @if (t.meta.completado) {
+              Meta alcanzada {{ t.fechaCumplida ? 'el ' + fecha(t.fechaCumplida) : '' }}
+            } @else {
+              Fecha límite {{ fecha(t.meta.fechaLimite) }}
+              @if (t.ahorroMensual !== null) {
+                · Ahorra {{ formatearPesos(t.ahorroMensual) }}/mes
+              }
+            }
+          </p>
+
+          <!-- Acciones -->
+          <div class="meta-acciones">
+            <!-- No se puede abonar a una meta cumplida -->
+            @if (!t.meta.completado) {
+              <button type="button" class="btn btn-abonar" (click)="abrirAbonar(t.meta)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+                Abonar
+              </button>
+            }
+            <button type="button" class="btn btn-secundario" (click)="abrirEditar(t.meta)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+              Editar
+            </button>
+          </div>
+
+          <!-- RF10: registro de aportes (se despliega debajo) -->
+          <button type="button" class="btn-ver-aportes" (click)="alternarAportes(t.meta.nombre)"
+                  [attr.aria-expanded]="metaAbierta() === t.meta.nombre">
+            {{ metaAbierta() === t.meta.nombre ? 'Ocultar aportes' : 'Ver aportes' }}
+            <svg [class.girado]="metaAbierta() === t.meta.nombre" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+
+          @if (metaAbierta() === t.meta.nombre) {
+            <ul class="lista-aportes">
+              @for (aporte of aportesRecientes(t.meta); track $index) {
+                <li>
+                  <span>{{ fecha(aporte.fechaAporte) }}</span>
+                  <span class="aporte-monto">+{{ formatearPesos(aporte.monto) }}</span>
+                </li>
+              } @empty {
+                <li class="sin-aportes">Aún no hay aportes</li>
+              }
+            </ul>
+          }
+        </article>
+      }
+    </div>
+  } @else {
+    <!-- ===== Sin metas: mensaje de bienvenida ===== -->
+    <div class="bienvenida">
+      <span class="meta-icono grande">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+      </span>
+      <h3>¡Empieza a ahorrar!</h3>
+      <p>Aún no tienes metas. Crea la primera y te diremos cuánto ahorrar cada mes para lograrla.</p>
+      <button type="button" class="btn btn-principal" (click)="abrirNuevaMeta()">Crear mi primera meta</button>
+    </div>
+  }
+</div>
+
+<!-- ===== Modales ===== -->
+@if (modalMeta()) {
+  <app-formulario-meta
+    [meta]="metaSeleccionada()"
+    (cerrado)="cerrarModales()"
+    (guardado)="alGuardar($event)">
+  </app-formulario-meta>
+}
+
+@if (modalAbonar() && metaSeleccionada(); as meta) {
+  <app-abonar-meta
+    [meta]="meta"
+    (cerrado)="cerrarModales()"
+    (guardado)="alGuardar($event)">
+  </app-abonar-meta>
+}

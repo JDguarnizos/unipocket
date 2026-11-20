@@ -1,0 +1,75 @@
+<!-- Fondo oscuro. Si se hace clic afuera del cuadro, se cierra el modal -->
+<div class="modal-fondo" (click)="cerrar()">
+
+  <!-- stopPropagation evita que un clic DENTRO del cuadro cierre el modal -->
+  <div class="modal-caja" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-meta" (click)="$event.stopPropagation()">
+
+    <!-- ===== Encabezado: cambia según si es nueva o edición ===== -->
+    <div class="modal-encabezado">
+      <div>
+        <h2 id="titulo-modal-meta" class="modal-titulo">{{ esEdicion ? 'Editar meta' : 'Nueva meta' }}</h2>
+        <p class="modal-subtitulo">
+          {{ esEdicion ? 'Ajusta el nombre, el valor o la fecha límite' : 'Define cuánto quieres ahorrar y para cuándo' }}
+        </p>
+      </div>
+      <button type="button" class="btn-cerrar" (click)="cerrar()" aria-label="Cerrar">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+
+    <form [formGroup]="metaForm" (ngSubmit)="guardar()" novalidate>
+      <div class="modal-cuerpo">
+
+        <!-- Error general: nombre repetido (CU-12) o meta no viable (CU-11) -->
+        @if (mensajeError()) {
+          <div class="alerta-error" role="alert">{{ mensajeError() }}</div>
+        }
+
+        <!-- Nombre -->
+        <div class="campo">
+          <label for="nombre-meta">Nombre de la meta</label>
+          <div class="input-grupo" [class.invalido]="campoInvalido('nombre')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            <input id="nombre-meta" type="text" formControlName="nombre" placeholder="Ej: Laptop para la U">
+          </div>
+          @if (campoInvalido('nombre')) {
+            <p class="texto-error">Escribe un nombre (máximo 40 caracteres).</p>
+          }
+        </div>
+
+        <!-- Valor objetivo y fecha límite en la misma fila -->
+        <div class="fila">
+          <div class="campo sin-margen">
+            <label for="valor-meta">Valor objetivo</label>
+            <div class="input-grupo" [class.invalido]="campoInvalido('valorObjetivo')">
+              <span class="simbolo">$</span>
+              <input id="valor-meta" type="number" formControlName="valorObjetivo" placeholder="0" min="1">
+            </div>
+            @if (campoInvalido('valorObjetivo')) {
+              <p class="texto-error">Ingresa un valor mayor a 0.</p>
+            }
+          </div>
+
+          <div class="campo sin-margen">
+            <label for="fecha-meta">Fecha límite</label>
+            <div class="input-grupo" [class.invalido]="campoInvalido('fechaLimite')">
+              <input id="fecha-meta" type="date" formControlName="fechaLimite" [min]="hoy">
+            </div>
+            @if (campoInvalido('fechaLimite')) {
+              <p class="texto-error">Elige una fecha posterior a hoy.</p>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== Pie: botones ===== -->
+      <div class="modal-pie">
+        <button type="button" class="btn btn-secundario" (click)="cerrar()">Cancelar</button>
+        <button type="submit" class="btn btn-principal">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          {{ esEdicion ? 'Guardar cambios' : 'Crear meta' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

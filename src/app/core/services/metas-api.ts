@@ -3,17 +3,23 @@ import { Observable, catchError, map, of, shareReplay, tap, throwError } from 'r
 import { MetaAhorro } from '../models/meta_ahorro.model';
 import { Usuario } from '../models/usuario.model';
 import { LocalApi } from './local-api';
+import { NotificacionesApi } from './notificaciones-api';
 
 /*
   MetasApi: METAS DE AHORRO EN MEMORIA.
   Movido desde LocalApi sin cambiar la lógica (Juan). El único cambio es que
   la lectura de los JSON ahora se pide a LocalApi (this.localApi.obtener...).
 
-  Lo usan: PanelAdmin (estadísticas de metas) y, más adelante, la vista de Metas de ahorro.
+  Nuevo (Fase 3): buscarMeta, editarMetaAhorro (CU-12 / CU-13) y el aviso de
+  "meta completada" (RF12, CU-14). La lógica de Juan no se cambió; solo se agregó.
+
+  Lo usan: la vista de Metas de ahorro (y sus modales), el Dashboard y PanelAdmin.
 */
 @Service()
 export class MetasApi {
   private localApi = inject(LocalApi);
+  // Nuevo (RF12): para avisarle al usuario cuando completa una meta
+  private notificacionesApi = inject(NotificacionesApi);
 
   // Actualización de datos dentro de metas de ahorro, hecho con las manos.
   // La idea es usar la misma forma que se usa arriba para cargar datos, manipularlos en memoria
@@ -99,7 +105,10 @@ export class MetasApi {
     // (así aparece en la referencia visual de Metas de ahorro).
     if (diaAporte > hoy) return;
     this.cargarMetasAhorro().subscribe({
-      next: () =>
+      next: () => {
+        // Nuevo (RF12): guardamos si la meta YA estaba completada ANTES del aporte
+        const estabaCompletada = this.buscarMeta(idUsuario, nombreMeta)?.completado ?? false;
+
         this.metasAhorro.update((metas) =>
           metas.map((meta) => {
             // Si la meta no concuerda con el idUsuario y nombre, no hace NADA.
@@ -118,7 +127,11 @@ export class MetasApi {
               completado: meta.completado || totalAportes >= meta.valorObjetivo,
             };
           }),
-        ),
+        );
+
+        // Nuevo (RF12, CU-14): si con este aporte pasó a completada, avisamos UNA vez
+        this.avisarSiSeCompleto(idUsuario, nombreMeta, estabaCompletada);
+      },
       error: () => console.error('No se pudo registrar el aporte a la meta.'),
     });
   }
@@ -140,5 +153,73 @@ export class MetasApi {
         return (totalAportes / meta.valorObjetivo) * 100;
       }),
     );
+  }
+
+  // =====================================================================
+  // NUEVO (Fase 3): métodos que necesitaba la vista de Metas de ahorro
+  // =====================================================================
+
+  // Busca una meta por usuario y nombre (sin importar mayúsculas), igual que hace Juan arriba.
+  // Devuelve undefined si no existe. Se usa en CU-17 ("verificar que la meta exista").
+  buscarMeta(idUsuario: number, nombreMeta: string): MetaAhorro | undefined {
+    return this.metasAhorro().find(
+      (meta) => meta.idUsuario === idUsuario && meta.nombre.toLowerCase() === nombreMeta.toLowerCase(),
+    );
+  }
+
+  // RF11: total aportado a una meta (suma de todos sus aportes)
+  totalAportado(meta: MetaAhorro): number {
+    return meta.listaAportes.reduce((total, aporte) => total + aporte.monto, 0);
+  }
+
+  // RF11: progreso de una meta de 0 a 100. Es la misma cuenta de calcularProgresoMetaAhorro,
+  // pero recibe la meta directamente y devuelve un número (más fácil de usar en el HTML).
+  // Math.floor para que solo diga 100 % cuando de verdad se alcanzó.
+  porcentajeMeta(meta: MetaAhorro): number {
+    if (meta.valorObjetivo <= 0) return 0;
+    return Math.min(100, Math.floor((this.totalAportado(meta) / meta.valorObjetivo) * 100));
+  }
+
+  // CU-12 / CU-13: editar una meta (nombre, valor objetivo y fecha límite).
+  // Se busca por el nombre ORIGINAL, porque el usuario pudo haberle cambiado el nombre.
+  // Las validaciones (nombre repetido, viabilidad, fecha) las hace el formulario antes de llamar.
+  editarMetaAhorro(
+    idUsuario: number,
+    nombreOriginal: string,
+    cambios: { nombre: string; valorObjetivo: number; fechaLimite: string },
+  ): void {
+    const estabaCompletada = this.buscarMeta(idUsuario, nombreOriginal)?.completado ?? false;
+
+    this.metasAhorro.update((metas) =>
+      metas.map((meta) => {
+        if (meta.idUsuario !== idUsuario) return meta;
+        if (meta.nombre.toLowerCase() !== nombreOriginal.toLowerCase()) return meta;
+
+        // Si con los aportes que ya tiene se alcanza el NUEVO valor objetivo, queda completada
+        const totalAportes = meta.listaAportes.reduce((total, aporte) => total + aporte.monto, 0);
+        return {
+          ...meta,
+          ...cambios, // reemplaza nombre, valorObjetivo y fechaLimite
+          completado: totalAportes >= cambios.valorObjetivo,
+        };
+      }),
+    );
+
+    // Buscamos con el nombre NUEVO, porque ya se guardó el cambio
+    this.avisarSiSeCompleto(idUsuario, cambios.nombre, estabaCompletada);
+  }
+
+  // RF12, CU-14 paso 4: notificación SOLO para el dueño de la meta cuando la completa.
+  // Comparamos el estado de antes y el de ahora: solo se envía si pasó
+  // de "no completada" a "completada", así no se repite en cada aporte.
+  private avisarSiSeCompleto(idUsuario: number, nombreMeta: string, estabaCompletada: boolean): void {
+    const meta = this.buscarMeta(idUsuario, nombreMeta);
+    if (!meta || estabaCompletada || !meta.completado) return;
+
+    this.notificacionesApi.enviarNotificacionGlobal({
+      idsNotificar: [idUsuario],
+      importancia: 'baja',
+      mensaje: `¡Completaste tu meta "${meta.nombre}"!`,
+    });
   }
 }
