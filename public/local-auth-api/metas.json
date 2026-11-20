@@ -33,5 +33,39 @@
 		"valorObjetivo": 3500000,
 		"fechaLimite": "2026-10-31T13:20:00.000Z",
 		"completado": false
+	},
+	{
+		"idUsuario": 4,
+		"nombre": "Laptop para la U",
+		"listaAportes": [
+			{ "monto": 400000, "fechaAporte": "2026-08-15T00:00:00.000Z" },
+			{ "monto": 440000, "fechaAporte": "2026-09-15T00:00:00.000Z" },
+			{ "monto": 400000, "fechaAporte": "2026-10-15T00:00:00.000Z" }
+		],
+		"valorObjetivo": 2000000,
+		"fechaLimite": "2027-06-15T00:00:00.000Z",
+		"completado": false
+	},
+	{
+		"idUsuario": 4,
+		"nombre": "Viaje de fin de semestre",
+		"listaAportes": [
+			{ "monto": 220000, "fechaAporte": "2026-09-20T00:00:00.000Z" },
+			{ "monto": 200000, "fechaAporte": "2026-10-20T00:00:00.000Z" }
+		],
+		"valorObjetivo": 1200000,
+		"fechaLimite": "2026-11-15T00:00:00.000Z",
+		"completado": false
+	},
+	{
+		"idUsuario": 4,
+		"nombre": "Fondo de emergencia",
+		"listaAportes": [
+			{ "monto": 160000, "fechaAporte": "2026-08-30T00:00:00.000Z" },
+			{ "monto": 100000, "fechaAporte": "2026-09-30T00:00:00.000Z" }
+		],
+		"valorObjetivo": 260000,
+		"fechaLimite": "2026-12-31T00:00:00.000Z",
+		"completado": true
 	}
 ]

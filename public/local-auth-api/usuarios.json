@@ -30,5 +30,13 @@
 		"correo": "laura.gomez@unal.edu.co",
 		"contrasena": "laura12345",
 		"rol": "usuario"
+	},
+	{
+		"nombre": "Andrés Castro",
+		"id": 5,
+		"id_reg_financiero": 5,
+		"correo": "andres.castro@unal.edu.co",
+		"contrasena": "andres12345",
+		"rol": "usuario"
 	}
 ]
