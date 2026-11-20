@@ -3,25 +3,71 @@
 		"idUsuario": 1,
 		"totalIngresos": 3200000,
 		"presupuesto": 2800000,
-		"totalGastos": 2450000
+		"totalGastos": 2450000,
+		"presupuestoCategorias": [
+			{ "categoria": "Alimentación", "monto": 1000000 },
+			{ "categoria": "Transporte", "monto": 500000 },
+			{ "categoria": "Materiales e impresiones", "monto": 400000 },
+			{ "categoria": "Entretenimiento", "monto": 300000 },
+			{ "categoria": "Suscripciones", "monto": 200000 },
+			{ "categoria": "Otros", "monto": 400000 }
+		]
 	},
 	{
 		"idUsuario": 2,
 		"totalIngresos": 2700000,
 		"presupuesto": 2300000,
-		"totalGastos": 1980000
+		"totalGastos": 1980000,
+		"presupuestoCategorias": [
+			{ "categoria": "Alimentación", "monto": 800000 },
+			{ "categoria": "Transporte", "monto": 400000 },
+			{ "categoria": "Materiales e impresiones", "monto": 300000 },
+			{ "categoria": "Entretenimiento", "monto": 300000 },
+			{ "categoria": "Suscripciones", "monto": 200000 },
+			{ "categoria": "Otros", "monto": 300000 }
+		]
 	},
 	{
 		"idUsuario": 3,
 		"totalIngresos": 4100000,
 		"presupuesto": 3500000,
-		"totalGastos": 3120000
+		"totalGastos": 3120000,
+		"presupuestoCategorias": [
+			{ "categoria": "Alimentación", "monto": 1200000 },
+			{ "categoria": "Transporte", "monto": 600000 },
+			{ "categoria": "Materiales e impresiones", "monto": 600000 },
+			{ "categoria": "Entretenimiento", "monto": 400000 },
+			{ "categoria": "Suscripciones", "monto": 300000 },
+			{ "categoria": "Otros", "monto": 400000 }
+		]
 	},
 	{
 		"idUsuario": 4,
 		"totalIngresos": 1200000,
 		"presupuesto": 500000,
-		"totalGastos": 340000
+		"totalGastos": 340000,
+		"presupuestoCategorias": [
+			{ "categoria": "Alimentación", "monto": 170000 },
+			{ "categoria": "Transporte", "monto": 90000 },
+			{ "categoria": "Materiales e impresiones", "monto": 80000 },
+			{ "categoria": "Entretenimiento", "monto": 50000 },
+			{ "categoria": "Suscripciones", "monto": 25000 },
+			{ "categoria": "Otros", "monto": 85000 }
+		]
+	},
+	{
+		"idUsuario": 5,
+		"totalIngresos": 0,
+		"presupuesto": 600000,
+		"totalGastos": 0,
+		"presupuestoCategorias": [
+			{ "categoria": "Alimentación", "monto": 200000 },
+			{ "categoria": "Transporte", "monto": 100000 },
+			{ "categoria": "Materiales e impresiones", "monto": 100000 },
+			{ "categoria": "Entretenimiento", "monto": 80000 },
+			{ "categoria": "Suscripciones", "monto": 40000 },
+			{ "categoria": "Otros", "monto": 80000 }
+		]
 	},
 	{
 		"idUsuario": 100,

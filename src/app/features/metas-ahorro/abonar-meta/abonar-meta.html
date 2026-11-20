@@ -1,0 +1,63 @@
+<!-- Fondo oscuro. Si se hace clic afuera del cuadro, se cierra el modal -->
+<div class="modal-fondo" (click)="cerrar()">
+
+  <!-- stopPropagation evita que un clic DENTRO del cuadro cierre el modal -->
+  <div class="modal-caja" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-abono" (click)="$event.stopPropagation()">
+
+    <!-- ===== Encabezado ===== -->
+    <div class="modal-encabezado">
+      <div>
+        <h2 id="titulo-modal-abono" class="modal-titulo">Abonar a "{{ meta.nombre }}"</h2>
+        <p class="modal-subtitulo">
+          Llevas {{ formatearPesos(aportado) }} de {{ formatearPesos(meta.valorObjetivo) }} · te faltan {{ formatearPesos(falta) }}
+        </p>
+      </div>
+      <button type="button" class="btn-cerrar" (click)="cerrar()" aria-label="Cerrar">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+
+    <form [formGroup]="abonoForm" (ngSubmit)="guardar()" novalidate>
+      <div class="modal-cuerpo">
+
+        <!-- CU-17: la meta ya no existe / meta cumplida -->
+        @if (mensajeError()) {
+          <div class="alerta-error" role="alert">{{ mensajeError() }}</div>
+        }
+
+        <!-- Monto: input grande con "$" y "COP", igual que en "Registrar movimiento" -->
+        <div class="campo">
+          <label for="monto-abono">Monto del aporte</label>
+          <div class="input-grupo input-monto" [class.invalido]="campoInvalido('monto')">
+            <span class="simbolo">$</span>
+            <input id="monto-abono" type="number" formControlName="monto" placeholder="0" min="1">
+            <span class="moneda">COP</span>
+          </div>
+          @if (campoInvalido('monto')) {
+            <p class="texto-error">Ingresa un monto mayor a 0.</p>
+          }
+        </div>
+
+        <!-- Fecha (no futura, por defecto hoy) -->
+        <div class="campo sin-margen">
+          <label for="fecha-abono">Fecha del aporte</label>
+          <div class="input-grupo" [class.invalido]="campoInvalido('fecha')">
+            <input id="fecha-abono" type="date" formControlName="fecha" [max]="hoy">
+          </div>
+          @if (campoInvalido('fecha')) {
+            <p class="texto-error">Elige una fecha de hoy o anterior.</p>
+          }
+        </div>
+      </div>
+
+      <!-- ===== Pie: botones ===== -->
+      <div class="modal-pie">
+        <button type="button" class="btn btn-secundario" (click)="cerrar()">Cancelar</button>
+        <button type="submit" class="btn btn-principal">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+          Abonar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

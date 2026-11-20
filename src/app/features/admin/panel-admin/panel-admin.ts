@@ -4,6 +4,11 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 
 import { LocalApi } from '../../../core/services/local-api';
+import { SesionApi } from '../../../core/services/sesion-api';
+import { UsuariosApi } from '../../../core/services/usuarios-api';
+import { MetasApi } from '../../../core/services/metas-api';
+import { MovimientosApi } from '../../../core/services/movimientos-api';
+import { NotificacionesApi } from '../../../core/services/notificaciones-api';
 import { Usuario } from '../../../core/models/usuario.model';
 import { Notificacion } from '../../../core/models/notificacion.model';
 import { formatearFecha } from '../../../core/utils/formato';
@@ -15,9 +20,8 @@ import { TarjetaResumenComponent } from '../../../shared/components/tarjeta-resu
   - RF14: lista de usuarios con acciones de bloquear / desbloquear y eliminar.
   - RF16: formulario para redactar una notificación global.
 
-  Diseño (Nicolás): esta vista ya funciona en memoria para la demo.
-  Conexión (Santiago): pasar los métodos marcados con "PENDIENTE (Santiago)" a LocalApi,
-  para que los cambios se compartan con el resto de vistas.
+  Los usuarios ahora viven en UsuariosApi (signal compartido): si el admin bloquea o elimina
+  una cuenta, el cambio se mantiene al navegar y el login lo respeta.
 */
 @Component({
   selector: 'app-panel-admin',
@@ -27,23 +31,30 @@ import { TarjetaResumenComponent } from '../../../shared/components/tarjeta-resu
   styleUrls: ['./panel-admin.css']
 })
 export class PanelAdmin implements OnInit {
-  private api = inject(LocalApi);
+  // Cambiado: antes todo venía de LocalApi; ahora cada tema tiene su propio servicio
+  private localApi = inject(LocalApi);              // solo para leer estadisticas.json
+  private sesion = inject(SesionApi);
+  private usuariosApi = inject(UsuariosApi);
+  private metasApi = inject(MetasApi);
+  private movimientosApi = inject(MovimientosApi);
+  private notificacionesApi = inject(NotificacionesApi);
   private router = inject(Router);
   private fb = inject(FormBuilder);
 
   // Administrador que inició sesión (para el saludo)
-  admin = this.api.usuarioActual;
+  admin = this.sesion.usuarioActual;
 
   // ===================================================================
   // 1. DATOS
   // ===================================================================
 
   // Lista de usuarios que se muestra en la tabla.
-  // TEMPORAL: es una copia local para que la demo funcione; Santiago la mueve a LocalApi.
-  usuarios = signal<Usuario[]>([]);
+  // Cambiado: ya no es una copia local; apunta al signal de UsuariosApi,
+  // que es el mismo que revisa el login.
+  usuarios = this.usuariosApi.usuarios;
 
   // Historial de estadísticas (estadisticas.json). toSignal convierte el Observable en signal.
-  historialEstadisticas = toSignal(this.api.obtenerEstadisticas(), { initialValue: [] });
+  historialEstadisticas = toSignal(this.localApi.obtenerEstadisticas(), { initialValue: [] });
 
   // ===================================================================
   // 2. ESTADÍSTICAS (RF15) - todas son computed: se recalculan solas
@@ -55,12 +66,12 @@ export class PanelAdmin implements OnInit {
   // Una meta está ACTIVA si no se ha completado y su fecha límite no ha pasado
   metasActivas = computed(() => {
     const hoy = new Date();
-    return this.api.metasAhorro().filter(m => !m.completado && new Date(m.fechaLimite) >= hoy).length;
+    return this.metasApi.metasAhorro().filter(m => !m.completado && new Date(m.fechaLimite) >= hoy).length;
   });
-  metasCompletadas = computed(() => this.api.metasAhorro().filter(m => m.completado).length);
-  totalMetas = computed(() => this.api.metasAhorro().length);
+  metasCompletadas = computed(() => this.metasApi.metasAhorro().filter(m => m.completado).length);
+  totalMetas = computed(() => this.metasApi.metasAhorro().length);
 
-  totalMovimientos = computed(() => this.api.movimientos().length);
+  totalMovimientos = computed(() => this.movimientosApi.movimientos().length);
 
   // ===================================================================
   // 3. GESTIÓN DE USUARIOS (RF14)
@@ -102,8 +113,8 @@ export class PanelAdmin implements OnInit {
   mensajeNotificacion = signal('');
 
   ngOnInit(): void {
-    // TEMPORAL (hasta los Guards de Juan): solo el administrador puede ver esta vista
-    const actual = this.api.usuarioActual();
+    // Respaldo de los Guards: solo el administrador puede ver esta vista
+    const actual = this.sesion.usuarioActual();
     if (!actual) {
       this.router.navigate(['/login']);
       return;
@@ -113,20 +124,20 @@ export class PanelAdmin implements OnInit {
       return;
     }
 
-    // Cargamos los datos que necesitan las estadísticas
-    this.api.obtenerUsuarios().subscribe(usuarios => this.usuarios.set(usuarios));
-    this.api.cargarMetasAhorro().subscribe();
-    this.api.cargarDatosFinancieros();
+    // Cargamos los datos que necesitan las estadísticas.
+    // cargarUsuarios() solo lee el JSON la primera vez; después devuelve la lista en memoria,
+    // así no se pierden los bloqueos o eliminaciones al salir y volver al panel.
+    this.usuariosApi.cargarUsuarios().subscribe();
+    this.metasApi.cargarMetasAhorro().subscribe();
+    this.movimientosApi.cargarDatosFinancieros();
   }
 
   // ----- Acciones de usuarios -----
 
-  // Bloquea o desbloquea la cuenta (cambia el campo "bloqueado")
-  // PENDIENTE (Santiago): mover a LocalApi (ej. api.cambiarBloqueoUsuario(id)).
+  // Bloquea o desbloquea la cuenta. El cambio se guarda en UsuariosApi.
   alternarBloqueo(usuario: Usuario): void {
-    this.usuarios.update(lista =>
-      lista.map(u => u.id === usuario.id ? { ...u, bloqueado: !u.bloqueado } : u)
-    );
+    this.usuariosApi.alternarBloqueo(usuario.id);
+    // "usuario" todavía tiene el valor ANTERIOR al cambio, por eso la condición va al revés
     this.mensajeAccion.set(usuario.bloqueado
       ? `Se desbloqueó la cuenta de ${usuario.nombre}.`
       : `Se bloqueó la cuenta de ${usuario.nombre}.`);
@@ -141,10 +152,9 @@ export class PanelAdmin implements OnInit {
     this.idPorEliminar.set(null);
   }
 
-  // Segundo clic ("Sí, eliminar"): quitamos al usuario de la lista
-  // PENDIENTE (Santiago): mover a LocalApi (ej. api.eliminarUsuario(id)).
+  // Segundo clic ("Sí, eliminar"): quitamos al usuario. El cambio se guarda en UsuariosApi.
   eliminarUsuario(usuario: Usuario): void {
-    this.usuarios.update(lista => lista.filter(u => u.id !== usuario.id));
+    this.usuariosApi.eliminarUsuario(usuario.id);
     this.idPorEliminar.set(null);
     this.mensajeAccion.set(`Se eliminó la cuenta de ${usuario.nombre}.`);
   }
@@ -176,8 +186,9 @@ export class PanelAdmin implements OnInit {
       importancia: valores.importancia!
     };
 
-    // PENDIENTE (Santiago): guardar con LocalApi para que aparezca en la campana del header.
-    console.log('Notificación a enviar:', notificacion);
+    // Cambiado (RF16): antes solo hacía console.log. Ahora la guardamos en NotificacionesApi
+    // (signal compartido), así llega a la campana del header de cada destinatario.
+    this.notificacionesApi.enviarNotificacionGlobal(notificacion);
 
     this.mensajeNotificacion.set(`Notificación enviada a ${ids.length} usuario(s).`);
     this.notificacionForm.reset({ destinatario: 'todos', importancia: 'media', mensaje: '' });

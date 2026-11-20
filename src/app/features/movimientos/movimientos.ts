@@ -4,7 +4,8 @@ import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 
-import { LocalApi } from '../../core/services/local-api';
+import { SesionApi } from '../../core/services/sesion-api';
+import { MovimientosApi } from '../../core/services/movimientos-api';
 import { Movimiento } from '../../core/models/movimiento.model';
 import { formatearFecha, formatearPesos } from '../../core/utils/formato';
 import { BotonGenericoComponent } from '../../shared/components/boton-generico/boton-generico';
@@ -26,7 +27,9 @@ import { RegistroMovimiento } from './registro-movimiento/registro-movimiento';
   styleUrls: ['./movimientos.css']
 })
 export class Movimientos implements OnInit {
-  private api = inject(LocalApi);
+  // Cambiado: antes todo venía de LocalApi; ahora la sesión y los movimientos tienen su propio servicio
+  private sesion = inject(SesionApi);
+  private movimientosApi = inject(MovimientosApi);
   private router = inject(Router);
   private fb = inject(FormBuilder);
 
@@ -46,8 +49,8 @@ export class Movimientos implements OnInit {
   // Todos los movimientos del usuario, ordenados por fecha (más reciente primero).
   // localeCompare compara textos: como la fecha es "AAAA-MM-DD", el orden alfabético = orden por fecha.
   misMovimientos = computed(() => {
-    const usuario = this.api.usuarioActual();
-    return this.api.movimientos()
+    const usuario = this.sesion.usuarioActual();
+    return this.movimientosApi.movimientos()
       .filter(m => m.idUsuario === usuario?.id)
       .sort((a, b) => b.fecha.localeCompare(a.fecha));
   });
@@ -83,11 +86,11 @@ export class Movimientos implements OnInit {
   ngOnInit(): void {
     // TEMPORAL (igual que en el Dashboard): sin sesión, volvemos al login.
     // Cuando estén los Guards de Juan, esta validación pasa a ellos.
-    if (!this.api.usuarioActual()) {
+    if (!this.sesion.usuarioActual()) {
       this.router.navigate(['/login']);
       return;
     }
-    this.api.cargarDatosFinancieros();
+    this.movimientosApi.cargarDatosFinancieros();
   }
 
   // Suma los montos de un tipo (ingreso o gasto)
@@ -110,9 +113,9 @@ export class Movimientos implements OnInit {
 
   // El modal emite (guardado): el servicio lo guarda y TODAS las listas se recalculan solas
   registrarMovimiento(movimiento: Movimiento): void {
-    const usuario = this.api.usuarioActual();
+    const usuario = this.sesion.usuarioActual();
     if (!usuario) return;
-    this.api.registrarMovimiento(usuario.id, movimiento);
+    this.movimientosApi.registrarMovimiento(usuario.id, movimiento);
     this.cerrarModal();
   }
 

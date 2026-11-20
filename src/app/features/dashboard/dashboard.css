@@ -48,3 +48,164 @@
   border-radius: var(--radius-lg);
   padding: 0 var(--space-6);
 }
+
+/* ============================================================
+   NUEVO: DASHBOARD EXTENDIDO (RNF04)
+   ============================================================ */
+
+/* Fila de dos columnas: distribución (mitad) y accesos + metas (mitad) */
+.fila-dashboard {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: start;
+  margin-bottom: var(--space-8);
+}
+
+.columna-derecha {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.tarjeta {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-6);
+}
+
+.tarjeta-titulo {
+  margin: 0 0 var(--space-4);
+  font-size: 16px;
+  color: var(--navy-900);
+}
+
+.tarjeta-subtitulo {
+  margin: 0;
+  font-size: 13px;
+  color: var(--neutral-600);
+}
+
+.tarjeta-cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+/* Botón que se ve como enlace ("Ver presupuesto", "Ver todas") */
+.enlace {
+  padding: 0;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary-500);
+  cursor: pointer;
+}
+
+/* Fila de texto con dos extremos: "Presupuesto total ... 68 %" */
+.fila-texto {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  font-size: 14px;
+  color: var(--neutral-700);
+}
+
+.fila-texto.pequeno {
+  font-size: 12px;
+  color: var(--neutral-600);
+}
+
+.texto-azul { color: var(--primary-500); }
+.texto-verde { color: var(--success-700); }
+
+/* Barra de progreso hecha con dos divs */
+.barra {
+  height: 8px;
+  margin: 6px 0;
+  border-radius: var(--radius-full);
+  background-color: var(--neutral-200);
+  overflow: hidden;
+}
+
+.barra-relleno {
+  height: 100%;
+  border-radius: var(--radius-full);
+}
+
+.barra-relleno.azul { background-color: var(--primary-500); }
+.barra-relleno.roja { background-color: var(--error-600); }
+.barra-relleno.verde { background-color: var(--success-500); }
+
+/* Bloque del presupuesto total, dentro del desglose */
+.presupuesto-total {
+  margin-bottom: var(--space-6);
+}
+
+/* Accesos rápidos: grilla de 2 x 2 */
+.accesos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+.btn-ingreso {
+  background-color: var(--success-100);
+  border-color: var(--success-200);
+  color: var(--success-700);
+}
+
+.btn-gasto {
+  background-color: var(--expense-50);
+  border-color: var(--expense-100);
+  color: var(--expense-700);
+}
+
+/* Tarjeta de metas con fondo verde suave, como en la referencia */
+.tarjeta-metas {
+  background-color: var(--success-50);
+  border-color: var(--success-200);
+}
+
+.meta-mini + .meta-mini {
+  margin-top: var(--space-4);
+}
+
+/* CU-3 curso alterno: bienvenida */
+.bienvenida {
+  margin-bottom: var(--space-8);
+  text-align: center;
+}
+
+.bienvenida-botones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 900px) {
+  /* En tablet y celular, las columnas van una debajo de la otra */
+  .fila-dashboard {
+    grid-template-columns: 1fr;
+  }
+
+  /* Las tarjetas del resumen y los botones de la cabecera pasan a la siguiente línea */
+  .cabecera-dashboard,
+  .grid-tarjetas {
+    flex-wrap: wrap;
+    gap: var(--space-4);
+  }
+
+  .grid-tarjetas > * {
+    flex: 1 1 220px;
+  }
+}

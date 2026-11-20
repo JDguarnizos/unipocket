@@ -36,6 +36,95 @@
     </app-tarjeta-resumen>
   </div>
 
+  <!-- ===== Nuevo: dashboard extendido (RNF04) ===== -->
+  @if (sinDatos()) {
+    <!-- CU-3 curso alterno: usuario sin movimientos ni metas -->
+    <section class="tarjeta bienvenida">
+      <h3 class="tarjeta-titulo">¡Bienvenido a UniPocket!</h3>
+      <p class="tarjeta-subtitulo">Todavía no tienes movimientos ni metas. Empieza por aquí:</p>
+      <div class="bienvenida-botones">
+        <button type="button" class="btn btn-principal" (click)="abrirModal('ingreso')">Registrar mi primer movimiento</button>
+        <button type="button" class="btn btn-secundario" (click)="irA('/metas-ahorro')">Crear mi primera meta</button>
+      </div>
+    </section>
+  } @else {
+    <div class="fila-dashboard">
+
+      <!-- Columna izquierda: distribución del presupuesto (reutiliza DesgloseCategorias) -->
+      <app-desglose-categorias
+        [movimientos]="misMovimientos()"
+        titulo="Distribución del presupuesto"
+        subtitulo="En qué se ha ido tu dinero este periodo">
+
+        <!-- Este bloque se muestra DENTRO del desglose, debajo del subtítulo (ng-content) -->
+        <div class="presupuesto-total">
+          <div class="fila-texto">
+            <span>Presupuesto total del periodo</span>
+            <strong class="texto-azul">{{ porcentajePresupuesto() }} %</strong>
+          </div>
+          <div class="barra">
+            <div class="barra-relleno azul" [class.roja]="porcentajePresupuesto() > 100"
+                 [style.width.%]="porcentajePresupuesto() > 100 ? 100 : porcentajePresupuesto()"></div>
+          </div>
+          <div class="fila-texto pequeno">
+            <span>{{ formatearPesos(registroActual()?.totalGastos ?? 0) }} de {{ formatearPesos(registroActual()?.presupuesto ?? 0) }}</span>
+            <button type="button" class="enlace" (click)="irA('/presupuesto')">Ver presupuesto ›</button>
+          </div>
+        </div>
+      </app-desglose-categorias>
+
+      <!-- Columna derecha: dos tarjetas en lista -->
+      <div class="columna-derecha">
+
+        <!-- Accesos rápidos -->
+        <section class="tarjeta">
+          <h3 class="tarjeta-titulo">Accesos rápidos</h3>
+          <div class="accesos">
+            <button type="button" class="btn btn-ingreso" (click)="abrirModal('ingreso')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 7 7 17"/><path d="M17 17H7V7"/></svg>
+              Ingreso
+            </button>
+            <button type="button" class="btn btn-gasto" (click)="abrirModal('gasto')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
+              Gasto
+            </button>
+            <button type="button" class="btn btn-secundario" (click)="irA('/metas-ahorro')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+              Nueva meta
+            </button>
+            <button type="button" class="btn btn-secundario" (click)="irA('/reportes')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3v18h18"/><path d="M8 17v-5"/><path d="M13 17V8"/><path d="M18 17v-9"/></svg>
+              Reportes
+            </button>
+          </div>
+        </section>
+
+        <!-- Metas de ahorro (CU-3: el resumen incluye las metas) -->
+        <section class="tarjeta tarjeta-metas">
+          <div class="tarjeta-cabecera">
+            <h3 class="tarjeta-titulo">Metas de ahorro</h3>
+            <button type="button" class="enlace" (click)="irA('/metas-ahorro')">Ver todas ›</button>
+          </div>
+
+          @for (meta of metasEnProgreso(); track meta.nombre) {
+            <div class="meta-mini">
+              <div class="fila-texto">
+                <span>{{ meta.nombre }}</span>
+                <strong class="texto-verde">{{ porcentajeMeta(meta) }} %</strong>
+              </div>
+              <div class="barra">
+                <div class="barra-relleno verde" [style.width.%]="porcentajeMeta(meta)"></div>
+              </div>
+              <p class="fila-texto pequeno">{{ formatearPesos(aportadoMeta(meta)) }} de {{ formatearPesos(meta.valorObjetivo) }}</p>
+            </div>
+          } @empty {
+            <p class="tarjeta-subtitulo">No tienes metas en progreso.</p>
+          }
+        </section>
+      </div>
+    </div>
+  }
+
   <h3 class="titulo-seccion">Movimientos recientes</h3>
   
   <div class="lista-movimientos">

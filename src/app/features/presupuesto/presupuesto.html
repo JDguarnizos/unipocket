@@ -1,1 +1,89 @@
-<p>presupuesto works!</p>
+<div class="presupuesto-contenedor">
+
+  <!-- ===== Cabecera ===== -->
+  <div class="cabecera">
+    <div>
+      <h2 class="titulo">Presupuesto</h2>
+      <p class="subtitulo">Periodo mensual · {{ mesActual }}</p>
+    </div>
+    <button type="button" class="btn btn-gasto" (click)="modalAbierto = true">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
+      Registrar gasto
+    </button>
+  </div>
+
+  <!-- ===== RF04: tarjeta principal ===== -->
+  <section class="tarjeta">
+    <div class="totales">
+      <div>
+        <span class="etiqueta">Presupuesto total</span>
+        <p class="valor">{{ formatearPesos(registroActual()?.presupuesto ?? 0) }}</p>
+      </div>
+      <div>
+        <span class="etiqueta">Usado</span>
+        <p class="valor">{{ formatearPesos(registroActual()?.totalGastos ?? 0) }}</p>
+      </div>
+      <div>
+        <!-- Si se pasó del presupuesto, el texto cambia y se pone en rojo -->
+        <span class="etiqueta">{{ presupuestoRestante() >= 0 ? 'Te queda' : 'Te pasaste por' }}</span>
+        <p class="valor" [class.texto-rojo]="presupuestoRestante() < 0" [class.texto-verde]="presupuestoRestante() >= 0">
+          {{ formatearPesos(presupuestoRestante() >= 0 ? presupuestoRestante() : -presupuestoRestante()) }}
+        </p>
+      </div>
+    </div>
+
+    <div class="fila-texto">
+      <span>Presupuesto utilizado</span>
+      <strong>{{ porcentajePresupuesto() }} %</strong>
+    </div>
+    <div class="barra grande">
+      <div class="barra-relleno" [class.roja]="porcentajePresupuesto() > 100"
+           [style.width.%]="porcentajePresupuesto() > 100 ? 100 : porcentajePresupuesto()"></div>
+    </div>
+  </section>
+
+  <!-- ===== RF06: presupuesto vs gasto por categoría ===== -->
+  <section class="tarjeta">
+    <h3 class="tarjeta-titulo">Presupuesto vs gasto por categoría</h3>
+    <p class="tarjeta-subtitulo">Verde: vas bien · Amarillo: desde el 80 % · Rojo: te pasaste</p>
+
+    <ul class="lista-categorias">
+      @for (fila of categorias(); track fila.categoria) {
+        <li class="fila-categoria">
+          <div class="fila-texto">
+            <span class="nombre">
+              <span class="punto" [style.background-color]="colorCategoria(fila.categoria)"></span>
+              {{ fila.categoria }}
+            </span>
+            @if (!fila.sinPresupuesto) {
+              <strong [class]="'texto-' + colorBarra(fila)">{{ fila.porcentaje }} %</strong>
+            }
+          </div>
+
+          @if (fila.sinPresupuesto) {
+            <!-- Categoría con gastos pero sin presupuesto asignado (ej: aportes a metas) -->
+            <p class="detalle">{{ formatearPesos(fila.gastado) }} gastado · sin presupuesto asignado</p>
+          } @else {
+            <div class="barra">
+              <!-- La clase de color (verde, amarilla o roja) la decide colorBarra() -->
+              <div [class]="'barra-relleno ' + colorBarra(fila)"
+                   [style.width.%]="fila.porcentaje > 100 ? 100 : fila.porcentaje"></div>
+            </div>
+            <p class="detalle">{{ formatearPesos(fila.gastado) }} de {{ formatearPesos(fila.asignado) }}</p>
+          }
+        </li>
+      } @empty {
+        <li class="detalle">Aún no tienes presupuesto por categoría.</li>
+      }
+    </ul>
+  </section>
+</div>
+
+<!-- Modal "Registrar movimiento" abierto como gasto -->
+@if (modalAbierto) {
+  <app-registro-movimiento
+    tipoInicial="gasto"
+    (cerrado)="modalAbierto = false"
+    (guardado)="registrarMovimiento($event)">
+  </app-registro-movimiento>
+}

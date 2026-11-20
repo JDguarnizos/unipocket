@@ -1,0 +1,145 @@
+.presupuesto-contenedor {
+  padding: var(--space-6);
+  max-width: 900px;
+}
+
+/* ===== Cabecera ===== */
+.cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.titulo {
+  margin: 0;
+  color: var(--navy-900);
+}
+
+.subtitulo {
+  margin: 4px 0 0;
+  color: var(--neutral-600);
+}
+
+.btn-gasto {
+  background-color: var(--expense-50);
+  border-color: var(--expense-100);
+  color: var(--expense-700);
+}
+
+/* ===== Tarjetas ===== */
+.tarjeta {
+  margin-bottom: var(--space-6);
+  padding: var(--space-6);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.tarjeta-titulo {
+  margin: 0;
+  font-size: 16px;
+  color: var(--navy-900);
+}
+
+.tarjeta-subtitulo {
+  margin: 4px 0 var(--space-4);
+  font-size: 13px;
+  color: var(--neutral-600);
+}
+
+/* RF04: tres valores en fila (total, usado, queda) */
+.totales {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.valor {
+  margin: 4px 0 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--neutral-900);
+}
+
+/* Fila con texto a la izquierda y porcentaje a la derecha */
+.fila-texto {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 14px;
+  color: var(--neutral-700);
+}
+
+/* ===== Barras de progreso: un div gris con otro de color adentro ===== */
+.barra {
+  height: 8px;
+  margin: 6px 0;
+  border-radius: var(--radius-full);
+  background-color: var(--neutral-200);
+  overflow: hidden;
+}
+
+.barra.grande {
+  height: 12px;
+}
+
+.barra-relleno {
+  height: 100%;
+  border-radius: var(--radius-full);
+  background-color: var(--primary-500);
+}
+
+/* RF06: colores según el porcentaje usado */
+.barra-relleno.verde { background-color: var(--success-500); }
+.barra-relleno.amarilla { background-color: var(--warning-500); }
+.barra-relleno.roja { background-color: var(--error-600); }
+
+.texto-verde { color: var(--success-700); }
+.texto-amarilla { color: var(--warning-800); }
+.texto-roja,
+.texto-rojo { color: var(--error-600); }
+
+/* ===== Lista de categorías ===== */
+.lista-categorias {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.nombre {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.punto {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.detalle {
+  margin: 0;
+  font-size: 12px;
+  color: var(--neutral-600);
+}
+
+/* ===== Celular: los tres totales uno debajo del otro ===== */
+@media (max-width: 576px) {
+  .totales {
+    grid-template-columns: 1fr;
+  }
+
+  .cabecera .btn {
+    width: 100%;
+  }
+}

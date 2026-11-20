@@ -5,18 +5,27 @@
     <button class="close-menu-btn" aria-label="Cerrar menú" (click)="cerrarMenu()">✕</button>
   </div>
 
-  <!-- 2. Opciones de navegación del menú -->
+  <!-- 2. Opciones de navegación del menú (RNF05: cambian según el rol) -->
   <div class="menu-section">
     <span class="menu-label desktop-only">MENÚ</span>
     <nav class="menu-list">
-      <a routerLink="/dashboard" routerLinkActive="active" class="menu-item" (click)="cerrarMenu()">Panel</a>
-      <a routerLink="/presupuesto" routerLinkActive="active" class="menu-item" (click)="cerrarMenu()">Presupuesto</a>
-      <a routerLink="/movimientos" routerLinkActive="active" class="menu-item" (click)="cerrarMenu()">Movimientos</a>
-      <a routerLink="/metas-ahorro" routerLinkActive="active" class="menu-item" (click)="cerrarMenu()">Metas de ahorro</a>
+      @if (esAdmin()) {
+        <!-- Administrador: solo su panel -->
+        <a routerLink="/admin" routerLinkActive="active" class="menu-item" (click)="cerrarMenu()">Panel de administración</a>
+      } @else {
+        <!-- Estudiante: sus finanzas personales -->
+        <a routerLink="/dashboard" routerLinkActive="active" class="menu-item" (click)="cerrarMenu()">Panel</a>
+        <a routerLink="/presupuesto" routerLinkActive="active" class="menu-item" (click)="cerrarMenu()">Presupuesto</a>
+        <a routerLink="/movimientos" routerLinkActive="active" class="menu-item" (click)="cerrarMenu()">Movimientos</a>
+        <a routerLink="/historial" routerLinkActive="active" class="menu-item" (click)="cerrarMenu()">Historial</a>
+        <a routerLink="/metas-ahorro" routerLinkActive="active" class="menu-item" (click)="cerrarMenu()">Metas de ahorro</a>
+        <a routerLink="/reportes" routerLinkActive="active" class="menu-item" (click)="cerrarMenu()">Reportes</a>
+      }
     </nav>
   </div>
 
+  <!-- 3. Pie del menú: Configuración, para los dos roles -->
   <div class="menu-footer">
-    <!-- Pie de página opcional -->
+    <a routerLink="/configuracion" routerLinkActive="active" class="menu-item" (click)="cerrarMenu()">Configuración</a>
   </div>
 </aside>

@@ -26,13 +26,12 @@
   flex: 1;
 }
 
-/* Botón de hamburguesa (☰).
+/* Botón de hamburguesa (ícono SVG de tres líneas).
    En escritorio se oculta; en móvil se muestra */
 .menu-toggle-btn {
   display: none; /* ocultamos en desktop */
   background: none;
   border: none;
-  font-size: 20px;
   cursor: pointer;
   color: var(--neutral-600);
   padding: var(--space-2);
@@ -86,13 +85,14 @@
   position: relative; /* el panel se posiciona respecto a este div */
 }
 
-/* Botón de la campana */
+/* Botón de la campana (ícono SVG) */
 .notification-btn {
   position: relative;
+  display: flex;
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 18px;
+  color: var(--neutral-600);
   padding: var(--space-2);
   border-radius: 50%;
   transition: background-color 0.2s;
@@ -102,7 +102,7 @@
   background-color: var(--neutral-100);
 }
 
-/* Badge rojo con la cantidad de no leídas */
+/* Globo rojo con el total de notificaciones del usuario */
 .badge {
   position: absolute;
   top: 2px;
@@ -130,11 +130,8 @@
   overflow: hidden;
 }
 
-/* Cabecera del panel: título + botón "marcar todas" */
+/* Cabecera del panel: título */
 .notif-cabecera {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   padding: var(--space-4) var(--space-4) var(--space-3);
   border-bottom: 1px solid var(--neutral-200);
 }
@@ -144,20 +141,6 @@
   font-size: 14px;
   font-weight: 700;
   color: var(--neutral-900);
-}
-
-.notif-btn-leer-todo {
-  background: none;
-  border: none;
-  font-size: 12px;
-  color: var(--primary-500);
-  cursor: pointer;
-  padding: 0;
-  font-weight: 500;
-}
-
-.notif-btn-leer-todo:hover {
-  text-decoration: underline;
 }
 
 /* Lista de notificaciones */
@@ -175,8 +158,6 @@
   align-items: flex-start;
   gap: var(--space-3);
   padding: var(--space-3) var(--space-4);
-  cursor: pointer;
-  transition: background-color 0.15s;
   border-bottom: 1px solid var(--neutral-100);
 }
 
@@ -184,28 +165,21 @@
   border-bottom: none;
 }
 
-.notif-item:hover {
-  background-color: var(--neutral-100);
-}
-
-/* Fondo azul suave para notificaciones sin leer */
-.notif-item--sin-leer {
-  background-color: var(--primary-50);
-}
-
-.notif-item--sin-leer:hover {
-  background-color: var(--primary-100);
-}
-
-/* Punto azul indicador */
-.notif-punto {
+/* RNF07: círculo con el ícono; el color cambia según la importancia */
+.notif-icono {
   flex-shrink: 0;
-  width: 8px;
-  height: 8px;
-  margin-top: 5px;
-  background-color: var(--primary-500);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
 }
+
+.notif-icono--urgente { background-color: var(--error-50);   color: var(--error-600); }
+.notif-icono--alta    { background-color: var(--warning-50); color: var(--warning-500); }
+.notif-icono--media   { background-color: var(--info-100);   color: var(--info-600); }
+.notif-icono--baja    { background-color: var(--success-50); color: var(--success-600); }
 
 .notif-contenido {
   display: flex;
@@ -216,16 +190,18 @@
 .notif-mensaje {
   margin: 0;
   font-size: 13px;
-  color: var(--neutral-900);
+  color: var(--neutral-700);
   line-height: 1.4;
 }
 
-.notif-tiempo {
-  font-size: 11px;
-  color: var(--neutral-500);
+.notif-encabezado {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--neutral-900);
 }
 
-/* Mensaje cuando todo está leído */
+/* Mensaje cuando el usuario no tiene notificaciones */
 .notif-vacio {
   text-align: center;
   padding: var(--space-6);
@@ -271,14 +247,32 @@
   color: var(--neutral-600);
 }
 
+/* ── Botón de cerrar sesión (ícono SVG) ──────────────────────────────────── */
+.logout-btn {
+  display: flex;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--neutral-600);
+  padding: var(--space-2);
+  border-radius: var(--radius-sm);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.logout-btn:hover {
+  background-color: var(--error-50);
+  color: var(--error-600);
+}
+
 /* ============================================================
    RESPONSIVE: TABLET (≤ 768px)
    El menú lateral se oculta y aparece el botón hamburguesa
    ============================================================ */
 @media (max-width: 768px) {
   /* Mostramos el botón hamburguesa en tablets y móviles */
+  /* flex centra el ícono SVG dentro del botón */
   .menu-toggle-btn {
-    display: block;
+    display: flex;
   }
 
   /* El buscador se reduce un poco */

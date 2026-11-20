@@ -16,6 +16,8 @@ interface CategoriaDesglose {
   Se puede usar en el Historial, en el Dashboard o en Reportes :).
 
   Nota: Uso:  <app-desglose-categorias [movimientos]="misMovimientos()" />
+  Nuevo: lo que se escriba ENTRE las etiquetas se muestra debajo del subtítulo (<ng-content>).
+  El Dashboard lo usa para poner ahí la barra del presupuesto total (RNF04).
 */
 @Component({
   selector: 'app-desglose-categorias',
@@ -28,6 +30,11 @@ export class DesgloseCategorias {
   // input() es la versión "signal" de @Input().
   // La usamos porque así los computed() de abajo se recalculan solos cuando cambia la lista.
   movimientos = input<Movimiento[]>([]);
+
+  // Nuevo: título y subtítulo configurables (el Dashboard usa "Distribución del presupuesto").
+  // Si no se envían, quedan los de siempre, así el Historial no cambia.
+  titulo = input('Gastos por categoría');
+  subtitulo = input('En qué se ha ido tu dinero');
 
   // 1) Solo nos interesan los gastos
   private gastos = computed(() => this.movimientos().filter(m => m.tipo === 'gasto'));
