@@ -1,6 +1,9 @@
 <section class="desglose-tarjeta">
-  <h3 class="desglose-titulo">Gastos por categoría</h3>
-  <p class="desglose-subtitulo">En qué se ha ido tu dinero</p>
+  <h3 class="desglose-titulo">{{ titulo() }}</h3>
+  <p class="desglose-subtitulo">{{ subtitulo() }}</p>
+
+  <!-- Contenido extra que manda el componente padre (si no manda nada, no se ve) -->
+  <ng-content></ng-content>
 
   @if (totalGastos() > 0) {
     <div class="desglose-contenido">

@@ -1,0 +1,83 @@
+<div class="reportes-contenedor">
+
+  <!-- ===== Controles: tipo de resumen (RF07) y flechas de periodo ===== -->
+  <div class="controles">
+    <div class="selector" role="group" aria-label="Tipo de resumen">
+      <button type="button" class="opcion" [class.activa]="tipo() === 'semanal'" (click)="cambiarTipo('semanal')">Semanal</button>
+      <button type="button" class="opcion" [class.activa]="tipo() === 'mensual'" (click)="cambiarTipo('mensual')">Mensual</button>
+    </div>
+
+    <div class="flechas">
+      <button type="button" class="btn-flecha" (click)="moverPeriodo(-1)" aria-label="Periodo anterior">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+      <button type="button" class="btn-flecha" (click)="moverPeriodo(1)" aria-label="Periodo siguiente">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== Recibo (RNF08) ===== -->
+  <article class="recibo">
+
+    <!-- 1. Título y periodo -->
+    <header class="recibo-encabezado">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l3-2 3 2 2-2 2 2 3-2 3 2V2l-3 2-3-2-2 2-2-2-3 2Z"/><path d="M8 8h8"/><path d="M8 12h8"/><path d="M8 16h5"/></svg>
+      <h2 class="recibo-titulo">Resumen y reportes financieros</h2>
+      <p class="recibo-periodo">{{ textoPeriodo() }}</p>
+    </header>
+
+    @if (movimientosPeriodo().length === 0) {
+      <p class="separador recibo-vacio">No hay movimientos en este periodo.</p>
+    } @else {
+
+      <!-- 2. Balance general: solo con los movimientos del periodo -->
+      <section class="separador">
+        <h3 class="seccion-titulo">Balance general</h3>
+        <div class="linea">
+          <span>Total de ingresos</span>
+          <span class="texto-ingreso">{{ formatearPesos(totalIngresos()) }}</span>
+        </div>
+        <div class="linea">
+          <span>Total de gastos</span>
+          <span class="texto-gasto">-{{ formatearPesos(totalGastos()) }}</span>
+        </div>
+        <div class="linea total" [class.negativo]="balance() < 0">
+          <span>{{ balance() >= 0 ? 'Superávit' : 'Déficit' }}</span>
+          <span>{{ formatearPesos(balance()) }}</span>
+        </div>
+      </section>
+
+      <!-- 3. Comparativa presupuesto vs gasto real (RNF09) -->
+      <section class="separador">
+        <h3 class="seccion-titulo">Comparativa Presupuesto vs Gasto Real</h3>
+        @if (tipo() === 'semanal') {
+          <p class="nota">Presupuesto semanal = presupuesto mensual ÷ 4</p>
+        }
+
+        @for (fila of comparativa(); track fila.categoria) {
+          <!-- Si gastó más de lo asignado, la línea se resalta en rojo -->
+          <div class="categoria" [class.excedida]="!fila.sinPresupuesto && fila.diferencia < 0">
+            <div class="linea">
+              <strong>{{ fila.categoria }}</strong>
+              @if (fila.sinPresupuesto) {
+                <span class="nota">Sin presupuesto</span>
+              } @else {
+                <strong>{{ fila.diferencia >= 0 ? 'Quedan ' : 'Excedido ' }}{{ formatearPesos(fila.diferencia >= 0 ? fila.diferencia : -fila.diferencia) }}</strong>
+              }
+            </div>
+            <div class="linea detalle">
+              <span>Presupuesto {{ fila.sinPresupuesto ? '—' : formatearPesos(fila.asignado) }}</span>
+              <span>Gasto real {{ formatearPesos(fila.gastado) }}</span>
+            </div>
+          </div>
+        } @empty {
+          <p class="nota">No tienes presupuesto por categoría.</p>
+        }
+      </section>
+    }
+
+    <!-- Pie del recibo -->
+    <footer class="separador recibo-pie">UniPocket · Generado el {{ fechaGenerado }}</footer>
+  </article>
+</div>

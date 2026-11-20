@@ -1,0 +1,181 @@
+.reportes-contenedor {
+  padding: var(--space-6);
+  max-width: 1200px;
+}
+
+/* ===== Controles: selector Semanal/Mensual y flechas ===== */
+.controles {
+  max-width: 480px;
+  margin: 0 auto var(--space-4);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* Dos botones pegados que funcionan como un interruptor */
+.selector {
+  display: inline-flex;
+  padding: 4px;
+  background-color: var(--neutral-100);
+  border-radius: var(--radius-md);
+}
+
+.opcion {
+  padding: var(--space-2) var(--space-4);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: none;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--neutral-600);
+  cursor: pointer;
+}
+
+.opcion.activa {
+  background-color: var(--bg-surface);
+  color: var(--primary-500);
+  box-shadow: var(--shadow-card);
+}
+
+.flechas {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.btn-flecha {
+  display: flex;
+  padding: var(--space-2);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--neutral-300);
+  border-radius: var(--radius-sm);
+  color: var(--neutral-700);
+  cursor: pointer;
+}
+
+.btn-flecha:hover {
+  background-color: var(--neutral-100);
+}
+
+/* ===== Recibo (RNF08): tarjeta angosta y centrada ===== */
+.recibo {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: var(--space-6);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-card);
+  /* Números del mismo ancho, para que las cifras queden alineadas como en un recibo */
+  font-variant-numeric: tabular-nums;
+}
+
+.recibo-encabezado {
+  text-align: center;
+  color: var(--primary-500);
+}
+
+.recibo-titulo {
+  margin: var(--space-2) 0 4px;
+  font-size: 18px;
+  color: var(--navy-900);
+}
+
+.recibo-periodo {
+  margin: 0;
+  font-size: 14px;
+  color: var(--neutral-600);
+}
+
+/* Línea punteada entre secciones */
+.separador {
+  margin: var(--space-4) 0 0;
+  padding-top: var(--space-4);
+  border-top: 2px dashed var(--neutral-300);
+}
+
+.seccion-titulo {
+  margin: 0 0 var(--space-3);
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--neutral-700);
+}
+
+/* Cada línea: texto a la izquierda y valor a la derecha */
+.linea {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: 4px 0;
+  font-size: 14px;
+  color: var(--neutral-900);
+}
+
+.texto-ingreso { color: var(--success-700); }
+.texto-gasto { color: var(--expense-700); }
+
+/* Superávit en verde; déficit en rojo */
+.linea.total {
+  margin-top: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--neutral-200);
+  font-weight: 700;
+  color: var(--success-700);
+}
+
+.linea.total.negativo {
+  color: var(--error-600);
+}
+
+/* Comparativa por categoría */
+.categoria {
+  padding: var(--space-2) var(--space-2);
+  border-radius: var(--radius-sm);
+}
+
+.categoria + .categoria {
+  margin-top: 4px;
+}
+
+/* Categoría excedida: resaltada en rojo */
+.categoria.excedida {
+  background-color: var(--error-50);
+  color: var(--error-700);
+}
+
+.categoria.excedida .linea {
+  color: var(--error-700);
+}
+
+.linea.detalle {
+  padding: 0;
+  font-size: 12px;
+  color: var(--neutral-600);
+}
+
+.nota {
+  margin: 0 0 var(--space-2);
+  font-size: 12px;
+  color: var(--neutral-500);
+}
+
+.recibo-vacio {
+  text-align: center;
+  color: var(--neutral-500);
+}
+
+.recibo-pie {
+  text-align: center;
+  font-size: 12px;
+  color: var(--neutral-500);
+}
+
+/* ===== Celular: menos relleno ===== */
+@media (max-width: 480px) {
+  .reportes-contenedor,
+  .recibo {
+    padding: var(--space-4);
+  }
+}
